@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  AGENT
+  ADMIN
+  MAIN_ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  REJECTED
+}
+
+enum VehicleCategory {
+  SUV
+  SEDAN
+  ECONOMY
+  LUXURY
+  PICKUP
+  VAN
+}
+
+enum FuelType {
+  PETROL
+  DIESEL
+  ELECTRIC
+  HYBRID
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  phone           String?
+  password        String
+  role            Role     @default(USER)
+  isEmailVerified Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bookings    Booking[]
+  payments    Payment[]
+  reviews     Review[]
+  resetTokens PasswordResetToken[]
+  metrics     UserMetric?
+
+  profilePhoto String?
+  Notification Notification[]
+
+  @@map("users")
+}
+
+model Agent {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  bookings Booking[]    @relation("AgentBookings")
+  metrics  AgentMetric?
+
+  resetTokens PasswordResetToken[]
+
+  @@map("agents")
+}
+
+model Admin {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String
+  role        Role     @default(ADMIN)
+  isMainAdmin Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  resetTokens   PasswordResetToken[]
+  notifications Notification[]
+
+  @@map("admins")
+}
+
+model Vehicle {
+  id           String          @id @default(uuid())
+  name         String
+  description  String
+  category     VehicleCategory
+  pricePerDay  Float
+  pricePerHour Float
+  availability Boolean         @default(true)
+  location     String
+  transmission String
+  fuelType     FuelType
+  features     String[] // ["AC", "Bluetooth", "Navigation"]
+  imageUrl     String?
+
+  createdAt DateTime @default(now())
+
+  bookings Booking[]
+  reviews  Review[]
+
+  @@map("vehicles")
+}
+
+model Booking {
+  id          String        @id @default(uuid())
+  userId      String
+  vehicleId   String
+  agentId     String? // optional, assigned later
+  status      BookingStatus @default(PENDING)
+  pickupDate  DateTime
+  dropoffDate DateTime
+  totalAmount Float
+  options     Json? // insurance, extra driver, etc.
+  createdAt   DateTime      @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+  agent   Agent?  @relation("AgentBookings", fields: [agentId], references: [id])
+
+  payment Payment?
+}
+
+model Payment {
+  id         String   @id @default(uuid())
+  userId     String
+  bookingId  String   @unique
+  provider   String // "Stripe", "PayPal" to be implemented later
+  amount     Float
+  status     String
+  receiptUrl String?
+  createdAt  DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  booking Booking @relation(fields: [bookingId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  adminId   String?
+  userId    String?
+  message   String
+  type      String // "BOOKING_CONFIRMED", "RESET_PASSWORD".
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  admin Admin? @relation(fields: [adminId], references: [id])
+  user  User?  @relation(fields: [userId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  vehicleId String
+  rating    Int      @default(5) // 1–5
+  comment   String?
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String?
+  adminId   String?
+  agentId   String?
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id])
+  admin Admin? @relation(fields: [adminId], references: [id])
+  agent Agent? @relation(fields: [agentId], references: [id])
+}
+
+model UserMetric {
+  id           String           @id @default(uuid())
+  userId       String           @unique
+  totalRentals Int              @default(0)
+  totalSpent   Float            @default(0)
+  favoriteType VehicleCategory?
+  driveHours   Int              @default(0)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model AgentMetric {
+  id               String @id @default(uuid())
+  agentId          String @unique
+  bookingsHandled  Int    @default(0)
+  vehiclesReturned Int    @default(0)
+  issuesReported   Int    @default(0)
+
+  agent Agent @relation(fields: [agentId], references: [id])
+}
