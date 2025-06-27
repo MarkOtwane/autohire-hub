@@ -55,8 +55,9 @@ model User {
   resetTokens PasswordResetToken[]
   metrics     UserMetric?
 
-  profilePhoto String?
-  Notification Notification[]
+  profilePhoto  String?
+  Notification  Notification[]
+  SupportTicket SupportTicket[]
 
   @@map("users")
 }
@@ -88,6 +89,19 @@ model Admin {
   notifications Notification[]
 
   @@map("admins")
+}
+
+model SupportTicket {
+  id         String    @id @default(uuid())
+  userId     String
+  subject    String
+  message    String
+  response   String?
+  status     String    @default("OPEN") // OPEN, RESOLVED
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Vehicle {
@@ -203,4 +217,14 @@ model AgentMetric {
   issuesReported   Int    @default(0)
 
   agent Agent @relation(fields: [agentId], references: [id])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String
+  actorRole Role
+  action    String // e.g. CREATE_BOOKING, DELETE_ADMIN
+  target    String? // e.g. bookingId, userId
+  metadata  Json?
+  createdAt DateTime @default(now())
 }

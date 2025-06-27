@@ -1,34 +1,61 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { BookingService } from './booking.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Roles } from 'src/commons/decorators/roles.decorator';
+import { BookingsService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
 
-@Controller('booking')
-export class BookingController {
-  constructor(private readonly bookingService: BookingService) {}
+@UseGuards(JwtAuthGuard)
+@Controller('bookings')
+export class BookingsController {
+  constructor(private readonly bookingsService: BookingsService) {}
 
   @Post()
-  create(@Body() createBookingDto: CreateBookingDto) {
-    return this.bookingService.create(createBookingDto);
+  create(@Req() req, @Body() dto: CreateBookingDto) {
+    return this.bookingsService.create(req.user.id, dto);
   }
 
-  @Get()
-  findAll() {
-    return this.bookingService.findAll();
+  @Get('mine')
+  findMine(@Req() req) {
+    return this.bookingsService.findMine(req.user.id);
+  }
+
+  @Get('pending')
+  @Roles('ADMIN', 'MAIN_ADMIN', 'AGENT')
+  findPending() {
+    return this.bookingsService.findPendingForApproval();
+  }
+
+  @Patch(':id/status')
+  @Roles('ADMIN', 'MAIN_ADMIN', 'AGENT')
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
+    return this.bookingsService.updateStatus(id, dto);
+  }
+
+  @Patch(':id/assign/:agentId')
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  assignAgent(
+    @Param('id') bookingId: string,
+    @Param('agentId') agentId: string,
+  ) {
+    return this.bookingsService.assignAgent(bookingId, agentId);
+  }
+
+  @Patch(':id/cancel')
+  cancel(@Param('id') id: string, @Req() req) {
+    return this.bookingsService.cancel(req.user.id, id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookingService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingService.update(+id, updateBookingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.bookingService.remove(+id);
+  getOne(@Param('id') id: string) {
+    return this.bookingsService.findById(id);
   }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   Body,
   Controller,
@@ -12,8 +14,10 @@ import {
 import { RolesGuard } from 'src/commons/guards/roles.guard';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdatePasswordDto } from './dto/update-admin.dto';
 import { LoginAdminDto } from './dto/login-admin.tdo';
+import { UpdatePasswordDto } from './dto/update-admin.dto';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { CreateAgentDto } from './dto/create-agent.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -22,6 +26,24 @@ export class AdminController {
   @Post('login')
   login(@Body() dto: LoginAdminDto) {
     return this.adminService.login(dto);
+  }
+
+  @Post('agent')
+  @UseGuards(JwtAuthGuard)
+  createAgent(@Body() dto: CreateAgentDto, @Req() req) {
+    return this.adminService.createAgent(dto, req.user.id);
+  }
+
+  @Get('agents')
+  @UseGuards(JwtAuthGuard)
+  getAgents() {
+    return this.adminService.getAgents();
+  }
+
+  @Patch('agent/:id/status')
+  @UseGuards(JwtAuthGuard)
+  toggleAgent(@Param('id') id: string, @Body() body: { active: boolean }) {
+    return this.adminService.toggleAgentStatus(id, body.active);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -1,26 +1,66 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import bcrypt from 'bcryptjs/umd/types';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ReviewDto } from './dto/review.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private prisma: PrismaService) {}
+
+  async getMe(userId: string) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        phone: true,
+        profilePhoto: true,
+        createdAt: true,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async updateMe(userId: string, dto: UpdateUserDto) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: dto,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async changePassword(userId: string, dto: ChangePasswordDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const valid = await bcrypt.compare(dto.oldPassword, user.password);
+    if (!valid) throw new ForbiddenException('Old password incorrect');
+
+    const hashed = await bcrypt.hash(dto.newPassword, 10);
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async getRentalHistory(userId: string) {
+    return this.prisma.booking.findMany({
+      where: { userId },
+      include: { vehicle: true },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async leaveReview(userId: string, dto: ReviewDto) {
+    return this.prisma.review.create({
+      data: {
+        ...dto,
+        userId,
+      },
+    });
+  }
+
+  async getMyReviews(userId: string) {
+    return this.prisma.review.findMany({
+      where: { userId },
+      include: { vehicle: true },
+    });
   }
 }

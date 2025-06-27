@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Roles } from 'src/commons/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/commons/guards/roles.guard';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ReviewDto } from './dto/review.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserService } from './user.service';
 
-@Controller('user')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('USER')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Get('me')
+  getProfile(@Req() req) {
+    return this.userService.getMe(req.user.id);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
+  @Patch('me')
+  updateProfile(@Req() req, @Body() dto: UpdateUserDto) {
+    return this.userService.updateMe(req.user.id, dto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Patch('change-password')
+  changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
+    return this.userService.changePassword(req.user.id, dto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Get('me/bookings')
+  getMyBookings(@Req() req) {
+    return this.userService.getRentalHistory(req.user.id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Post('reviews')
+  leaveReview(@Req() req, @Body() dto: ReviewDto) {
+    return this.userService.leaveReview(req.user.id, dto);
+  }
+
+  @Get('reviews')
+  getReviews(@Req() req) {
+    return this.userService.getMyReviews(req.user.id);
   }
 }

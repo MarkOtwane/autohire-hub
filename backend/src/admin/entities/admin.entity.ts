@@ -1,8 +1,12 @@
+import { PasswordResetToken, Role } from 'generated/prisma';
+
 export class AdminEntity {
   id: string;
   email: string;
-  name: string;
-  isMain: boolean;
+  password: string;
+  role: Role;
+  isMainAdmin: boolean;
   createdAt: Date;
-  updatedAt: Date;
+  resetTokens: PasswordResetToken[];
+  notifications: Notification[];
 }

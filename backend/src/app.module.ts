@@ -13,6 +13,7 @@ import { SupportModule } from './support/support.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { PasswordResetModule } from './password-reset/password-reset.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PrismaModule } from './prisma/prisma.module';
     MetricsModule,
     AuditModule,
     PrismaModule,
+    PasswordResetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

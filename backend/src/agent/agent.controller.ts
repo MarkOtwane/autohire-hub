@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
 import { AgentService } from './agent.service';
-import { CreateAgentDto } from './dto/create-agent.dto';
-import { UpdateAgentDto } from './dto/update-agent.dto';
+import { LoginAgentDto } from './dto/login-agent.dto';
+import { ReportIssueDto } from './dto/report-issue.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('agent')
 export class AgentController {
   constructor(private readonly agentService: AgentService) {}
 
-  @Post()
-  create(@Body() createAgentDto: CreateAgentDto) {
-    return this.agentService.create(createAgentDto);
+  @Post('login')
+  @UseGuards()
+  login(@Body() dto: LoginAgentDto) {
+    return this.agentService.login(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.agentService.findAll();
+  @Get('bookings')
+  getMyBookings(@Req() req) {
+    return this.agentService.getMyBookings(req.user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.agentService.findOne(+id);
+  @Patch('bookings/:id/status')
+  updateStatus(
+    @Param('id') bookingId: string,
+    @Body() dto: UpdateStatusDto,
+    @Req() req,
+  ) {
+    return this.agentService.updateBookingStatus(bookingId, dto, req.user.id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAgentDto: UpdateAgentDto) {
-    return this.agentService.update(+id, updateAgentDto);
+  @Post('issues')
+  report(@Req() req, @Body() dto: ReportIssueDto) {
+    return this.agentService.reportIssue(req.user.id, dto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.agentService.remove(+id);
+  @Get('stats')
+  getStats(@Req() req) {
+    return this.agentService.getStats(req.user.id);
   }
 }

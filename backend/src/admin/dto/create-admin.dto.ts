@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsEmail, IsString, MinLength } from 'class-validator';
 
 export class CreateAdminDto {
   @IsEmail()
@@ -8,4 +8,7 @@ export class CreateAdminDto {
   @IsString()
   @MinLength(8)
   password: string;
+
+  @IsBoolean()
+  isMainAdmin: boolean;
 }

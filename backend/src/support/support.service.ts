@@ -1,26 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSupportDto } from './dto/create-support.dto';
-import { UpdateSupportDto } from './dto/update-support.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { RespondTicketDto } from './dto/response-ticket.dto';
 
 @Injectable()
 export class SupportService {
-  create(createSupportDto: CreateSupportDto) {
-    return 'This action adds a new support';
+  constructor(private prisma: PrismaService) {}
+
+  async create(userId: string, dto: CreateTicketDto) {
+    return this.prisma.supportTicket.create({
+      data: {
+        userId,
+        ...dto,
+        status: 'OPEN',
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all support`;
+  async getMyTickets(userId: string) {
+    return this.prisma.supportTicket.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} support`;
+  async getAllTickets() {
+    return this.prisma.supportTicket.findMany({
+      include: { user: true },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
-  update(id: number, updateSupportDto: UpdateSupportDto) {
-    return `This action updates a #${id} support`;
+  async respond(ticketId: string, dto: RespondTicketDto) {
+    return this.prisma.supportTicket.update({
+      where: { id: ticketId },
+      data: {
+        response: dto.response,
+        status: 'RESOLVED',
+        resolvedAt: new Date(),
+      },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} support`;
+  async updateStatus(ticketId: string, status: string) {
+    return this.prisma.supportTicket.update({
+      where: { id: ticketId },
+      data: {
+        status,
+        resolvedAt: status === 'RESOLVED' ? new Date() : null,
+      },
+    });
   }
 }

@@ -1,26 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
-import { UpdateBookingDto } from './dto/update-booking.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
 
 @Injectable()
-export class BookingService {
-  create(createBookingDto: CreateBookingDto) {
-    return 'This action adds a new booking';
+export class BookingsService {
+  constructor(private prisma: PrismaService) {}
+
+  async create(userId: string, dto: CreateBookingDto) {
+    return this.prisma.booking.create({
+      data: {
+        ...dto,
+        userId,
+        status: 'PENDING',
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all booking`;
+  async findMine(userId: string) {
+    return this.prisma.booking.findMany({
+      where: { userId },
+      include: { vehicle: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
+  async findById(id: string) {
+    return this.prisma.booking.findUnique({
+      where: { id },
+      include: { vehicle: true, agent: true, payment: true },
+    });
   }
 
-  update(id: number, updateBookingDto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
+  async cancel(userId: string, bookingId: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+    });
+    if (booking?.userId !== userId) throw new ForbiddenException();
+    return this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: 'CANCELLED' },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} booking`;
+  async updateStatus(bookingId: string, dto: UpdateStatusDto) {
+    return this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: dto.status },
+    });
+  }
+
+  async findPendingForApproval() {
+    return this.prisma.booking.findMany({
+      where: { status: 'PENDING' },
+      include: { user: true, vehicle: true },
+    });
+  }
+
+  async assignAgent(bookingId: string, agentId: string) {
+    return this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { agentId },
+    });
   }
 }

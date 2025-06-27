@@ -1,34 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Roles } from 'src/commons/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/commons/guards/roles.guard';
 import { MetricsService } from './metrics.service';
-import { CreateMetricDto } from './dto/create-metric.dto';
-import { UpdateMetricDto } from './dto/update-metric.dto';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('metrics')
-export class MetricsController {
+export class DashboardController {
   constructor(private readonly metricsService: MetricsService) {}
 
-  @Post()
-  create(@Body() createMetricDto: CreateMetricDto) {
-    return this.metricsService.create(createMetricDto);
+  @Get('user')
+  @Roles('USER')
+  getUser(@Req() req) {
+    return this.metricsService.getUserMetrics(req.user.id);
   }
 
-  @Get()
-  findAll() {
-    return this.metricsService.findAll();
+  @Get('agent')
+  @Roles('AGENT')
+  getAgent(@Req() req) {
+    return this.metricsService.getAgentMetrics(req.user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.metricsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMetricDto: UpdateMetricDto) {
-    return this.metricsService.update(+id, updateMetricDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.metricsService.remove(+id);
+  @Get('admin')
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  getAdmin() {
+    return this.metricsService.getAdminDashboard();
   }
 }

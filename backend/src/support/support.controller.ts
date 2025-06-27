@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { Roles } from 'src/commons/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/commons/guards/roles.guard';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { RespondTicketDto } from './dto/response-ticket.dto';
+import { UpdateStatusDto } from './dto/update-status.dto';
 import { SupportService } from './support.service';
-import { CreateSupportDto } from './dto/create-support.dto';
-import { UpdateSupportDto } from './dto/update-support.dto';
 
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('support')
 export class SupportController {
   constructor(private readonly supportService: SupportService) {}
 
   @Post()
-  create(@Body() createSupportDto: CreateSupportDto) {
-    return this.supportService.create(createSupportDto);
+  @Roles('USER')
+  create(@Body() dto: CreateTicketDto, @Req() req) {
+    return this.supportService.create(req.user.id, dto);
+  }
+
+  @Get('mine')
+  @Roles('USER')
+  getMine(@Req() req) {
+    return this.supportService.getMyTickets(req.user.id);
   }
 
   @Get()
-  findAll() {
-    return this.supportService.findAll();
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  getAll() {
+    return this.supportService.getAllTickets();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.supportService.findOne(+id);
+  @Patch(':id/respond')
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  respond(@Param('id') id: string, @Body() dto: RespondTicketDto) {
+    return this.supportService.respond(id, dto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSupportDto: UpdateSupportDto) {
-    return this.supportService.update(+id, updateSupportDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.supportService.remove(+id);
+  @Patch(':id/status')
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
+    return this.supportService.updateStatus(id, dto.status);
   }
 }
