@@ -1,11 +1,24 @@
-import { IsOptional, IsEnum, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
 
-// Define VehicleCategory enum locally if not exported from @prisma/client
 export enum VehicleCategory {
   SEDAN = 'SEDAN',
   SUV = 'SUV',
   HATCHBACK = 'HATCHBACK',
   // Add other categories as needed
+}
+
+export enum FuelType {
+  PETROL = 'PETROL',
+  DIESEL = 'DIESEL',
+  ELECTRIC = 'ELECTRIC',
+  // Add other fuel types as needed
+}
+export class CreateVehicleDto {
+  @IsEnum(VehicleCategory)
+  category: string;
+
+  @IsEnum(FuelType)
+  fuelType: FuelType;
 }
 
 export class SearchVehicleDto {

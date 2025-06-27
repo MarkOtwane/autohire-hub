@@ -7,13 +7,13 @@ import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
 import { BookingModule } from './booking/booking.module';
 import { MetricsModule } from './metrics/metrics.module';
-import { NotificationModule } from './notification/notification.module';
-import { PaymentModule } from './payment/payment.module';
+import { NotificationsModule } from './notification/notification.module';
+import { PasswordResetModule } from './password-reset/password-reset.module';
+import { PaymentsModule } from './payment/payment.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { SupportModule } from './support/support.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
-import { PrismaModule } from './prisma/prisma.module';
-import { PasswordResetModule } from './password-reset/password-reset.module';
 
 @Module({
   imports: [
@@ -23,8 +23,8 @@ import { PasswordResetModule } from './password-reset/password-reset.module';
     VehiclesModule,
     AuthModule,
     BookingModule,
-    PaymentModule,
-    NotificationModule,
+    PaymentsModule,
+    NotificationsModule,
     SupportModule,
     MetricsModule,
     AuditModule,

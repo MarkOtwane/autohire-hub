@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
+import { AuthUser } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -10,34 +11,50 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string) {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<AuthUser | null> {
     // Try Admin
-    let user = await this.prisma.admin.findUnique({ where: { email } });
-    if (!user) {
-      user = await this.prisma.agent.findUnique({ where: { email } });
+    const admini = await this.prisma.admin.findUnique({
+      where: { email },
+    });
+    if (admini) {
+      const valid = await bcrypt.compare(password, admini.password);
+      if (!valid) return null;
+      return {
+        id: admini.id,
+        email: admini.email,
+        role: admini.role || 'ADMIN',
+      };
     }
-    if (!user) {
-      user = await this.prisma.user.findUnique({ where: { email } });
+
+    // Try Agent
+    const agents = await this.prisma.agent.findUnique({ where: { email } });
+    if (agents) {
+      const valid = await bcrypt.compare(password, agents.password);
+      if (!valid) return null;
+      return {
+        id: agents.id,
+        email: agents.email,
+        role: 'AGENT',
+      };
     }
-    if (!user) return null;
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return null;
+    // Try User
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (user) {
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) return null;
+      return { id: user.id, email: user.email, role: user.role || 'USER' };
+    }
 
-    return { id: user.id, email: user.email, role: user.role || 'AGENT' };
+    return null;
   }
-
-  async login(user: { id: string; email: string; role: string }) {
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    const token = await this.jwtService.signAsync(payload);
-
+  async login(user: AuthUser) {
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
-      access_token: token,
+      access_token: await this.jwtService.signAsync(payload),
       user,
     };
   }

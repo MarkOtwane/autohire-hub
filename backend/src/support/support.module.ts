@@ -1,7 +1,7 @@
-import Module from 'module';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Module } from '@nestjs/common';
 import { SupportController } from './support.controller';
 import { SupportService } from './support.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Module({
   controllers: [SupportController],

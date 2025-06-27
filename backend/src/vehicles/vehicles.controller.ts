@@ -14,6 +14,7 @@ import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { SearchVehicleDto } from './dto/search-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 import { VehiclesService } from './vehicles.service';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
 
 @Controller('vehicles')
 export class VehiclesController {

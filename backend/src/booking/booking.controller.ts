@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   Body,
   Controller,
@@ -12,6 +14,7 @@ import { Roles } from 'src/commons/decorators/roles.decorator';
 import { BookingsService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
+import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('bookings')

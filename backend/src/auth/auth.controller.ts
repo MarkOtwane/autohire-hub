@@ -15,7 +15,7 @@ export class AuthController {
 
   @Post('admin/login')
   async adminLogin(@Body() dto: LoginDto) {
-    const admin = await this.authService.validateAdmin(dto.email, dto.password);
+    const admin = await this.authService.validateUser(dto.email, dto.password);
     if (!admin) throw new UnauthorizedException('Invalid admin credentials');
     return this.authService.login(admin);
   }
