@@ -38,7 +38,6 @@ export class AdminService {
     }
 
     if (!creator?.isMainAdmin) {
-      // Changed from isMain to isMainAdmin
       throw new ForbiddenException(
         'Only the main admin can create other admins',
       );

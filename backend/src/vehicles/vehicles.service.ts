@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
+import { FuelType } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { SearchVehicleDto } from './dto/search-vehicle.dto';
@@ -14,7 +15,7 @@ export class VehiclesService {
       data: {
         ...dto,
         category: dto.category as any,
-        fuelType: dto.category as any,
+        fuelType: FuelType[dto.fuelType],
       },
     });
   }
@@ -28,14 +29,9 @@ export class VehiclesService {
   }
 
   async update(id: string, dto: UpdateVehicleDto) {
-    const { category, fuelType, ...rest } = dto;
     return this.prisma.vehicle.update({
       where: { id },
-      data: {
-        ...rest,
-        ...(category !== undefined && { category: { set: category } }),
-        ...(fuelType !== undefined && { fuelType: { set: fuelType } }),
-      },
+      data: dto,
     });
   }
 

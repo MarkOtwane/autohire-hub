@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt'; // ✅ Add this
+import { JwtModule } from '@nestjs/jwt';
 import { NotificationsModule } from 'src/notification/notification.module';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { AuditModule } from '../audit/audit.module'; // if you have one
+import { AuditModule } from '../audit/audit.module';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 
