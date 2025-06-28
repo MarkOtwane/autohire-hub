@@ -98,7 +98,7 @@ export class AdminService {
       metadata: {},
     });
 
-    return { message: 'Password updated successfully' };
+    return { message: 'Password updated successfully' }; //changing password
   }
 
   async getAllAdmins(requesterId: string) {
