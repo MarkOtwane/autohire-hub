@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -164,13 +165,15 @@ export class AdminService {
   }
 
   async getProfile(adminId: string) {
-    const admin = await this.prisma.admin.findUnique({
+    if (!adminId) throw new BadRequestException('Admin ID is required');
+
+    return this.prisma.admin.findUnique({
       where: { id: adminId },
       select: {
         id: true,
         email: true,
         role: true,
-        isMainAdmin: true, // Changed from isMain to isMainAdmin
+        isMainAdmin: true,
         createdAt: true,
         notifications: {
           where: { isRead: false },
@@ -179,9 +182,6 @@ export class AdminService {
         },
       },
     });
-
-    if (!admin) throw new NotFoundException('Admin not found');
-    return admin;
   }
 
   async deleteAdmin(id: string, requesterId: string) {
@@ -215,6 +215,22 @@ export class AdminService {
 
     return this.prisma.admin.delete({ where: { id } });
   }
+
+  // async createAgent(dto: CreateAgentDto) {
+  //   const exists = await this.prisma.agent.findUnique({
+  //     where: { email: dto.email },
+  //   });
+  //   if (exists) throw new ConflictException('Agent already exists');
+
+  //   const hashed = await bcrypt.hash(dto.password, 10);
+
+  //   return this.prisma.agent.create({
+  //     data: {
+  //       email: dto.email,
+  //       password: hashed,
+  //     },
+  //   });
+  // }
 
   async createAgent(dto: CreateAgentDto, adminId: string) {
     const existingAgent = await this.prisma.agent.findUnique({

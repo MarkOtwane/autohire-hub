@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -29,13 +34,34 @@ export class UserService {
     });
   }
 
+  // async changePassword(userId: string, dto: ChangePasswordDto) {
+  //   const user = await this.prisma.user.findUnique({ where: { id: userId } });
+  //   if (!user) throw new ForbiddenException('User not found'); // Add this line
+  //   const valid = await bcrypt.compare(dto.oldPassword, user.password);
+  //   if (!valid) throw new ForbiddenException('Old password incorrect');
+
+  //   const hashed = await bcrypt.hash(dto.newPassword, 10);
+  //   return this.prisma.user.update({
+  //     where: { id: userId },
+  //     data: { password: hashed },
+  //   });
+  // }
+
   async changePassword(userId: string, dto: ChangePasswordDto) {
+    console.log('🟡 changePassword called for:', userId); // Debug log
+
+    if (!userId) throw new BadRequestException('Missing user ID');
+
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new ForbiddenException('User not found'); // Add this line
+    console.log('🟣 user fetched:', user);
+
+    if (!user) throw new NotFoundException('User not found');
+
     const valid = await bcrypt.compare(dto.oldPassword, user.password);
-    if (!valid) throw new ForbiddenException('Old password incorrect');
+    if (!valid) throw new ForbiddenException('Old password is incorrect');
 
     const hashed = await bcrypt.hash(dto.newPassword, 10);
+
     return this.prisma.user.update({
       where: { id: userId },
       data: { password: hashed },

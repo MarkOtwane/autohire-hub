@@ -20,7 +20,11 @@ export class BookingsService {
   async findMine(userId: string) {
     return this.prisma.booking.findMany({
       where: { userId },
-      include: { vehicle: true },
+      include: {
+        vehicle: true,
+        payment: true,
+        agent: true,
+      },
     });
   }
 

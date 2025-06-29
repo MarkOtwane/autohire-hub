@@ -34,7 +34,10 @@ export class UserController {
   }
 
   @Patch('change-password')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('USER')
   changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
+    console.log('🧾 req.user:', req.user); // Debug log
     return this.userService.changePassword(req.user.id, dto);
   }
 

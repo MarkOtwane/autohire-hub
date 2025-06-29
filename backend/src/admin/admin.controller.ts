@@ -12,12 +12,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RolesGuard } from 'src/commons/guards/roles.guard';
+import { Roles } from '../commons/decorators/roles.decorator';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { CreateAgentDto } from './dto/create-agent.dto';
 import { LoginAdminDto } from './dto/login-admin.tdo';
 import { UpdatePasswordDto } from './dto/update-admin.dto';
-import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
-import { CreateAgentDto } from './dto/create-agent.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -28,10 +29,11 @@ export class AdminController {
     return this.adminService.login(dto);
   }
 
-  @Post('agent')
-  @UseGuards(JwtAuthGuard)
+  @Post('agents')
+  @Roles('MAIN_ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   createAgent(@Body() dto: CreateAgentDto, @Req() req) {
-    return this.adminService.createAgent(dto, req.user.id);
+    return this.adminService.createAgent(dto, req.user.sub);
   }
 
   @Get('agents')
@@ -69,10 +71,10 @@ export class AdminController {
   getAll(@Req() req) {
     return this.adminService.getAllAdmins(req.user.sub); // Changed req.user.id to req.user.sub
   }
-
-  @UseGuards(JwtAuthGuard)
   @Get('me')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   getProfile(@Req() req) {
-    return this.adminService.getProfile(req.user.sub); // Changed req.user.id to req.user.sub
+    return this.adminService.getProfile(req.user.id); // ✅ Pass user.id from decoded JWT
   }
 }

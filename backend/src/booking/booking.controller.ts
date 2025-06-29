@@ -10,13 +10,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from 'src/commons/decorators/roles.decorator';
+import { Roles } from '../commons/decorators/roles.decorator';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
+import { RolesGuard } from '../commons/guards/roles.guard';
 import { BookingsService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
-import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('bookings')
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
@@ -27,6 +28,7 @@ export class BookingsController {
   }
 
   @Get('mine')
+  @Roles('USER')
   findMine(@Req() req) {
     return this.bookingsService.findMine(req.user.id);
   }
