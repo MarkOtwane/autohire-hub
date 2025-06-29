@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 
@@ -33,6 +34,14 @@ export class NotificationsService {
         url: resetUrl,
         expirationMinutes: 15,
       },
+    });
+  }
+
+  async testEmail(email: string) {
+    return this.mailerService.sendMail({
+      to: email,
+      subject: '🚀 Test Email from CarRental App',
+      html: `<h1>Welcome!</h1><p>This is a test email from your backend.</p>`,
     });
   }
 

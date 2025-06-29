@@ -14,6 +14,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { SupportModule } from './support/support.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -30,6 +31,9 @@ import { VehiclesModule } from './vehicles/vehicles.module';
     AuditModule,
     PrismaModule,
     PasswordResetModule,
+    ConfigModule.forRoot({
+      isGlobal: true, // ✅ this ensures .env variables are loaded everywhere
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

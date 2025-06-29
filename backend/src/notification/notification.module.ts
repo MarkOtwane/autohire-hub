@@ -3,6 +3,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { Module } from '@nestjs/common';
 import { join } from 'path';
 import { NotificationsService } from '../notification/notification.service';
+import { NotificationsController } from './notification.controller';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { NotificationsService } from '../notification/notification.service';
       transport: {
         host: process.env.MAIL_HOST,
         port: Number(process.env.MAIL_PORT),
+        secure: false, // Gmail requires STARTTLS
         auth: {
           user: process.env.MAIL_USER,
           pass: process.env.MAIL_PASS,
@@ -25,6 +27,7 @@ import { NotificationsService } from '../notification/notification.service';
       },
     }),
   ],
+  controllers: [NotificationsController], // ✅ must be here
   providers: [NotificationsService],
   exports: [NotificationsService],
 })
