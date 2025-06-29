@@ -1,3 +1,4 @@
+import { FuelType, VehicleCategory } from '@prisma/client';
 import {
   IsArray,
   IsEnum,
@@ -5,7 +6,6 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { FuelType, VehicleCategory } from 'generated/prisma';
 
 export class CreateVehicleDto {
   @IsEnum(VehicleCategory)

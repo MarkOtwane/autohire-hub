@@ -2,7 +2,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { join } from 'path';
-import { NotificationsService } from './notification.service';
+import { NotificationsService } from '../notification/notification.service';
 
 @Module({
   imports: [

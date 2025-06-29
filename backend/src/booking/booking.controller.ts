@@ -14,7 +14,7 @@ import { Roles } from 'src/commons/decorators/roles.decorator';
 import { BookingsService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
-import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('bookings')

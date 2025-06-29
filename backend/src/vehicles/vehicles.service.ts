@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
-import { FuelType } from 'generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { SearchVehicleDto } from './dto/search-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { FuelType } from '@prisma/client';
 
 @Injectable()
 export class VehiclesService {

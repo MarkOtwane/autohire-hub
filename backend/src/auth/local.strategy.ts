@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { AuthService } from './auth.service';
 import { Strategy } from 'passport-local';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {

@@ -10,9 +10,9 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from 'src/commons/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/commons/guards/roles.guard';
+import { Roles } from '../commons/decorators/roles.decorator';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
+import { RolesGuard } from '../commons/guards/roles.guard';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { RespondTicketDto } from './dto/response-ticket.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';

@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ReviewDto } from './dto/review.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

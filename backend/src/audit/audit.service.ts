@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
-import { Role } from 'generated/prisma';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Role } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AuditService {

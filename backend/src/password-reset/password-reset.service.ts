@@ -7,8 +7,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { NotificationsService } from 'src/notification/notification.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { NotificationsService } from '../notification/notification.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';

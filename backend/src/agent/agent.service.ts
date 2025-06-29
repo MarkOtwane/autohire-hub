@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
 import {
   BadRequestException,
   ForbiddenException,
@@ -11,9 +8,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { BookingStatus, Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
-import { BookingStatus, Role } from 'generated/prisma';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { LoginAgentDto } from './dto/login-agent.dto';
 import { ReportIssueDto } from './dto/report-issue.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';

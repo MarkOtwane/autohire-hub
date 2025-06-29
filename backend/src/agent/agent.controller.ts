@@ -10,7 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 import { AgentService } from './agent.service';
 import { LoginAgentDto } from './dto/login-agent.dto';
 import { ReportIssueDto } from './dto/report-issue.dto';

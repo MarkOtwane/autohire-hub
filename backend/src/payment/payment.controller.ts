@@ -10,8 +10,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from 'src/commons/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/commons/guards/jwt-auth.guard';
+import { Roles } from '../commons/decorators/roles.decorator';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FilterPaymentDto } from './dto/filter-payment.dto';
 import { PaymentsService } from './payment.service';
