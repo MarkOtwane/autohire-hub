@@ -1,0 +1,20 @@
+<h2>My Vehicle Bookings</h2>
+<table *ngIf="bookings.length > 0">
+  <thead>
+    <tr>
+      <th>Vehicle</th>
+      <th>Customer</th>
+      <th>Date</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let booking of bookings">
+      <td>{{ booking.vehicle.name }}</td>
+      <td>{{ booking.customer.name }}</td>
+      <td>{{ booking.date | date }}</td>
+      <td>{{ booking.status }}</td>
+    </tr>
+  </tbody>
+</table>
+<p *ngIf="bookings.length === 0">No bookings found.</p>

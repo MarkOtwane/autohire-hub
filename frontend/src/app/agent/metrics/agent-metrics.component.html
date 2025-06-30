@@ -1,0 +1,6 @@
+<h2>Performance Metrics</h2>
+<div *ngIf="metrics">
+  <p>Completed Bookings: {{ metrics.completed }}</p>
+  <p>Pending Bookings: {{ metrics.pending }}</p>
+  <p>Total Earnings: {{ metrics.earnings | currency }}</p>
+</div>

@@ -1,0 +1,28 @@
+ul {
+    list-style: none;
+    max-width: 600px;
+    margin: auto;
+    padding: 0;
+  
+    li {
+      background-color: #f7f7f7;
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+  
+      strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+      }
+  
+      p {
+        margin: 0.5rem 0;
+      }
+  
+      small {
+        color: #888;
+      }
+    }
+  }
+  

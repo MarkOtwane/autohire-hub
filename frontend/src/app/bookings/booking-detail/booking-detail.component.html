@@ -1,0 +1,8 @@
+<h2>Booking Detail</h2>
+<div *ngIf="booking">
+  <p><strong>Vehicle:</strong> {{ booking.vehicle.name }}</p>
+  <p><strong>Start:</strong> {{ booking.startDate | date }}</p>
+  <p><strong>End:</strong> {{ booking.endDate | date }}</p>
+  <p><strong>Status:</strong> {{ booking.status }}</p>
+  <p><strong>Note:</strong> {{ booking.note || 'N/A' }}</p>
+</div>

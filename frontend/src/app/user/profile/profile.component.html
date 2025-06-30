@@ -1,0 +1,24 @@
+<div class="profile-container">
+    <h2>Your Profile</h2>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="form-group">
+        <label>Name</label>
+        <input formControlName="name" type="text" />
+        <app-form-error [control]="form.get('name')!" />
+      </div>
+  
+      <div class="form-group">
+        <label>Email</label>
+        <input formControlName="email" type="email" />
+        <app-form-error [control]="form.get('email')!" />
+      </div>
+  
+      <div class="form-group">
+        <label>Phone</label>
+        <input formControlName="phone" type="text" />
+      </div>
+  
+      <button type="submit" [disabled]="loading">Save Changes</button>
+    </form>
+  </div>
+  

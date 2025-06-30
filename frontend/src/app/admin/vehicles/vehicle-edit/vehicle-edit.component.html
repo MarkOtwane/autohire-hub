@@ -1,0 +1,19 @@
+<div class="vehicle-edit">
+    <h2>Edit Vehicle</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label>Make</label>
+      <input formControlName="make" type="text" required />
+  
+      <label>Model</label>
+      <input formControlName="model" type="text" required />
+  
+      <label>Status</label>
+      <select formControlName="status">
+        <option value="AVAILABLE">Available</option>
+        <option value="RENTED">Rented</option>
+        <option value="MAINTENANCE">Maintenance</option>
+      </select>
+  
+      <button type="submit">Update Vehicle</button>
+    </form>
+  </div>

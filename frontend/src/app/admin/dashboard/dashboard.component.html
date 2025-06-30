@@ -1,0 +1,10 @@
+<h2>Admin Dashboard</h2>
+
+<div *ngIf="loading">Loading metrics...</div>
+
+<div class="grid" *ngIf="!loading">
+  <div class="card" *ngFor="let s of stats | keyvalue">
+    <h3>{{ s.key | titlecase }}</h3>
+    <p>{{ s.value }}</p>
+  </div>
+</div>

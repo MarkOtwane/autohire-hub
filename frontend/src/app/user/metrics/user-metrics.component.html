@@ -1,0 +1,5 @@
+<h2>Your Activity</h2>
+<div *ngIf="metrics">
+  <p>Total Bookings: {{ metrics.totalBookings }}</p>
+  <p>Total Spent: {{ metrics.totalSpent | currency }}</p>
+</div>

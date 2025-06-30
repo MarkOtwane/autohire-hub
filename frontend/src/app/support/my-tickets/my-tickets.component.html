@@ -1,0 +1,13 @@
+<h2>My Support Tickets</h2>
+
+<div *ngIf="tickets.length === 0">
+  <p>No support tickets submitted yet.</p>
+</div>
+
+<ul *ngIf="tickets.length > 0">
+  <li *ngFor="let t of tickets">
+    <strong>{{ t.subject }}</strong>
+    <p>{{ t.message }}</p>
+    <small>Status: {{ t.status }}</small>
+  </li>
+</ul>

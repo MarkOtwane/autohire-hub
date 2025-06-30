@@ -1,0 +1,14 @@
+<h2>Create Support Ticket</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label>Subject</label>
+  <input formControlName="subject" type="text" />
+  <app-form-error [control]="form.get('subject')!" />
+
+  <label>Message</label>
+  <textarea formControlName="message"></textarea>
+  <app-form-error [control]="form.get('message')!" />
+
+  <button type="submit" [disabled]="loading">
+    {{ loading ? 'Submitting...' : 'Submit Ticket' }}
+  </button>
+</form>

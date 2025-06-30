@@ -1,0 +1,47 @@
+h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    max-width: 600px;
+    margin: auto;
+  
+    li {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+  
+      &.unread {
+        background-color: #e8f0fe;
+      }
+  
+      strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+  
+      p {
+        margin: 0.5rem 0;
+      }
+  
+      small {
+        color: #777;
+      }
+  
+      button {
+        margin-top: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.85rem;
+      }
+    }
+  }
+  

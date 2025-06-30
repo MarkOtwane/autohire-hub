@@ -1,0 +1,8 @@
+<h2>My Bookings</h2>
+<div *ngIf="bookings.length === 0">You have no bookings yet.</div>
+<ul *ngIf="bookings.length > 0">
+  <li *ngFor="let booking of bookings">
+    <strong>{{ booking.vehicle.name }}</strong> - {{ booking.status }}
+    <a [routerLink]="['/bookings/detail', booking.id]">View Details</a>
+  </li>
+</ul>

@@ -1,0 +1,15 @@
+<h2>Create Booking</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label>Start Date</label>
+  <input type="date" formControlName="startDate" />
+
+  <label>End Date</label>
+  <input type="date" formControlName="endDate" />
+
+  <label>Note (Optional)</label>
+  <textarea formControlName="note"></textarea>
+
+  <button type="submit" [disabled]="loading">
+    {{ loading ? 'Booking...' : 'Book Vehicle' }}
+  </button>
+</form>

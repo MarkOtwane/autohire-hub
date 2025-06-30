@@ -1,0 +1,12 @@
+<h2>Dashboard Metrics</h2>
+
+<div *ngIf="loading">Loading...</div>
+
+<div *ngIf="!loading && metrics">
+  <div class="grid">
+    <div class="card" *ngFor="let stat of metrics | keyvalue">
+      <h3>{{ stat.key | titlecase }}</h3>
+      <p>{{ stat.value }}</p>
+    </div>
+  </div>
+</div>

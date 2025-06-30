@@ -1,0 +1,31 @@
+<h2>All Agents</h2>
+
+<div *ngIf="loading">Loading agents...</div>
+
+<table *ngIf="!loading && agents.length > 0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let agent of agents">
+      <td>{{ agent.id }}</td>
+      <td>{{ agent.name }}</td>
+      <td>{{ agent.email }}</td>
+      <td>{{ agent.status }}</td>
+      <td>
+        <button *ngIf="agent.status !== 'APPROVED'" (click)="approve(agent.id)">Approve</button>
+        <button *ngIf="agent.status !== 'SUSPENDED'" (click)="suspend(agent.id)">Suspend</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="!loading && agents.length === 0">
+  No agents found.
+</div>

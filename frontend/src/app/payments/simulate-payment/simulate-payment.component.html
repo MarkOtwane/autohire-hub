@@ -1,0 +1,26 @@
+<h2>Simulate Payment</h2>
+<form [formGroup]="form" (ngSubmit)="simulate()">
+  <div class="form-group">
+    <label>Payment Method</label>
+    <select formControlName="paymentMethod">
+      <option value="CARD">Card</option>
+      <option value="MPESA">M-Pesa</option>
+      <option value="BANK">Bank Transfer</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Amount</label>
+    <input type="number" formControlName="amount" />
+    <app-form-error [control]="form.get('amount')!" />
+  </div>
+
+  <div class="form-group">
+    <label>Reference (Optional)</label>
+    <input type="text" formControlName="reference" />
+  </div>
+
+  <button type="submit" [disabled]="loading">
+    {{ loading ? 'Processing...' : 'Simulate Payment' }}
+  </button>
+</form>

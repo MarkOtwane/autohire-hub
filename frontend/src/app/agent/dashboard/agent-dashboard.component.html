@@ -1,0 +1,6 @@
+<h2>Welcome, Agent</h2>
+<div *ngIf="dashboardData">
+  <p>Total Vehicles: {{ dashboardData.totalVehicles }}</p>
+  <p>Total Bookings: {{ dashboardData.totalBookings }}</p>
+  <p>Total Earnings: {{ dashboardData.totalEarnings | currency }}</p>
+</div>

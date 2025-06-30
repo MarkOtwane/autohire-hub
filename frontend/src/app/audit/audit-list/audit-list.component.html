@@ -1,0 +1,26 @@
+<h2>Audit Logs</h2>
+
+<div *ngIf="loading">Loading audit logs...</div>
+
+<table *ngIf="!loading && logs.length > 0">
+  <thead>
+    <tr>
+      <th>Timestamp</th>
+      <th>Action</th>
+      <th>Performed By</th>
+      <th>Target</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let log of logs">
+      <td>{{ log.timestamp | date:'short' }}</td>
+      <td>{{ log.action }}</td>
+      <td>{{ log.performedBy }}</td>
+      <td>{{ log.target }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="!loading && logs.length === 0">
+  No audit logs found.
+</div>
