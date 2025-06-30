@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-confirm-dialog',
   template: `
@@ -18,6 +20,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       }
     `,
   ],
+  imports: [CommonModule],
+  standalone: true,
 })
 export class ConfirmDialogComponent {
   @Input() visible: boolean = false;

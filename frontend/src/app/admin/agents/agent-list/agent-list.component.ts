@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { AgentService } from 'src/app/core/services/agent.service';
+import { AgentService } from '../../../core/services/agent.service';
 
 @Component({
   selector: 'app-agents-list',
-  templateUrl: './agents-list.component.html',
-  styleUrls: ['./agents-list.component.scss'],
+  templateUrl: './agent-list.component.html',
+  imports: [CommonModule],
 })
 export class AgentsListComponent implements OnInit {
   agents: any[] = [];

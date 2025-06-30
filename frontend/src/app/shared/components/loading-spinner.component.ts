@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -17,6 +18,7 @@ import { Component, Input } from '@angular/core';
       }
     `,
   ],
+  imports: [CommonModule],
 })
 export class LoadingSpinnerComponent {
   @Input() isLoading: boolean = false;

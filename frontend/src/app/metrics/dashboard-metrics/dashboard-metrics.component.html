@@ -5,7 +5,7 @@
 <div *ngIf="!loading && metrics">
   <div class="grid">
     <div class="card" *ngFor="let stat of metrics | keyvalue">
-      <h3>{{ stat.key | titlecase }}</h3>
+      <h3>{{ stat.key?.toString() | titlecase }}</h3>
       <p>{{ stat.value }}</p>
     </div>
   </div>

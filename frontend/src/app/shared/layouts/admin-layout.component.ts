@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
       <router-outlet></router-outlet>
     </div>
   `,
-  styleUrls: ['./admin-layout.component.scss'],
 })
 export class AdminLayoutComponent {}

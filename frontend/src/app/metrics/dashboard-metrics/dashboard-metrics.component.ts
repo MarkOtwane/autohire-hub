@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { MetricsService } from '../../core/services/metrics.service';
 
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-dashboard-metrics',
   templateUrl: './dashboard-metrics.component.html',
   styleUrls: ['./dashboard-metrics.component.scss'],
+  imports: [CommonModule]
 })
 export class DashboardMetricsComponent implements OnInit {
   metrics: any;

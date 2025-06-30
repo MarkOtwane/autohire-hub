@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { FormErrorComponent } from "../../shared/components/form-error.component";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
+  imports: [FormErrorComponent, ReactiveFormsModule],
 })
 export class RegisterComponent {
   form: FormGroup;

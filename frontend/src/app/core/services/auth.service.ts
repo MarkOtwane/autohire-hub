@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { TokenService } from './token.service';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { TokenService } from './token.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -39,8 +39,22 @@ export class AuthService {
   getUserId(): string {
     return this.tokenService.decodeToken()?.sub || '';
   }
+  forgotPassword(data: { email: string }): Observable<any> {
+    return this.http.post('/api/auth/forgot-password', data);
+  }
 
   getUserEmail(): string {
     return this.tokenService.decodeToken()?.email || '';
+  }
+  register(data: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }): Observable<any> {
+    return this.http.post('/api/auth/register', data);
+  }
+  resetPassword(data: { token: string; newPassword: string }): Observable<any> {
+    return this.http.post('/api/auth/reset-password', data);
   }
 }

@@ -1,10 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { BookingService } from 'src/app/core/services/booking.service';
+import { BookingService } from '../../../core/services/booking.service';
 
 @Component({
   selector: 'app-bookings-list',
-  templateUrl: './bookings-list.component.html',
-  styleUrls: ['./bookings-list.component.scss'],
+  templateUrl: './booking-list.component.html',
+  styleUrls: ['./booking-list.component.scss'],
+  imports: [CommonModule],
 })
 export class BookingsListComponent implements OnInit {
   bookings: any[] = [];

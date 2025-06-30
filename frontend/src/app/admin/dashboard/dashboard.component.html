@@ -4,7 +4,7 @@
 
 <div class="grid" *ngIf="!loading">
   <div class="card" *ngFor="let s of stats | keyvalue">
-    <h3>{{ s.key | titlecase }}</h3>
+    <h3>{{ s.key?.toString() | titlecase }}</h3>
     <p>{{ s.value }}</p>
   </div>
 </div>

@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { RouteModule } from "next/dist/server/route-modules/route-module";
 
 @Component({
   selector: 'app-user-layout',
@@ -6,5 +7,6 @@ import { Component } from "@angular/core";
     <app-user-navbar></app-user-navbar>
     <router-outlet></router-outlet>
   `,
+  
 })
 export class UserLayoutComponent {}

@@ -1,12 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { AgentsRoutingModule } from './agents-routing.module';
-import { SharedModule } from 'src/app/shared/shared.module';
-import { AgentsListComponent } from './agents-list/agents-list.component';
+import { SharedModule } from '../../shared/shared.module';
+import { AgentsRoutingModule } from './agent-routing';
 
 @NgModule({
-  declarations: [AgentsListComponent],
+  declarations: [],
   imports: [
     CommonModule,
     ReactiveFormsModule,

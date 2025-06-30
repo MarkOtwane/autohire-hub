@@ -6,12 +6,17 @@ import { TokenService } from '../../core/services/token.service';
 })
 export class HasRoleDirective {
   @Input() set appHasRole(allowedRoles: string[]) {
-    const user = this.tokenService.getUser();
-    const hasAccess = user && allowedRoles.includes(user.role);
+    const user = this.tokenService.getUser() as unknown as { role?: string } | null;
+    let hasAccess = false;
+    if (user && user.role) {
+      hasAccess = allowedRoles.includes(user.role);
+    }
 
-    hasAccess
-      ? this.viewContainer.createEmbeddedView(this.templateRef)
-      : this.viewContainer.clear();
+    if (hasAccess) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainer.clear();
+    }
   }
 
   constructor(

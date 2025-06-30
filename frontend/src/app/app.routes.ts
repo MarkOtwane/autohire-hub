@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 
-const routes: Routes = [
+export const routes: Routes = [
   // Redirect empty path to login or home
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
 

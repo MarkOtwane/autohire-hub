@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { VehicleService } from 'src/app/core/services/vehicle.service';
+import { VehicleService } from '../../../core/services/vehicle.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-vehicle-list',
-  templateUrl: './vehicle-list.component.html',
-  styleUrls: ['./vehicle-list.component.scss'],
+  templateUrl: './vehicles-list.component.html',
+  styleUrls: ['./vehicles-list.component.scss'],
+  imports: [CommonModule]
 })
 export class VehicleListComponent implements OnInit {
   vehicles: any[] = [];

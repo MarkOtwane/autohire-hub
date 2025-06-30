@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { FormErrorComponent } from "../../shared/components/form-error.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss'],
+  imports: [FormErrorComponent, CommonModule, ReactiveFormsModule],
 })
 export class ResetPasswordComponent {
   form: FormGroup;

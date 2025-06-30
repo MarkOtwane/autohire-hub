@@ -1,8 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'app-form-error',
+  standalone: true,
+  imports: [CommonModule],
   template: `
     <small class="error" *ngIf="control && control.errors && control.touched">
       <span *ngIf="control.errors['required']">This field is required</span>

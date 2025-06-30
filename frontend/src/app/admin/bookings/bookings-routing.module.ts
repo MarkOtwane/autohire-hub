@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BookingsListComponent } from './bookings-list/bookings-list.component';
-import { AuthGuard } from 'src/app/core/guards/auth.guard';
-import { RoleGuard } from 'src/app/core/guards/role.guard';
+import { AuthGuard } from '../../core/guards/auth.guard';
+import { RoleGuard } from '../../core/guards/role.guard';
+import { BookingsListComponent } from './booking-list/booking-list.component';
 
 const routes: Routes = [
   {

@@ -19,7 +19,7 @@ const routes: Routes = [
   {
     path: 'agents',
     loadChildren: () =>
-      import('./agents/agents.module').then((m) => m.AgentsModule),
+      import('./agents/agent.module').then((m) => m.AgentsModule),
   },
   {
     path: 'bookings',
@@ -29,17 +29,17 @@ const routes: Routes = [
   {
     path: 'audit',
     loadChildren: () =>
-      import('./audit/audit.module').then((m) => m.AuditModule),
+      import('../audit/audit.module').then((m) => m.AuditModule),
   },
   {
     path: 'metrics',
     loadChildren: () =>
-      import('./metrics/metrics.module').then((m) => m.MetricsModule),
+      import('../metrics/metrics.module').then((m) => m.MetricsModule),
   },
   {
     path: 'support',
     loadChildren: () =>
-      import('./support/support.module').then((m) => m.SupportModule),
+      import('../support/support.module').then((m) => m.SupportModule),
   },
 ];
 

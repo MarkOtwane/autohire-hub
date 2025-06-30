@@ -13,11 +13,11 @@ import { AgentLayoutComponent } from './layouts/agent-layout.component';
 import { UserLayoutComponent } from './layouts/user-layout.component';
 
 // Pipes
+import { AutofocusDirective } from './directives/autofocus.directive';
 import { HasRoleDirective } from './directives/has-role.directive';
 import { CapitalizePipe } from './pipes/capitalize.pipe';
 import { FormatDatePipe } from './pipes/format-date.pipe';
 import { TruncatePipe } from './pipes/truncate.pipe';
-import { AutofocusDirective } from './directives/autofocus.directive';
 
 // Directives
 @NgModule({
@@ -50,6 +50,8 @@ import { AutofocusDirective } from './directives/autofocus.directive';
     CapitalizePipe,
     HasRoleDirective,
     AutofocusDirective,
+    UserLayoutComponent,
+    AdminLayoutComponent,
   ],
 })
 export class SharedModule {}

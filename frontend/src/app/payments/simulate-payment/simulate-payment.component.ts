@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PaymentService } from '../../core/services/payment.service';
+import { FormErrorComponent } from "../../shared/components/form-error.component";
 
 @Component({
   selector: 'app-simulate-payment',
   templateUrl: './simulate-payment.component.html',
   styleUrls: ['./simulate-payment.component.scss'],
+  imports: [FormErrorComponent, ReactiveFormsModule],
 })
 export class SimulatePaymentComponent implements OnInit {
   form!: FormGroup;
