@@ -1,0 +1,238 @@
+/* src/app/components/vehicle-list/vehicle-list.component.css */
+
+/* Import Google Fonts - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+  line-height: 1.6;
+  background-color: #f8f8f8;
+  padding: 40px 0;
+}
+
+.vehicle-list-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2.8rem;
+  margin-bottom: 50px;
+  color: #333;
+  font-weight: 700;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: #ff5722;
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+.loading-message, .error-message, .no-vehicles-message {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 30px;
+  border-radius: 10px;
+  margin: 50px auto;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.loading-message {
+  background-color: #e0f7fa;
+  color: #00796b;
+}
+
+.error-message {
+  background-color: #ffe0b2;
+  color: #e65100;
+}
+
+.no-vehicles-message {
+  background-color: #f0f4c3;
+  color: #827717;
+}
+
+.loading-message i, .error-message i {
+  margin-right: 10px;
+}
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  justify-content: center;
+}
+
+.vehicle-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.vehicle-card img {
+  width: 100%;
+  height: 220px; /* Consistent image height */
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.card-content {
+  padding: 20px;
+  flex-grow: 1; /* Allows content to take available space */
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content h3 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #333;
+  font-weight: 600;
+}
+
+.card-content .category {
+  font-size: 0.9rem;
+  color: #ff5722;
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.card-content .description {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 15px;
+  flex-grow: 1; /* Push actions to bottom */
+}
+
+.price-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed #eee;
+}
+
+.price-info span:first-child {
+  color: #ff5722;
+}
+
+.details-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.details-row span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.details-row i {
+  color: #ff5722;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.features span {
+  background-color: #e0e0e0;
+  color: #555;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.features i {
+  color: #00796b; /* Green for checkmarks */
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto; /* Push buttons to the bottom */
+}
+
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  flex-grow: 1; /* Allow buttons to fill space */
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: #ff5722; /* Orange */
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #e64a19;
+}
+
+.btn-book {
+  background-color: #28a745; /* Green for booking */
+  color: white;
+}
+
+.btn-book:hover {
+  background-color: #218838;
+}
+
+/* Removed styles for btn-secondary and btn-delete as they are no longer used */
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .vehicle-list-container {
+    padding: 0 15px;
+  }
+
+  h2 {
+    font-size: 2.2rem;
+  }
+
+  .vehicle-grid {
+    grid-template-columns: 1fr; /* Single column on small screens */
+  }
+
+  .card-actions {
+    flex-direction: column; /* Stack buttons vertically */
+  }
+}

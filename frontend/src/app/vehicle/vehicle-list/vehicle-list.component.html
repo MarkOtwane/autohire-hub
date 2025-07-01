@@ -1,0 +1,49 @@
+<!-- src/app/components/vehicle-list/vehicle-list.component.html -->
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="vehicle-list-container">
+  <h2>Our Available Vehicles</h2>
+
+  <div *ngIf="loading" class="loading-message">
+    <i class="fas fa-spinner fa-spin"></i> Loading vehicles...
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <i class="fas fa-exclamation-circle"></i> {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && vehicles.length === 0" class="no-vehicles-message">
+    <p>No vehicles found. Perhaps add one?</p>
+  </div>
+
+  <div class="vehicle-grid" *ngIf="!loading && !error && vehicles.length > 0">
+    <div class="vehicle-card" *ngFor="let vehicle of vehicles">
+      <img [src]="vehicle.imageUrl || 'https://placehold.co/400x250/cccccc/000000?text=No+Image'" alt="{{ vehicle.name }}">
+      <div class="card-content">
+        <h3>{{ vehicle.name }}</h3>
+        <p class="category">{{ vehicle.category }}</p>
+        <p class="description">{{ vehicle.description }}</p>
+        <div class="price-info">
+          <span>${{ vehicle.pricePerDay | number:'1.2-2' }} / day</span>
+          <span>${{ vehicle.pricePerHour | number:'1.2-2' }} / hour</span>
+        </div>
+        <div class="details-row">
+          <span><i class="fas fa-map-marker-alt"></i> {{ vehicle.location }}</span>
+          <span><i class="fas fa-cogs"></i> {{ vehicle.transmission }}</span>
+          <span><i class="fas fa-gas-pump"></i> {{ vehicle.fuelType }}</span>
+        </div>
+        <div class="features">
+          <span *ngFor="let feature of vehicle.features"><i class="fas fa-check-circle"></i> {{ feature }}</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary" (click)="viewDetails(vehicle)">View Details</button>
+          <button class="btn btn-book" (click)="bookVehicle(vehicle)">Book Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

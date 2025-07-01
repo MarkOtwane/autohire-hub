@@ -8,11 +8,14 @@ export class BookingsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateBookingDto) {
+    // Line 11: The error occurs here
     return this.prisma.booking.create({
       data: {
-        ...dto,
-        userId,
-        status: 'PENDING',
+        userId: userId, // Assuming userId is correctly passed from req.user.id
+        vehicleId: dto.vehicleId, // This is the ID that's causing the foreign key violation
+        pickupDate: dto.pickupDate,
+        dropoffDate: dto.dropoffDate,
+        totalAmount: dto.totalAmount,
       },
     });
   }

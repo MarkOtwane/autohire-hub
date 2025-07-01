@@ -6,7 +6,6 @@ import { BookingsService } from './booking.service';
 @Module({
   controllers: [BookingsController],
   providers: [BookingsService, PrismaService],
+  exports: [BookingsService],
 })
 export class BookingsModule {}
-
-export class BookingModule {}

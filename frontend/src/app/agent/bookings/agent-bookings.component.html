@@ -1,20 +1,45 @@
-<h2>My Vehicle Bookings</h2>
-<table *ngIf="bookings.length > 0">
-  <thead>
-    <tr>
-      <th>Vehicle</th>
-      <th>Customer</th>
-      <th>Date</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let booking of bookings">
-      <td>{{ booking.vehicle.name }}</td>
-      <td>{{ booking.customer.name }}</td>
-      <td>{{ booking.date | date }}</td>
-      <td>{{ booking.status }}</td>
-    </tr>
-  </tbody>
-</table>
-<p *ngIf="bookings.length === 0">No bookings found.</p>
+<!-- src/app/agent/agent-bookings/agent-bookings.component.html -->
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="agent-bookings-container">
+  <h2>Agent Bookings</h2>
+
+  <div *ngIf="!bookings" class="loading-message">
+    <i class="fas fa-spinner fa-spin"></i> Loading bookings...
+  </div>
+
+  <div *ngIf="bookings" class="bookings-content">
+    <div *ngIf="bookings.length === 0" class="no-bookings-message">
+      <p>No bookings to display.</p>
+    </div>
+
+    <div *ngIf="bookings.length > 0" class="booking-grid">
+      <div class="booking-card" *ngFor="let booking of bookings">
+        <div class="card-header">
+          <h4>Booking ID: {{ booking.id?.substring(0, 8) || 'N/A' }}...</h4>
+          <span class="status {{ booking.status | lowercase }}">{{ booking.status }}</span>
+        </div>
+        <div class="card-body">
+          <p><strong>Vehicle:</strong> {{ booking.vehicle?.name || 'N/A' }}</p>
+          <p><strong>User:</strong> {{ booking.user?.email || 'N/A' }}</p>
+          <p><strong>Pickup Date:</strong> {{ booking.pickupDate | date:'medium' }}</p>
+          <p><strong>Dropoff Date:</strong> {{ booking.dropoffDate | date:'medium' }}</p>
+          <p><strong>Total Amount:</strong> ${{ booking.totalAmount | number:'1.2-2' }}</p>
+          <p *ngIf="booking.agentId"><strong>Assigned Agent:</strong> {{ booking.agentId?.substring(0, 8) || 'N/A' }}...</p>
+          <p *ngIf="booking.options"><strong>Options:</strong> {{ booking.options | json }}</p>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-view-details"><i class="fas fa-info-circle"></i> Details</button>
+          <button *ngIf="booking.status === 'PENDING'" class="btn btn-confirm"><i class="fas fa-check"></i> Confirm</button>
+          <button *ngIf="booking.status === 'PENDING'" class="btn btn-reject"><i class="fas fa-times"></i> Reject</button>
+          <button *ngIf="booking.status === 'CONFIRMED'" class="btn btn-complete"><i class="fas fa-car-alt"></i> Complete</button>
+          <button *ngIf="booking.status === 'CONFIRMED'" class="btn btn-cancel"><i class="fas fa-ban"></i> Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

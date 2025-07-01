@@ -1,0 +1,219 @@
+/* src/app/agent/agent-bookings/agent-bookings.component.css */
+
+/* Import Google Fonts - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  color: #333;
+  line-height: 1.6;
+  background-color: #f0f2f5; /* Consistent light background */
+  padding: 40px 0;
+}
+
+.agent-bookings-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 50px;
+  color: #2c3e50; /* Consistent main title color */
+  font-weight: 700;
+  position: relative;
+}
+
+h2::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 5px;
+  background-color: #ff5722; /* Consistent orange accent */
+  margin: 15px auto 0;
+  border-radius: 3px;
+}
+
+.loading-message, .no-bookings-message {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 30px;
+  border-radius: 10px;
+  margin: 50px auto;
+  max-width: 600px;
+  background-color: #e0f7fa;
+  color: #00796b;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.loading-message i {
+  margin-right: 10px;
+}
+
+.bookings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.booking-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+  justify-content: center;
+}
+
+.booking-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Push actions to bottom */
+}
+
+.booking-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.card-header h4 {
+  font-size: 1.4rem;
+  color: #34495e;
+  margin: 0;
+  font-weight: 600;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+}
+
+/* Status specific colors */
+.status.pending { background-color: #ffc107; color: #333; } /* Amber */
+.status.confirmed { background-color: #28a745; } /* Green */
+.status.cancelled { background-color: #dc3545; } /* Red */
+.status.completed { background-color: #007bff; } /* Blue */
+.status.rejected { background-color: #6c757d; } /* Grey */
+
+
+.card-body p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.card-body p strong {
+  color: #444;
+}
+
+.card-actions {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+.btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-view-details {
+  background-color: #3498db; /* Blue */
+  color: white;
+}
+
+.btn-view-details:hover {
+  background-color: #2980b9;
+}
+
+.btn-confirm {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+
+.btn-confirm:hover {
+  background-color: #218838;
+}
+
+.btn-reject {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+
+.btn-reject:hover {
+  background-color: #c82333;
+}
+
+.btn-complete {
+  background-color: #17a2b8; /* Teal */
+  color: white;
+}
+
+.btn-complete:hover {
+  background-color: #138496;
+}
+
+.btn-cancel {
+  background-color: #6c757d; /* Dark Grey */
+  color: white;
+}
+
+.btn-cancel:hover {
+  background-color: #5a6268;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  .booking-grid {
+    grid-template-columns: 1fr; /* Stack columns on small screens */
+  }
+
+  .booking-card {
+    padding: 20px;
+  }
+
+  .card-actions {
+    flex-direction: column; /* Stack buttons vertically */
+    justify-content: flex-start; /* Align stacked buttons to left */
+  }
+
+  .btn {
+    width: 100%; /* Full width buttons when stacked */
+  }
+}

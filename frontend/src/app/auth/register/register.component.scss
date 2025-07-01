@@ -1,82 +1,137 @@
+/* src/app/auth/register/register.component.css */
+
+/* Basic styling for the container to center the form */
 .register-container {
-    max-width: 400px;
-    margin: 3rem auto;
-    padding: 2rem;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-  
-    h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: #333;
-    }
-  
-    form {
-      display: flex;
-      flex-direction: column;
-  
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 1.25rem;
-  
-        label {
-          font-weight: 500;
-          margin-bottom: 0.5rem;
-          color: #444;
-        }
-  
-        input,
-        select {
-          padding: 0.6rem 0.75rem;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          font-size: 1rem;
-  
-          &:focus {
-            border-color: #007bff;
-            outline: none;
-          }
-        }
-      }
-  
-      button {
-        padding: 0.75rem;
-        font-size: 1rem;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in;
-  
-        &:hover {
-          background-color: #0056b3;
-        }
-  
-        &:disabled {
-          background-color: #aaa;
-          cursor: not-allowed;
-        }
-      }
-  
-      .form-footer {
-        text-align: center;
-        margin-top: 1.5rem;
-        font-size: 0.9rem;
-        color: #555;
-  
-        a {
-          color: #007bff;
-          text-decoration: none;
-  
-          &:hover {
-            text-decoration: underline;
-          }
-        }
-      }
-    }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh; /* Full viewport height */
+  background-color: #f0f2f5; /* Light background */
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif; /* Consistent font */
+}
+
+/* Form styling */
+.register-container form {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px; /* Max width for the form */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between form groups */
+}
+
+.register-container h2 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 0.95rem;
+  color: #34495e;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #ff5722; /* Orange focus */
+  box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.2);
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+/* Submit button styling */
+.register-container button[type="submit"] {
+  background-color: #ff5722; /* Orange */
+  color: white;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+  margin-top: 10px;
+}
+
+.register-container button[type="submit"]:hover:not([disabled]) {
+  background-color: #e64a19; /* Darker orange on hover */
+}
+
+.register-container button[type="submit"]:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Form footer for links */
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.form-footer p {
+  margin-bottom: 8px;
+}
+
+.form-footer a {
+  color: #ff5722; /* Orange link color */
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.form-footer a:hover {
+  color: #e64a19;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 500px) {
+  .register-container form {
+    padding: 25px;
+    margin: 0 10px; /* Add some margin on very small screens */
   }
-  
+
+  .register-container h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .register-container button[type="submit"] {
+    font-size: 0.95rem;
+    padding: 10px 12px;
+  }
+}

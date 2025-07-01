@@ -1,6 +1,48 @@
-<h2>Performance Metrics</h2>
-<div *ngIf="metrics">
-  <p>Completed Bookings: {{ metrics.completed }}</p>
-  <p>Pending Bookings: {{ metrics.pending }}</p>
-  <p>Total Earnings: {{ metrics.earnings | currency }}</p>
+<!-- src/app/agent/agent-metrics/agent-metrics.component.html -->
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="agent-metrics-container">
+  <h2>Agent Metrics</h2>
+
+  <div *ngIf="!metrics" class="loading-message">
+    <i class="fas fa-spinner fa-spin"></i> Loading agent metrics...
+  </div>
+
+  <div *ngIf="metrics" class="metrics-content">
+    <section class="summary-cards-section">
+      <h3>Performance Overview</h3>
+      <div class="summary-cards-grid">
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-clipboard-list"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ metrics.bookingsHandled || 0 }}</span>
+            <span class="card-label">Bookings Handled</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-undo-alt"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ metrics.vehiclesReturned || 0 }}</span>
+            <span class="card-label">Vehicles Returned</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-exclamation-circle"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ metrics.issuesReported || 0 }}</span>
+            <span class="card-label">Issues Reported</span>
+          </div>
+        </div>
+        <!-- Add more metric cards if your AgentMetric model expands -->
+      </div>
+    </section>
+
+    <!-- You can add more sections here if your agent metrics become more complex,
+         e.g., charts, historical data, etc. -->
+
+  </div>
 </div>

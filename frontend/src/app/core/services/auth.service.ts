@@ -7,7 +7,7 @@ import { TokenService } from './token.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = '/api/auth'; // adjust to match proxy config
+  private baseUrl = 'http://localhost:3000/auth'; // adjust to match proxy config
 
   constructor(
     private http: HttpClient,
@@ -25,7 +25,7 @@ export class AuthService {
 
   logout() {
     this.tokenService.clearToken();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['../../auth/login']);
   }
 
   isLoggedIn(): boolean {
@@ -40,7 +40,7 @@ export class AuthService {
     return this.tokenService.decodeToken()?.sub || '';
   }
   forgotPassword(data: { email: string }): Observable<any> {
-    return this.http.post('/api/auth/forgot-password', data);
+    return this.http.post('../../auth/forgot-password', data);
   }
 
   getUserEmail(): string {
@@ -52,9 +52,9 @@ export class AuthService {
     password: string;
     role: string;
   }): Observable<any> {
-    return this.http.post('/api/auth/register', data);
+    return this.http.post('../../auth/register', data);
   }
   resetPassword(data: { token: string; newPassword: string }): Observable<any> {
-    return this.http.post('/api/auth/reset-password', data);
+    return this.http.post('../../auth/reset-password', data);
   }
 }

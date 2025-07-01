@@ -1,6 +1,106 @@
-<h2>Welcome, Agent</h2>
-<div *ngIf="dashboardData">
-  <p>Total Vehicles: {{ dashboardData.totalVehicles }}</p>
-  <p>Total Bookings: {{ dashboardData.totalBookings }}</p>
-  <p>Total Earnings: {{ dashboardData.totalEarnings | currency }}</p>
+<!-- src/app/agent/agent-dashboard/agent-dashboard.component.html -->
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="agent-dashboard-container">
+  <h2>Agent Dashboard</h2>
+
+  <div *ngIf="!dashboardData" class="loading-message">
+    <i class="fas fa-spinner fa-spin"></i> Loading dashboard data...
+  </div>
+
+  <div *ngIf="dashboardData" class="dashboard-content">
+    <!-- Summary Cards Section -->
+    <section class="summary-cards-section">
+      <h3>Overview</h3>
+      <div class="summary-cards-grid">
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-car"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ dashboardData.summary?.totalBookings || 0 }}</span>
+            <span class="card-label">Total Bookings</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-exclamation-triangle"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ dashboardData.summary?.pendingIssues || 0 }}</span>
+            <span class="card-label">Pending Issues</span>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-check-circle"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ dashboardData.summary?.vehiclesReturned || 0 }}</span>
+            <span class="card-label">Vehicles Returned</span>
+          </div>
+        </div>
+        <!-- Add more summary cards as needed, e.g., total earnings -->
+        <div class="summary-card">
+          <div class="icon-wrapper"><i class="fas fa-dollar-sign"></i></div>
+          <div class="card-info">
+            <span class="card-value">${{ (dashboardData.summary?.totalEarnings | number:'1.2-2') ?? '0.00' }}</span>
+            <span class="card-label">Total Earnings</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Bookings Section -->
+    <section class="recent-items-section">
+      <h3>Recent Bookings</h3>
+      <div *ngIf="dashboardData.recentBookings && dashboardData.recentBookings.length > 0; else noRecentBookings">
+        <div class="item-list">
+          <div class="item-card" *ngFor="let booking of dashboardData.recentBookings">
+            <div class="item-header">
+              <h4>Booking ID: {{ booking.id.substring(0, 8) }}...</h4>
+              <span class="status {{ booking.status | lowercase }}">{{ booking.status }}</span>
+            </div>
+            <p><strong>Vehicle:</strong> {{ booking.vehicle?.name || 'N/A' }}</p>
+            <p><strong>User:</strong> {{ booking.user?.email || 'N/A' }}</p>
+            <p><strong>Pickup:</strong> {{ booking.pickupDate | date:'short' }}</p>
+            <p><strong>Dropoff:</strong> {{ booking.dropoffDate | date:'short' }}</p>
+            <p><strong>Amount:</strong> ${{ booking.totalAmount | number:'1.2-2' }}</p>
+            <div class="item-actions">
+              <button class="btn btn-view">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noRecentBookings>
+        <p class="no-data-message">No recent bookings to display.</p>
+      </ng-template>
+    </section>
+
+    <!-- Pending Issues Section -->
+    <section class="recent-items-section">
+      <h3>Pending Vehicle Issues</h3>
+      <div *ngIf="dashboardData.pendingIssuesList && dashboardData.pendingIssuesList.length > 0; else noPendingIssues">
+        <div class="item-list">
+          <div class="item-card" *ngFor="let issue of dashboardData.pendingIssuesList">
+            <div class="item-header">
+              <h4>Issue ID: {{ issue.id.substring(0, 8) }}...</h4>
+              <span class="status {{ issue.status | lowercase }}">{{ issue.status }}</span>
+            </div>
+            <p><strong>Vehicle:</strong> {{ issue.vehicle?.name || 'N/A' }}</p>
+            <p><strong>Description:</strong> {{ issue.description }}</p>
+            <p><strong>Reported:</strong> {{ issue.reportedAt | date:'short' }}</p>
+            <div class="item-actions">
+              <button class="btn btn-resolve">Mark as Resolved</button>
+              <button class="btn btn-view">View Details</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noPendingIssues>
+        <p class="no-data-message">No pending issues to display.</p>
+      </ng-template>
+    </section>
+
+    <!-- Add more sections as needed, e.g., Charts, Notifications -->
+
+  </div>
 </div>

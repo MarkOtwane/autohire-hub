@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
+import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
   // Redirect empty path to login or home
-  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+  { path: '', component: HomeComponent },
 
   // Auth module (login, register, etc.)
   {
@@ -95,13 +96,6 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMIN'] },
   },
-
-  // Wildcard fallback
-  { path: '**', redirectTo: 'auth/login' },
 ];
 
-// @NgModule({
-//   imports: [RouterModule.forRoot(routes, { useHash: false })],
-//   exports: [RouterModule],
-// })
 export class AppRoutingModule {}

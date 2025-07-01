@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuditModule } from './audit/audit.module';
 import { AuthModule } from './auth/auth.module';
-import { BookingModule } from './booking/booking.module';
+import { BookingsModule } from './booking/booking.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { NotificationsModule } from './notification/notification.module';
 import { PasswordResetModule } from './password-reset/password-reset.module';
@@ -23,7 +23,7 @@ import { ConfigModule } from '@nestjs/config';
     AgentModule,
     VehiclesModule,
     AuthModule,
-    BookingModule,
+    BookingsModule,
     PaymentsModule,
     NotificationsModule,
     SupportModule,

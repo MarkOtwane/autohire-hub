@@ -1,33 +1,38 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/require-await */
 import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
-import { join } from 'path';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NotificationsService } from '../notification/notification.service';
 import { NotificationsController } from './notification.controller';
 
 @Module({
   imports: [
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.MAIL_HOST,
-        port: Number(process.env.MAIL_PORT),
-        secure: false, // Gmail requires STARTTLS
-        auth: {
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASS,
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        transport: {
+          host: 'smtp.gmail.com',
+          port: 465, // Use 465 for SSL
+          secure: true, // Must be true for port 465
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASS'),
+          },
+          tls: {
+            minVersion: 'TLSv1.2', // Explicitly set TLS version
+            ciphers:
+              'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA',
+          },
         },
-      },
-      defaults: {
-        from: `"CarRental" <${process.env.MAIL_USER}>`,
-      },
-      template: {
-        dir: join(__dirname, 'templates'),
-        adapter: new HandlebarsAdapter(),
-        options: { strict: true },
-      },
+        defaults: {
+          from: `"CarRental" <${config.get('MAIL_USER')}>`,
+        },
+      }),
+      inject: [ConfigService],
     }),
   ],
-  controllers: [NotificationsController], // ✅ must be here
+  controllers: [NotificationsController],
   providers: [NotificationsService],
   exports: [NotificationsService],
 })

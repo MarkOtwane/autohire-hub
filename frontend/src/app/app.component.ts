@@ -7,7 +7,8 @@ import { RouterModule } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   imports: [RouterModule, CommonModule],
-  template: ` <h1>Hello from Car Rental App!</h1> `,
+
+  template: ` <app-home></app-home> `,
 })
 export class AppComponent {
   title = 'frontend';

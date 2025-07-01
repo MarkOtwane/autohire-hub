@@ -1,10 +1,140 @@
-<h2>Admin Dashboard</h2>
+<!-- src/app/admin/dashboard/dashboard.component.html -->
 
-<div *ngIf="loading">Loading metrics...</div>
+<!-- Include Font Awesome for icons -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+<!-- Google Fonts: Inter -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
 
-<div class="grid" *ngIf="!loading">
-  <div class="card" *ngFor="let s of stats | keyvalue">
-    <h3>{{ s.key?.toString() | titlecase }}</h3>
-    <p>{{ s.value }}</p>
+<div class="admin-dashboard-container">
+  <h2>Admin Dashboard</h2>
+
+  <div *ngIf="loading" class="loading-message">
+    <i class="fas fa-spinner fa-spin"></i> Loading dashboard data...
+  </div>
+
+  <div *ngIf="!loading" class="dashboard-content">
+    <!-- Overall Statistics Section -->
+    <section class="stats-cards-section">
+      <h3>Overall Statistics</h3>
+      <div class="stats-cards-grid">
+        <div class="stat-card">
+          <div class="icon-wrapper"><i class="fas fa-users"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ stats.totalUsers || 0 }}</span>
+            <span class="card-label">Total Users</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrapper"><i class="fas fa-car-side"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ stats.totalVehicles || 0 }}</span>
+            <span class="card-label">Total Vehicles</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrapper"><i class="fas fa-book"></i></div>
+          <div class="card-info">
+            <span class="card-value">{{ stats.totalBookings || 0 }}</span>
+            <span class="card-label">Total Bookings</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-wrapper"><i class="fas fa-dollar-sign"></i></div>
+          <div class="card-info">
+            <span class="card-value">
+              ${{
+                stats.totalRevenue != null
+                  ? (stats.totalRevenue | number : "1.2-2")
+                  : "0.00"
+              }}
+            </span>
+            <span class="card-label">Total Revenue</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Activity / Alerts Section -->
+    <section class="recent-activity-section">
+      <h3>Recent Activity & Alerts</h3>
+      <div class="activity-grid">
+        <div class="activity-card">
+          <h4><i class="fas fa-clock"></i> Pending Bookings</h4>
+          <p *ngIf="stats.pendingBookings === 0" class="no-data-message">
+            No pending bookings.
+          </p>
+          <ul *ngIf="stats.pendingBookings > 0">
+            <li>
+              <strong>{{ stats.pendingBookings }}</strong> new bookings awaiting
+              confirmation.
+            </li>
+            <!-- You could loop through an array like stats.recentPendingBookings here -->
+          </ul>
+          <button *ngIf="stats.pendingBookings > 0" class="btn btn-view-all">
+            View All Pending
+          </button>
+        </div>
+
+        <div class="activity-card">
+          <h4><i class="fas fa-exclamation-triangle"></i> Open Issues</h4>
+          <p *ngIf="stats.openIssues === 0" class="no-data-message">
+            No open issues.
+          </p>
+          <ul *ngIf="stats.openIssues > 0">
+            <li>
+              <strong>{{ stats.openIssues }}</strong> vehicle issues reported.
+            </li>
+            <!-- You could loop through an array like stats.recentOpenIssues here -->
+          </ul>
+          <button *ngIf="stats.openIssues > 0" class="btn btn-view-all">
+            View All Issues
+          </button>
+        </div>
+
+        <div class="activity-card">
+          <h4><i class="fas fa-user-plus"></i> New Registrations</h4>
+          <p *ngIf="stats.newUsersToday === 0" class="no-data-message">
+            No new users today.
+          </p>
+          <ul *ngIf="stats.newUsersToday > 0">
+            <li>
+              <strong>{{ stats.newUsersToday }}</strong> new users registered
+              today.
+            </li>
+            <!-- You could loop through an array like stats.recentNewUsers here -->
+          </ul>
+          <button *ngIf="stats.newUsersToday > 0" class="btn btn-view-all">
+            View All Users
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions Section -->
+    <section class="quick-actions-section">
+      <h3>Quick Actions</h3>
+      <div class="actions-grid">
+        <button class="action-btn">
+          <i class="fas fa-plus-circle"></i> Add New Vehicle
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-user-shield"></i> Manage Agents
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-envelope"></i> Send Notification
+        </button>
+        <button class="action-btn">
+          <i class="fas fa-chart-line"></i> View Detailed Reports
+        </button>
+      </div>
+    </section>
+
+    <!-- You can add more sections here, e.g., charts, recent reviews, etc. -->
   </div>
 </div>

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AgentDashboardComponent } from './dashboard/agent-dashboard.component';
-import { AgentBookingsComponent } from './bookings/agent-bookings.component';
-import { AgentMetricsComponent } from './metrics/agent-metrics.component';
 import { AuthGuard } from '../core/guards/auth.guard';
 import { RoleGuard } from '../core/guards/role.guard';
+import { AgentBookingsComponent } from './bookings/agent-bookings.component';
+import { AgentDashboardComponent } from './dashboard/agent-dashboard.component';
+import { AgentMetricsComponent } from './metrics/agent-metrics.component';
 
 const routes: Routes = [
   {

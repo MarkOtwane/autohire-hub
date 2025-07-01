@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
@@ -9,6 +10,8 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { BookingsService } from 'src/booking/booking.service';
+import { CreateBookingDto } from '../booking/dto/create-booking.dto';
 import { Roles } from '../commons/decorators/roles.decorator';
 import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 import { RolesGuard } from '../commons/guards/roles.guard';
@@ -21,8 +24,17 @@ import { UserService } from './user.service';
 @Roles('USER')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly bookingsService: BookingsService,
+  ) {}
 
+  @Post() // <-- This handles POST /bookings requests
+  createBooking(@Req() req, @Body() createBookingDto: CreateBookingDto) {
+    // You might want to get the user ID from req.user for the booking
+    const userId = req.user.id;
+    return this.bookingsService.create(userId, createBookingDto);
+  }
   @Get('me')
   getProfile(@Req() req) {
     return this.userService.getMe(req.user.id);

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { headers } from 'next/headers';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -10,7 +11,11 @@ export class ApiService {
   }
 
   post<T>(url: string, data: any) {
-    return this.http.post<T>(url, data);
+    return this.http.post<T>(url, data, { 
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   patch<T>(url: string, data: any) {

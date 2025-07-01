@@ -1,0 +1,260 @@
+<!-- Include Font Awesome for icons -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+/>
+<!-- Google Fonts: Inter -->
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+  rel="stylesheet"
+/>
+
+<div class="home-container">
+  <!-- Top Bar & Navbar -->
+  <header class="top-header">
+    <div class="top-bar">
+      <div class="logo">Trator</div>
+      <div class="location"><i class="fas fa-map-marker-alt"></i> Location</div>
+    </div>
+    <nav class="navbar">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#vehicles">Vehicles</a></li>
+        <li><a href="#client">Feedback</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="home">
+    <div class="hero-content">
+      <h1>Car Rent for You</h1>
+      <p>
+        There are many variations of passages of Lorem Ipsum available, but the
+        majority have suffered alteration in some form, by injected humour, or
+        randomised words which don't look even slightly believable.
+      </p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary">Read More</button>
+        <button class="btn btn-secondary">Contact Us</button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <img src="../../../public/images/about-img.png" alt="Hero Car" />
+    </div>
+    <div class="hero-arrow left-arrow"><i class="fas fa-chevron-left"></i></div>
+    <div class="hero-arrow right-arrow">
+      <i class="fas fa-chevron-right"></i>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section class="about-us-section" id="about">
+    <div class="about-image">
+      <img
+        src="../../../public/images/about-img.png"
+        alt="About Car"
+      />
+    </div>
+    <div class="about-content">
+      <h2>ABOUT US</h2>
+      <p>
+        It is a long established fact that a reader will be distracted by the
+        readable content of a page. The point of using Lorem Ipsum is that it
+        has a more-or-less normal distribution of letters, as opposed to using
+        'Content here, content here', making it look like readable English. Many
+        desktop publishing packages and web page editors now use Lorem Ipsum as
+        their default model text, and a search for 'lorem ipsum' will uncover
+        many web sites still in their infancy. Various versions have evolved
+        over the years, sometimes by accident, sometimes on purpose (injected
+        humour and the like).
+      </p>
+      <button class="btn btn-primary">Read More</button>
+    </div>
+  </section>
+
+  <!-- Search Your Best Cars Section -->
+  <section class="search-cars-section">
+    <h2>Search Your Best Cars</h2>
+    <p>
+      It is a long established fact that a reader will be distracted by the
+      readable content of a page.
+    </p>
+    <div class="search-filters">
+      <input type="text" placeholder="Any Brand" />
+      <input type="text" placeholder="Any Type" />
+      <input type="text" placeholder="Price" />
+      <button class="btn btn-search">SEARCH NOW</button>
+    </div>
+  </section>
+
+  <!-- Our Best Offers Section -->
+  <section class="best-offers-section" id="vehicles">
+    <h2>OUR BEST OFFERS</h2>
+    <div class="car-grid">
+      <div class="car-card" *ngFor="let car of cars">
+        <img [src]="car.imageUrl" alt="Car Image" />
+        <h3>{{ car.name }}</h3>
+        <p>Start per day ${{ car.price | number : "1.2-2" }}</p>
+        <button class="btn btn-offer" (click)="onBookNowClick()">BOOK NOW</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="why-choose-us-section">
+    <h2>WHY CHOOSE US</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon-circle"><i class="fas fa-shield-alt"></i></div>
+        <h3>SAFETY & SECURITY</h3>
+        <p>
+          It is a long established fact that a reader will be distracted by the
+          readable content of a page.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-circle"><i class="fas fa-book"></i></div>
+        <h3>Online Booking</h3>
+        <p>
+          It is a long established fact that a reader will be distracted by the
+          readable content of a page.
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="icon-circle"><i class="fas fa-user-tie"></i></div>
+        <h3>Best Drivers</h3>
+        <p>
+          It is a long established fact that a reader will be distracted by the
+          readable content of a page.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What Says Customers Section -->
+  <section class="testimonials-section" id="client">
+    <h2>WHAT SAYS CUSTOMERS</h2>
+    <div class="testimonials-carousel">
+      <button
+        class="carousel-arrow left-arrow"
+        (click)="scrollTestimonials('left')"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="testimonials-cards-container">
+        <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+          <img [src]="testimonial.imageUrl" alt="Customer Photo" />
+          <h3>{{ testimonial.name }}</h3>
+          <p class="quote-icon">"</p>
+          <p>{{ testimonial.quote }}</p>
+        </div>
+        <!-- Duplicate for visual effect if needed, or implement a proper carousel library -->
+        <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+          <img [src]="testimonial.imageUrl" alt="Customer Photo" />
+          <h3>{{ testimonial.name }}</h3>
+          <p class="quote-icon">"</p>
+          <p>{{ testimonial.quote }}</p>
+        </div>
+      </div>
+      <button
+        class="carousel-arrow right-arrow"
+        (click)="scrollTestimonials('right')"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </section>
+
+  <!-- Get In Touch Section -->
+  <section class="contact-section" id="contact">
+    <h2>GET IN TOUCH</h2>
+    <form (ngSubmit)="onSubmitContactForm()">
+      <input
+        type="text"
+        placeholder="Name"
+        [(ngModel)]="contactForm.name"
+        name="name"
+        required
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="contactForm.email"
+        name="email"
+        required
+      />
+      <input
+        type="tel"
+        placeholder="Phone Number"
+        [(ngModel)]="contactForm.phone"
+        name="phone"
+      />
+      <textarea
+        placeholder="Message"
+        [(ngModel)]="contactForm.message"
+        name="message"
+        required
+      ></textarea>
+      <button type="submit" class="btn btn-send">SEND</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-column subscribe">
+        <h3>Trator</h3>
+        <h4>Subscribe Now</h4>
+        <input type="email" placeholder="Enter your email" />
+        <button class="btn btn-subscribe">SUBSCRIBE</button>
+      </div>
+      <div class="footer-column">
+        <h4>Information</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Our Team</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Helpful Links</h4>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+          <li><a href="#">Support</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Investments</h4>
+        <ul>
+          <li><a href="#">Investment Plans</a></li>
+          <li><a href="#">Financial Reports</a></li>
+          <li><a href="#">Partnerships</a></li>
+        </ul>
+      </div>
+      <div class="footer-column contact-info">
+        <h4>Contact Us</h4>
+        <p><i class="fas fa-map-marker-alt"></i> Location</p>
+        <p><i class="fas fa-phone"></i> +01 1234567890</p>
+        <p><i class="fas fa-envelope"></i> demo&#64;gmail.com</p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>
+        &copy; 2025 All Rights Reserved. Design by MSL
+      </p>
+    </div>
+  </footer>
+</div>
