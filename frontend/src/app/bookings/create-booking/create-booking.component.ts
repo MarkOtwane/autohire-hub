@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingService } from '../../core/services/booking.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-create-booking',
   templateUrl: './create-booking.component.html',
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class CreateBookingComponent implements OnInit {
   form!: FormGroup;

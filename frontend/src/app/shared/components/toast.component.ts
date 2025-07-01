@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -21,6 +22,7 @@ import { Component, Input } from '@angular/core';
       }
     `,
   ],
+  imports: [CommonModule]
 })
 export class ToastComponent {
   @Input() message: string = '';

@@ -11,7 +11,6 @@ import { AgentRoutingModule } from './agent-routing.module';
     ReactiveFormsModule,
     SharedModule,
     AgentRoutingModule,
-    CommonModule,
   ],
   exports: [],
 })

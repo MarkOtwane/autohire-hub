@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 
@@ -101,8 +100,8 @@ export const routes: Routes = [
   { path: '**', redirectTo: 'auth/login' },
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
-  exports: [RouterModule],
-})
+// @NgModule({
+//   imports: [RouterModule.forRoot(routes, { useHash: false })],
+//   exports: [RouterModule],
+// })
 export class AppRoutingModule {}

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VehicleService } from '../../../core/services/vehicle.service';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-vehicle-edit',
   templateUrl: './vehicle-edit.component.html',
   styleUrls: ['./vehicle-edit.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class VehicleEditComponent implements OnInit {
  

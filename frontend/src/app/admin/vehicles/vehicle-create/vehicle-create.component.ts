@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { VehicleService } from '../../../core/services/vehicle.service';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -9,6 +10,7 @@ import { VehicleService } from '../../../core/services/vehicle.service';
   selector: 'app-vehicle-create',
   templateUrl: './vehicle-create.component.html',
   styleUrls: ['./vehicle-create.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule],
 })
 export class VehicleCreateComponent {
   form;

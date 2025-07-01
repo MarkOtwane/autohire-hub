@@ -1,7 +1,6 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { AuditListComponent } from './audit-list/audit-list.component';
 import { AuditRoutingModule } from './audit-routing.module';
 
 @NgModule({
