@@ -9,8 +9,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 import { AuditService } from 'src/audit/audit.service';
 import { NotificationsService } from 'src/notification/notification.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -216,22 +216,6 @@ export class AdminService {
     return this.prisma.admin.delete({ where: { id } });
   }
 
-  // async createAgent(dto: CreateAgentDto) {
-  //   const exists = await this.prisma.agent.findUnique({
-  //     where: { email: dto.email },
-  //   });
-  //   if (exists) throw new ConflictException('Agent already exists');
-
-  //   const hashed = await bcrypt.hash(dto.password, 10);
-
-  //   return this.prisma.agent.create({
-  //     data: {
-  //       email: dto.email,
-  //       password: hashed,
-  //     },
-  //   });
-  // }
-
   async createAgent(dto: CreateAgentDto, adminId: string) {
     const existingAgent = await this.prisma.agent.findUnique({
       where: { email: dto.email },
@@ -305,5 +289,36 @@ export class AdminService {
     });
 
     return updatedAgent;
+  }
+
+  async getDashboardSummary() {
+    // This is where you'd query various tables to get summary data
+    const [
+      totalAdmins,
+      totalAgents,
+      activeAgents,
+      totalUsers, // Assuming a User model
+      totalVehicles, // Assuming a Vehicle model
+      pendingBookings, // Assuming a Booking model
+      unreadNotifications,
+    ] = await Promise.all([
+      this.prisma.admin.count({ where: { role: Role.ADMIN } }),
+      this.prisma.agent.count(),
+      this.prisma.agent.count({ where: { isActive: true } }),
+      this.prisma.user.count(), // Add this if you have a User model
+      this.prisma.vehicle.count(), // Add this if you have a Vehicle model
+      this.prisma.booking.count({ where: { status: 'PENDING' } }), // Add this if you have a Booking model and status
+      this.prisma.notification.count({ where: { isRead: false } }),
+    ]);
+
+    return {
+      adminCount: totalAdmins,
+      agentCount: totalAgents,
+      activeAgentCount: activeAgents,
+      userCount: totalUsers,
+      vehicleCount: totalVehicles,
+      pendingBookingsCount: pendingBookings,
+      unreadNotificationsCount: unreadNotifications,
+    };
   }
 }
