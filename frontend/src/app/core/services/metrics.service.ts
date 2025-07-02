@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MetricsService {
+  private backendBaseUrl = 'http://localhost:3000'; 
+
   constructor(private http: HttpClient) {}
 
   getAdminMetrics(): Observable<any> {
-    return this.http.get('/metrics/admin');
+    return this.http.get(`${this.backendBaseUrl}/metrics/admin`);
   }
 
   getAgentMetrics(): Observable<any> {
-    return this.http.get('/metrics/agent');
+    return this.http.get(`${this.backendBaseUrl}/metrics/agent`);
   }
 }

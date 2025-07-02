@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './auth/login/login.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
 
 export const routes: Routes = [
   // Redirect empty path to login or home
@@ -95,6 +97,21 @@ export const routes: Routes = [
       import('./audit/audit.module').then((m) => m.AuditModule),
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMIN'] },
+  },
+
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'admin/dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard], // Protect this route
+  },
+  // If you have a specific main admin dashboard:
+  {
+    path: 'admin/dashboard/main', // This path would be hit if isMainAdmin is true
+    component: DashboardComponent, // Or MainAdminDashboardComponent
+    canActivate: [AuthGuard],
+    // You might add data for a more specific role guard if needed:
+    // data: { roles: ['MAIN_ADMIN'] }
   },
 ];
 

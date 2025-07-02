@@ -6,7 +6,7 @@ import { RoleGuard } from '../core/guards/role.guard';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'admin',
     component: DashboardComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMIN'] },
