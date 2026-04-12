@@ -83,6 +83,14 @@ export class HomeComponent {
     this.router.navigate(['/auth/login']);
   }
 
+  onStartAgreement(carName?: string) {
+    this.router.navigate(['/agreements/new'], {
+      queryParams: {
+        vehicleName: carName || '',
+      },
+    });
+  }
+
   // Placeholder for navigation (e.g., for testimonial carousel)
   scrollTestimonials(direction: 'left' | 'right'): void {
     const container = document.querySelector('.testimonials-cards-container');

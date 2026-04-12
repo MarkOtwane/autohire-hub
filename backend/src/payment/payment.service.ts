@@ -12,10 +12,12 @@ export class PaymentsService {
 
     return this.prisma.payment.create({
       data: {
-        ...dto,
+        userId,
+        bookingId: dto.bookingId,
+        provider: dto.provider,
+        amount: dto.amount,
         status: 'PAID',
         receiptUrl: fakeReceipt,
-        userId,
       },
     });
   }

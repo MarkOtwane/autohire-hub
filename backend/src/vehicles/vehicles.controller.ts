@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RolesGuard } from '../commons/guards/roles.guard';
+import { Roles } from '../commons/decorators/roles.decorator';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { SearchVehicleDto } from './dto/search-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
@@ -21,7 +22,8 @@ export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard) // Admin/Agent only
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   create(@Body() dto: CreateVehicleDto) {
     return this.vehiclesService.create(dto);
   }
@@ -42,13 +44,15 @@ export class VehiclesController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard) // Admin/Agent only
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   update(@Param('id') id: string, @Body() dto: UpdateVehicleDto) {
     return this.vehiclesService.update(id, dto);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard) // Admin/Agent only
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   remove(@Param('id') id: string) {
     return this.vehiclesService.remove(id);
   }

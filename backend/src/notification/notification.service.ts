@@ -3,6 +3,12 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
 
+interface MailAttachment {
+  filename: string;
+  content: Buffer;
+  contentType: string;
+}
+
 @Injectable()
 export class NotificationsService {
   private readonly logger = new Logger(NotificationsService.name);
@@ -15,8 +21,9 @@ export class NotificationsService {
     template?: string;
     html?: string;
     context?: Record<string, any>;
+    attachments?: MailAttachment[];
   }): Promise<boolean> {
-    const { to, subject, template, html, context } = options;
+    const { to, subject, template, html, context, attachments } = options;
 
     try {
       await this.mailerService.sendMail({
@@ -25,6 +32,7 @@ export class NotificationsService {
         ...(template && { template }),
         ...(html && { html }),
         ...(context && { context }),
+        ...(attachments && { attachments }),
       });
 
       this.logger.log(`Email sent to ${to} with subject: "${subject}"`);
@@ -110,6 +118,39 @@ export class NotificationsService {
       subject: 'Agent Assigned to Your Booking',
       template: 'agent-assigned',
       context: { agentName, bookingId },
+    });
+  }
+
+  async sendAgreementSubmittedEmails(options: {
+    agreementId: string;
+    driverEmail: string;
+    driverName: string;
+    adminEmail: string;
+    pdfBuffer: Buffer;
+  }): Promise<void> {
+    const { agreementId, driverEmail, driverName, adminEmail, pdfBuffer } =
+      options;
+
+    const attachment: MailAttachment = {
+      filename: `${agreementId}.pdf`,
+      content: pdfBuffer,
+      contentType: 'application/pdf',
+    };
+
+    if (adminEmail) {
+      await this.sendEmail({
+        to: adminEmail,
+        subject: `New Rental Agreement Submitted (${agreementId})`,
+        html: `<p>A new rental agreement has been submitted.</p><p><strong>Agreement ID:</strong> ${agreementId}</p>`,
+        attachments: [attachment],
+      });
+    }
+
+    await this.sendEmail({
+      to: driverEmail,
+      subject: `Rental Agreement Confirmation (${agreementId})`,
+      html: `<p>Hello ${driverName},</p><p>Your rental agreement was submitted successfully.</p><p><strong>Agreement ID:</strong> ${agreementId}</p>`,
+      attachments: [attachment],
     });
   }
 }

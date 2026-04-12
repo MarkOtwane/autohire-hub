@@ -245,3 +245,36 @@ model VehicleIssue {
   booking Booking @relation(fields: [bookingId], references: [id])
   vehicle Vehicle @relation(fields: [vehicleId], references: [id])
 }
+
+model AgreementCounter {
+  year         Int @id
+  currentValue Int @default(0)
+
+  @@map("agreement_counters")
+}
+
+model RentalAgreement {
+  id                    String   @id @default(uuid())
+  agreementId           String   @unique
+  clientSubmissionId    String   @unique
+  downloadToken         String   @unique
+  driverName            String
+  driverEmail           String
+  driverPhone           String
+  driverIdNumber        String
+  driverLicenseNumber   String
+  emergencyContactName  String
+  emergencyContactPhone String
+  vehicleName           String
+  vehiclePlateNumber    String?
+  pickupDate            DateTime
+  returnDate            DateTime
+  pickupLocation        String
+  returnLocation        String
+  rentalTermsAccepted   Boolean  @default(true)
+  signatureData         String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("rental_agreements")
+}

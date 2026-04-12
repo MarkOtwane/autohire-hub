@@ -1,0 +1,82 @@
+<div class="agent-create">
+  <h2>Add New Agent</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        required
+        placeholder="Enter agent name"
+      />
+      <div
+        *ngIf="form.get('name')?.invalid && form.get('name')?.touched"
+        class="error"
+      >
+        Name is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        formControlName="email"
+        type="email"
+        required
+        placeholder="Enter agent email"
+      />
+      <div
+        *ngIf="form.get('email')?.invalid && form.get('email')?.touched"
+        class="error"
+      >
+        <span *ngIf="form.get('email')?.errors?.['required']"
+          >Email is required</span
+        >
+        <span *ngIf="form.get('email')?.errors?.['email']"
+          >Please enter a valid email</span
+        >
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone</label>
+      <input
+        id="phone"
+        formControlName="phone"
+        type="tel"
+        required
+        placeholder="Enter phone number"
+      />
+      <div
+        *ngIf="form.get('phone')?.invalid && form.get('phone')?.touched"
+        class="error"
+      >
+        Phone is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select id="status" formControlName="status">
+        <option value="PENDING">Pending</option>
+        <option value="APPROVED">Approved</option>
+        <option value="SUSPENDED">Suspended</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="btn-primary"
+      >
+        {{ loading ? "Creating..." : "Create Agent" }}
+      </button>
+    </div>
+  </form>
+</div>

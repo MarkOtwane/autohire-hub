@@ -1,13 +1,17 @@
 import { Routes } from '@angular/router';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { AgreementFormComponent } from './agreements/agreement-form/agreement-form.component';
+import { AgreementSuccessComponent } from './agreements/agreement-success/agreement-success.component';
+import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './auth/login/login.component';
-import { DashboardComponent } from './admin/dashboard/dashboard.component';
 
 export const routes: Routes = [
   // Redirect empty path to login or home
   { path: '', component: HomeComponent },
+  { path: 'agreements/new', component: AgreementFormComponent },
+  { path: 'agreements/success', component: AgreementSuccessComponent },
 
   // Auth module (login, register, etc.)
   {
@@ -38,14 +42,21 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./admin/admin.module').then((m) => m.AdminModule),
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN'] },
+    data: { roles: ['ADMIN', 'MAIN_ADMIN'] },
+  },
+  {
+    path: 'vehicle',
+    loadChildren: () =>
+      import('./admin/vehicles/vehicles.module').then((m) => m.VehiclesModule),
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['ADMIN', 'MAIN_ADMIN', 'AGENT'] },
   },
 
   // Public vehicle listings
   {
     path: 'vehicles',
     loadChildren: () =>
-      import('./admin/vehicles/vehicles.module').then((m) => m.VehiclesModule),
+      import('./vehicle/vehicle.module').then((m) => m.VehiclesModule),
   },
 
   // Bookings
@@ -77,7 +88,7 @@ export const routes: Routes = [
     path: 'notifications',
     loadChildren: () =>
       import('./notifications/notifications.module').then(
-        (m) => m.NotificationsModule
+        (m) => m.NotificationsModule,
       ),
     canActivate: [AuthGuard],
   },
@@ -110,8 +121,6 @@ export const routes: Routes = [
     path: 'admin/dashboard/main', // This path would be hit if isMainAdmin is true
     component: DashboardComponent, // Or MainAdminDashboardComponent
     canActivate: [AuthGuard],
-    // You might add data for a more specific role guard if needed:
-    // data: { roles: ['MAIN_ADMIN'] }
   },
 ];
 

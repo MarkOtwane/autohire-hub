@@ -24,13 +24,13 @@ export class BookingsController {
 
   @Post()
   create(@Req() req, @Body() dto: CreateBookingDto) {
-    return this.bookingsService.create(req.user.id, dto);
+    return this.bookingsService.create(req.user.sub, dto);
   }
 
   @Get('mine')
   @Roles('USER')
   findMine(@Req() req) {
-    return this.bookingsService.findMine(req.user.id);
+    return this.bookingsService.findMine(req.user.sub);
   }
 
   @Get('pending')
@@ -56,7 +56,7 @@ export class BookingsController {
 
   @Patch(':id/cancel')
   cancel(@Param('id') id: string, @Req() req) {
-    return this.bookingsService.cancel(req.user.id, id);
+    return this.bookingsService.cancel(req.user.sub, id);
   }
 
   @Get(':id')

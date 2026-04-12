@@ -1,5 +1,7 @@
 <h2>Create Booking</h2>
 <form [formGroup]="form" (ngSubmit)="submit()">
+  <div *ngIf="vehicleName"><strong>Vehicle:</strong> {{ vehicleName }}</div>
+
   <label>Start Date</label>
   <input type="date" formControlName="startDate" />
 
@@ -9,7 +11,11 @@
   <label>Note (Optional)</label>
   <textarea formControlName="note"></textarea>
 
+  <button type="button" (click)="startDigitalAgreement()">
+    Complete Digital Agreement
+  </button>
+
   <button type="submit" [disabled]="loading">
-    {{ loading ? 'Booking...' : 'Book Vehicle' }}
+    {{ loading ? "Booking..." : "Book Vehicle" }}
   </button>
 </form>

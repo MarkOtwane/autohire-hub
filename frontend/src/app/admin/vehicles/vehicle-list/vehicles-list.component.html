@@ -1,30 +1,49 @@
 <div class="vehicle-list">
   <h2>Manage Vehicles</h2>
-  <button routerLink="/admin/vehicles/create" class="create-btn">Add Vehicle</button>
+  <button routerLink="/admin/vehicles/create" class="create-btn">
+    Add Vehicle
+  </button>
 
-  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="loading" class="loading">Loading vehicles...</div>
 
-  <table *ngIf="!loading">
+  <table *ngIf="!loading && vehicles.length > 0">
     <thead>
       <tr>
         <th>ID</th>
-        <th>Make</th>
-        <th>Model</th>
-        <th>Status</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price/Day</th>
+        <th>Location</th>
+        <th>Availability</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let vehicle of vehicles">
         <td>{{ vehicle.id }}</td>
-        <td>{{ vehicle.make }}</td>
-        <td>{{ vehicle.model }}</td>
-        <td>{{ vehicle.status }}</td>
+        <td>{{ vehicle.name }}</td>
+        <td>{{ vehicle.category }}</td>
+        <td>${{ vehicle.pricePerDay }}</td>
+        <td>{{ vehicle.location }}</td>
         <td>
-          <button (click)="editVehicle(vehicle.id)">Edit</button>
-          <button (click)="deleteVehicle(vehicle.id)" class="delete">Delete</button>
+          <span [class]="vehicle.availability ? 'available' : 'unavailable'">
+            {{ vehicle.availability ? "Available" : "Unavailable" }}
+          </span>
+        </td>
+        <td>
+          <button (click)="editVehicle(vehicle.id)" class="edit-btn">
+            Edit
+          </button>
+          <button (click)="deleteVehicle(vehicle.id)" class="delete-btn">
+            Delete
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
+
+  <div *ngIf="!loading && vehicles.length === 0" class="no-vehicles">
+    No vehicles found.
+    <a routerLink="/admin/vehicles/create">Add your first vehicle</a>
+  </div>
 </div>

@@ -1,0 +1,169 @@
+.agent-list {
+  padding: 20px;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+
+    h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .create-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 16px;
+  }
+
+  .agents-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+
+      &.status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      &.status-approved {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      &.status-suspended {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+
+      button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          transform: translateY(-1px);
+        }
+      }
+
+      .btn-edit {
+        background-color: #007bff;
+        color: white;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+
+      .btn-approve {
+        background-color: #28a745;
+        color: white;
+
+        &:hover {
+          background-color: #218838;
+        }
+      }
+
+      .btn-suspend {
+        background-color: #ffc107;
+        color: #212529;
+
+        &:hover {
+          background-color: #e0a800;
+        }
+      }
+
+      .btn-delete {
+        background-color: #dc3545;
+        color: white;
+
+        &:hover {
+          background-color: #c82333;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+
+    p {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .create-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+  }
+} 

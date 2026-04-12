@@ -1,0 +1,31 @@
+<section class="success-shell">
+  <div class="card">
+    <h1>Agreement Submitted</h1>
+    <p>Your digital rental agreement has been recorded successfully.</p>
+
+    <p class="agreement-id" *ngIf="agreementId">
+      Agreement ID: <strong>{{ agreementId }}</strong>
+    </p>
+
+    <div class="actions">
+      <a
+        *ngIf="showContinueToBooking"
+        [routerLink]="continueBookingLink"
+        [queryParams]="continueBookingQueryParams"
+        class="download"
+      >
+        Continue To Booking
+      </a>
+      <a
+        *ngIf="downloadUrl"
+        [href]="downloadUrl"
+        class="download"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Download Agreement PDF
+      </a>
+      <a routerLink="/" class="home">Back To Home</a>
+    </div>
+  </div>
+</section>

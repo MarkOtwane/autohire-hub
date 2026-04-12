@@ -61,80 +61,88 @@
     </section>
 
     <!-- Recent Activity / Alerts Section -->
-    <section class="recent-activity-section">
-      <h3>Recent Activity & Alerts</h3>
-      <div class="activity-grid">
-        <div class="activity-card">
-          <h4><i class="fas fa-clock"></i> Pending Bookings</h4>
-          <p *ngIf="stats.pendingBookings === 0" class="no-data-message">
-            No pending bookings.
-          </p>
-          <ul *ngIf="stats.pendingBookings > 0">
-            <li>
-              <strong>{{ stats.pendingBookings }}</strong> new bookings awaiting
-              confirmation.
-            </li>
-            <!-- You could loop through an array like stats.recentPendingBookings here -->
-          </ul>
-          <button *ngIf="stats.pendingBookings > 0" class="btn btn-view-all">
-            View All Pending
+    <div *ngIf="!loading" class="dashboard-content">
+      <section class="recent-activity-section">
+        <h3>Recent Activity & Alerts</h3>
+        <div class="activity-grid">
+          <div class="activity-card">
+            <h4><i class="fas fa-clock"></i> Pending Bookings</h4>
+            <p *ngIf="stats.pendingBookings === 0" class="no-data-message">
+              No pending bookings.
+            </p>
+            <ul *ngIf="stats.pendingBookings > 0">
+              <li>
+                <strong>{{ stats.pendingBookings }}</strong> new bookings awaiting
+                confirmation.
+              </li>
+            </ul>
+            <button
+              *ngIf="stats.pendingBookings > 0"
+              class="btn btn-view-all"
+              (click)="onViewAllPendingBookings()"
+            >
+              View All Pending
+            </button>
+          </div>
+    
+          <div class="activity-card">
+            <h4><i class="fas fa-exclamation-triangle"></i> Open Issues</h4>
+            <p *ngIf="stats.openIssues === 0" class="no-data-message">
+              No open issues.
+            </p>
+            <ul *ngIf="stats.openIssues > 0">
+              <li>
+                <strong>{{ stats.openIssues }}</strong> vehicle issues reported.
+              </li>
+            </ul>
+            <button
+              *ngIf="stats.openIssues > 0"
+              class="btn btn-view-all"
+              (click)="onViewAllOpenIssues()"
+            >
+              View All Issues
+            </button>
+          </div>
+    
+          <div class="activity-card">
+            <h4><i class="fas fa-user-plus"></i> New Registrations</h4>
+            <p *ngIf="stats.newUsersToday === 0" class="no-data-message">
+              No new users today.
+            </p>
+            <ul *ngIf="stats.newUsersToday > 0">
+              <li>
+                <strong>{{ stats.newUsersToday }}</strong> new users registered
+                today.
+              </li>
+            </ul>
+            <button
+              *ngIf="stats.newUsersToday > 0"
+              class="btn btn-view-all"
+              (click)="onViewAllUsers()"
+            >
+              View All Users
+            </button>
+          </div>
+        </div>
+      </section>
+    
+      <section class="quick-actions-section">
+        <h3>Quick Actions</h3>
+        <div class="actions-grid">
+          <button class="action-btn" (click)="onAddNewVehicle()">
+            <i class="fas fa-plus-circle"></i> Add New Vehicle
+          </button>
+          <button class="action-btn" (click)="onManageAgents()">
+            <i class="fas fa-user-shield"></i> Manage Agents
+          </button>
+          <button class="action-btn" (click)="onSendNotification()">
+            <i class="fas fa-envelope"></i> Send Notification
+          </button>
+          <button class="action-btn" (click)="onViewDetailedReports()">
+            <i class="fas fa-chart-line"></i> View Detailed Reports
           </button>
         </div>
-
-        <div class="activity-card">
-          <h4><i class="fas fa-exclamation-triangle"></i> Open Issues</h4>
-          <p *ngIf="stats.openIssues === 0" class="no-data-message">
-            No open issues.
-          </p>
-          <ul *ngIf="stats.openIssues > 0">
-            <li>
-              <strong>{{ stats.openIssues }}</strong> vehicle issues reported.
-            </li>
-            <!-- You could loop through an array like stats.recentOpenIssues here -->
-          </ul>
-          <button *ngIf="stats.openIssues > 0" class="btn btn-view-all">
-            View All Issues
-          </button>
-        </div>
-
-        <div class="activity-card">
-          <h4><i class="fas fa-user-plus"></i> New Registrations</h4>
-          <p *ngIf="stats.newUsersToday === 0" class="no-data-message">
-            No new users today.
-          </p>
-          <ul *ngIf="stats.newUsersToday > 0">
-            <li>
-              <strong>{{ stats.newUsersToday }}</strong> new users registered
-              today.
-            </li>
-            <!-- You could loop through an array like stats.recentNewUsers here -->
-          </ul>
-          <button *ngIf="stats.newUsersToday > 0" class="btn btn-view-all">
-            View All Users
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Actions Section -->
-    <section class="quick-actions-section">
-      <h3>Quick Actions</h3>
-      <div class="actions-grid">
-        <button class="action-btn">
-          <i class="fas fa-plus-circle"></i> Add New Vehicle
-        </button>
-        <button class="action-btn">
-          <i class="fas fa-user-shield"></i> Manage Agents
-        </button>
-        <button class="action-btn">
-          <i class="fas fa-envelope"></i> Send Notification
-        </button>
-        <button class="action-btn">
-          <i class="fas fa-chart-line"></i> View Detailed Reports
-        </button>
-      </div>
-    </section>
-
-    <!-- You can add more sections here, e.g., charts, recent reviews, etc. -->
+      </section>
+    </div>
   </div>
 </div>

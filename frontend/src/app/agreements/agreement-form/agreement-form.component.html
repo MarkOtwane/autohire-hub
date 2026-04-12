@@ -1,0 +1,105 @@
+<section class="agreement-shell">
+  <h1>Digital Rental Agreement</h1>
+  <p class="subtitle">Complete and sign this form to finalize your rental.</p>
+  <p class="subtitle">
+    If you selected a vehicle earlier, some fields are prefilled.
+  </p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="agreement-form">
+    <div class="grid two-col">
+      <label>
+        Driver Full Name
+        <input type="text" formControlName="driverName" />
+      </label>
+
+      <label>
+        Driver Email
+        <input type="email" formControlName="driverEmail" />
+      </label>
+
+      <label>
+        Driver Phone
+        <input type="text" formControlName="driverPhone" />
+      </label>
+
+      <label>
+        National ID / Passport No.
+        <input type="text" formControlName="driverIdNumber" />
+      </label>
+
+      <label>
+        Driver License No.
+        <input type="text" formControlName="driverLicenseNumber" />
+      </label>
+
+      <label>
+        Emergency Contact Name
+        <input type="text" formControlName="emergencyContactName" />
+      </label>
+
+      <label>
+        Emergency Contact Phone
+        <input type="text" formControlName="emergencyContactPhone" />
+      </label>
+
+      <label>
+        Vehicle Name
+        <input type="text" formControlName="vehicleName" />
+      </label>
+
+      <label>
+        Vehicle Plate Number (Optional)
+        <input type="text" formControlName="vehiclePlateNumber" />
+      </label>
+
+      <label>
+        Pickup Date
+        <input type="date" formControlName="pickupDate" />
+      </label>
+
+      <label>
+        Return Date
+        <input type="date" formControlName="returnDate" />
+      </label>
+
+      <label>
+        Pickup Location
+        <input type="text" formControlName="pickupLocation" />
+      </label>
+
+      <label>
+        Return Location
+        <input type="text" formControlName="returnLocation" />
+      </label>
+    </div>
+
+    <div class="signature-card">
+      <p>Driver Signature (required)</p>
+      <canvas
+        #signatureCanvas
+        class="signature-canvas"
+        (mousedown)="onPointerDown($event)"
+        (mousemove)="onPointerMove($event)"
+        (mouseup)="onPointerUp()"
+        (mouseleave)="onPointerUp()"
+        (touchstart)="onPointerDown($event)"
+        (touchmove)="onPointerMove($event)"
+        (touchend)="onPointerUp()"
+      ></canvas>
+      <button type="button" class="clear-btn" (click)="clearSignature()">
+        Clear Signature
+      </button>
+    </div>
+
+    <label class="terms-row">
+      <input type="checkbox" formControlName="rentalTermsAccepted" />
+      <span>I have read and agree to the rental terms and conditions.</span>
+    </label>
+
+    <p class="error" *ngIf="submitError">{{ submitError }}</p>
+
+    <button class="submit-btn" type="submit" [disabled]="loading">
+      {{ loading ? "Submitting..." : "Submit Agreement" }}
+    </button>
+  </form>
+</section>

@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="hero-image">
-      <img src="../../../public/images/about-img.png" alt="Hero Car" />
+      <img src="https://pin.it/HiIqoLn41" alt="" />
     </div>
     <div class="hero-arrow left-arrow"><i class="fas fa-chevron-left"></i></div>
     <div class="hero-arrow right-arrow">
@@ -53,10 +53,7 @@
   <!-- About Us Section -->
   <section class="about-us-section" id="about">
     <div class="about-image">
-      <img
-        src="../../../public/images/about-img.png"
-        alt="About Car"
-      />
+      <img src="../../../public/images/about-img.png" alt="About Car" />
     </div>
     <div class="about-content">
       <h2>ABOUT US</h2>
@@ -97,8 +94,13 @@
       <div class="car-card" *ngFor="let car of cars">
         <img [src]="car.imageUrl" alt="Car Image" />
         <h3>{{ car.name }}</h3>
-        <p>Start per day ${{ car.price | number : "1.2-2" }}</p>
-        <button class="btn btn-offer" (click)="onBookNowClick()">BOOK NOW</button>
+        <p>Start per day ${{ car.price | number: "1.2-2" }}</p>
+        <button class="btn btn-offer" (click)="onBookNowClick()">
+          BOOK NOW
+        </button>
+        <button class="btn btn-offer" (click)="onStartAgreement(car.name)">
+          DIGITAL AGREEMENT
+        </button>
       </div>
     </div>
   </section>
@@ -252,9 +254,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>
-        &copy; 2025 All Rights Reserved. Design by MSL
-      </p>
+      <p>&copy; 2025 All Rights Reserved. Design by MSL</p>
     </div>
   </footer>
 </div>

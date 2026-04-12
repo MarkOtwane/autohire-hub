@@ -11,7 +11,8 @@ export class SupportService {
     return this.prisma.supportTicket.create({
       data: {
         userId,
-        ...dto,
+        subject: dto.subject,
+        message: dto.message,
         status: 'OPEN',
       },
     });

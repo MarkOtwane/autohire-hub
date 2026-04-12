@@ -1,24 +1,15 @@
-import { FuelType, VehicleCategory } from '@prisma/client';
-import {
-  IsArray,
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { VehicleCategory, FuelType } from '@prisma/client';
 
 export class CreateVehicleDto {
-  @IsEnum(VehicleCategory)
-  category: VehicleCategory;
-
-  @IsEnum(FuelType)
-  fuelType: FuelType;
-
   @IsString()
   name: string;
 
   @IsString()
   description: string;
+
+  @IsEnum(VehicleCategory)
+  category: VehicleCategory;
 
   @IsNumber()
   pricePerDay: number;
@@ -26,17 +17,25 @@ export class CreateVehicleDto {
   @IsNumber()
   pricePerHour: number;
 
+  @IsBoolean()
+  @IsOptional()
+  availability?: boolean;
+
   @IsString()
   location: string;
 
   @IsString()
   transmission: string;
 
+  @IsEnum(FuelType)
+  fuelType: FuelType;
+
   @IsArray()
   @IsString({ each: true })
-  features: string[];
-
   @IsOptional()
+  features?: string[];
+
   @IsString()
+  @IsOptional()
   imageUrl?: string;
 }

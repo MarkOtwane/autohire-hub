@@ -9,7 +9,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '@prisma/client';
+import { BookingStatus, Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { AuditService } from 'src/audit/audit.service';
 import { NotificationsService } from 'src/notification/notification.service';
@@ -49,8 +49,8 @@ export class AdminService {
       data: {
         email: dto.email,
         password: hashedPassword,
-        role: Role.ADMIN, // Added role from enum
-        isMainAdmin: false, // Changed from isMain to isMainAdmin
+        role: Role.ADMIN,
+        isMainAdmin: false,
       },
     });
 
@@ -99,7 +99,7 @@ export class AdminService {
       metadata: {},
     });
 
-    return { message: 'Password updated successfully' }; //changing password
+    return { message: 'Password updated successfully' };
   }
 
   async getAllAdmins(requesterId: string) {
@@ -108,17 +108,16 @@ export class AdminService {
     });
 
     if (!requester?.isMainAdmin) {
-      // Changed from isMain to isMainAdmin
       throw new ForbiddenException('Only the main admin can view all admins');
     }
 
     return this.prisma.admin.findMany({
-      where: { role: Role.ADMIN }, // Only return ADMIN role users
+      where: { role: Role.ADMIN },
       select: {
         id: true,
         email: true,
         role: true,
-        isMainAdmin: true, // Changed from isMain to isMainAdmin
+        isMainAdmin: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' },
@@ -139,12 +138,11 @@ export class AdminService {
       sub: admin.id,
       email: admin.email,
       role: admin.role,
-      isMainAdmin: admin.isMainAdmin, // Changed from isMain to isMainAdmin
+      isMainAdmin: admin.isMainAdmin,
     };
 
     const token = await this.jwtService.signAsync(payload);
 
-    // Create notification for admin login
     await this.prisma.notification.create({
       data: {
         adminId: admin.id,
@@ -159,7 +157,7 @@ export class AdminService {
         id: admin.id,
         email: admin.email,
         role: admin.role,
-        isMainAdmin: admin.isMainAdmin, // Changed from isMain to isMainAdmin
+        isMainAdmin: admin.isMainAdmin,
       },
     };
   }
@@ -195,13 +193,11 @@ export class AdminService {
     ]);
 
     if (!requester?.isMainAdmin) {
-      // Changed from isMain to isMainAdmin
       throw new ForbiddenException('Only the main admin can delete admins');
     }
 
     if (!adminToDelete) throw new NotFoundException('Admin not found');
     if (adminToDelete.isMainAdmin) {
-      // Changed from isMain to isMainAdmin
       throw new ForbiddenException('Cannot delete the main admin');
     }
 
@@ -266,6 +262,26 @@ export class AdminService {
     });
   }
 
+  async deleteAgent(agentId: string) {
+    const agent = await this.prisma.agent.findUnique({
+      where: { id: agentId },
+    });
+
+    if (!agent) {
+      throw new NotFoundException('Agent not found');
+    }
+
+    await this.auditService.logAction({
+      actorId: '',
+      actorRole: Role.MAIN_ADMIN,
+      action: 'DELETE_AGENT',
+      target: agentId,
+      metadata: { email: agent.email },
+    });
+
+    return this.prisma.agent.delete({ where: { id: agentId } });
+  }
+
   async toggleAgentStatus(agentId: string, status: boolean) {
     const agent = await this.prisma.agent.findUnique({
       where: { id: agentId },
@@ -281,7 +297,7 @@ export class AdminService {
     });
 
     await this.auditService.logAction({
-      actorId: '', // System-initiated action
+      actorId: '',
       actorRole: Role.ADMIN,
       action: status ? 'ACTIVATE_AGENT' : 'DEACTIVATE_AGENT',
       target: agentId,
@@ -291,23 +307,269 @@ export class AdminService {
     return updatedAgent;
   }
 
+  // Vehicle Management
+  async getVehicles() {
+    return this.prisma.vehicle.findMany({
+      include: {
+        bookings: {
+          where: { status: 'CONFIRMED' },
+          select: { id: true },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async createVehicle(dto: any) {
+    const vehicle = await this.prisma.vehicle.create({
+      data: {
+        name: dto.name,
+        description: dto.description,
+        category: dto.category,
+        pricePerDay: dto.pricePerDay,
+        pricePerHour: dto.pricePerHour,
+        availability: dto.availability ?? true,
+        location: dto.location,
+        transmission: dto.transmission,
+        fuelType: dto.fuelType,
+        features: dto.features || [],
+        imageUrl: dto.imageUrl,
+      },
+    });
+
+    await this.auditService.logAction({
+      actorId: '',
+      actorRole: Role.ADMIN,
+      action: 'CREATE_VEHICLE',
+      target: vehicle.id,
+      metadata: { name: vehicle.name },
+    });
+
+    return vehicle;
+  }
+
+  async updateVehicle(id: string, dto: any) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id },
+    });
+
+    if (!vehicle) {
+      throw new NotFoundException('Vehicle not found');
+    }
+
+    const updatedVehicle = await this.prisma.vehicle.update({
+      where: { id },
+      data: {
+        name: dto.name,
+        description: dto.description,
+        category: dto.category,
+        pricePerDay: dto.pricePerDay,
+        pricePerHour: dto.pricePerHour,
+        availability: dto.availability,
+        location: dto.location,
+        transmission: dto.transmission,
+        fuelType: dto.fuelType,
+        features: dto.features,
+        imageUrl: dto.imageUrl,
+      },
+    });
+
+    await this.auditService.logAction({
+      actorId: '',
+      actorRole: Role.ADMIN,
+      action: 'UPDATE_VEHICLE',
+      target: id,
+      metadata: { name: updatedVehicle.name },
+    });
+
+    return updatedVehicle;
+  }
+
+  async deleteVehicle(id: string) {
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id },
+      include: { bookings: true },
+    });
+
+    if (!vehicle) {
+      throw new NotFoundException('Vehicle not found');
+    }
+
+    if (vehicle.bookings.length > 0) {
+      throw new BadRequestException(
+        'Cannot delete vehicle with existing bookings',
+      );
+    }
+
+    await this.auditService.logAction({
+      actorId: '',
+      actorRole: Role.ADMIN,
+      action: 'DELETE_VEHICLE',
+      target: id,
+      metadata: { name: vehicle.name },
+    });
+
+    return this.prisma.vehicle.delete({ where: { id } });
+  }
+
+  // Booking Management
+  async getBookings() {
+    return this.prisma.booking.findMany({
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        vehicle: { select: { id: true, name: true, category: true } },
+        agent: { select: { id: true, email: true } },
+        payment: { select: { id: true, status: true, amount: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async updateBookingStatus(bookingId: string, status: BookingStatus) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { user: true },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    const updatedBooking = await this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: status as BookingStatus },
+    });
+
+    // Send notification to user
+    await this.prisma.notification.create({
+      data: {
+        userId: booking.userId,
+        message: `Your booking has been ${status.toLowerCase()}`,
+        type: 'BOOKING_STATUS_UPDATE',
+      },
+    });
+
+    await this.auditService.logAction({
+      actorId: '',
+      actorRole: Role.ADMIN,
+      action: 'UPDATE_BOOKING_STATUS',
+      target: bookingId,
+      metadata: { status, userEmail: booking.user.email },
+    });
+
+    return updatedBooking;
+  }
+
+  // Notification Management
+  async sendNotification(dto: {
+    userId?: string;
+    message: string;
+    type: string;
+  }) {
+    const notification = await this.prisma.notification.create({
+      data: {
+        userId: dto.userId,
+        message: dto.message,
+        type: dto.type,
+      },
+    });
+
+    await this.auditService.logAction({
+      actorId: '',
+      actorRole: Role.ADMIN,
+      action: 'SEND_NOTIFICATION',
+      target: notification.id,
+      metadata: { message: dto.message, type: dto.type },
+    });
+
+    return notification;
+  }
+
+  async getNotifications() {
+    return this.prisma.notification.findMany({
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        admin: { select: { id: true, email: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async markNotificationAsRead(id: string) {
+    return this.prisma.notification.update({
+      where: { id },
+      data: { isRead: true },
+    });
+  }
+
+  // Dashboard Statistics
+  async getDashboardStats() {
+    const [
+      totalUsers,
+      totalBookings,
+      totalRevenue,
+      fleetStats,
+      recentBookings,
+      pendingBookings,
+    ] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.booking.count(),
+      this.prisma.payment.aggregate({
+        _sum: { amount: true },
+        where: { status: 'PAID' },
+      }),
+      this.prisma.vehicle.groupBy({
+        by: ['category'],
+        _count: { id: true },
+      }),
+      this.prisma.booking.findMany({
+        take: 5,
+        include: {
+          user: { select: { name: true, email: true } },
+          vehicle: { select: { name: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.booking.count({ where: { status: 'PENDING' } }),
+    ]);
+
+    const fleetByCategory = fleetStats.reduce(
+      (acc, stat) => {
+        acc[stat.category] = stat._count.id;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
+
+    return {
+      totalUsers,
+      totalBookings,
+      totalRevenue: totalRevenue._sum.amount || 0,
+      fleet: {
+        total: await this.prisma.vehicle.count(),
+        byCategory: fleetByCategory,
+      },
+      recentBookings,
+      pendingBookings,
+    };
+  }
+
   async getDashboardSummary() {
-    // This is where you'd query various tables to get summary data
     const [
       totalAdmins,
       totalAgents,
       activeAgents,
-      totalUsers, // Assuming a User model
-      totalVehicles, // Assuming a Vehicle model
-      pendingBookings, // Assuming a Booking model
+      totalUsers,
+      totalVehicles,
+      pendingBookings,
       unreadNotifications,
     ] = await Promise.all([
       this.prisma.admin.count({ where: { role: Role.ADMIN } }),
       this.prisma.agent.count(),
       this.prisma.agent.count({ where: { isActive: true } }),
-      this.prisma.user.count(), // Add this if you have a User model
-      this.prisma.vehicle.count(), // Add this if you have a Vehicle model
-      this.prisma.booking.count({ where: { status: 'PENDING' } }), // Add this if you have a Booking model and status
+      this.prisma.user.count(),
+      this.prisma.vehicle.count(),
+      this.prisma.booking.count({ where: { status: 'PENDING' } }),
       this.prisma.notification.count({ where: { isRead: false } }),
     ]);
 

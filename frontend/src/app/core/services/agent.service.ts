@@ -35,6 +35,22 @@ export class AgentService {
     return this.http.get<any[]>('/agents/admin');
   }
 
+  getAgentById(id: string): Observable<any> {
+    return this.http.get<any>(`/agents/admin/${id}`);
+  }
+
+  createAgent(data: any): Observable<any> {
+    return this.http.post('/agents/admin', data);
+  }
+
+  updateAgent(id: string, data: any): Observable<any> {
+    return this.http.patch(`/agents/admin/${id}`, data);
+  }
+
+  deleteAgent(id: string): Observable<any> {
+    return this.http.delete(`/agents/admin/${id}`);
+  }
+
   approveAgent(id: string): Observable<any> {
     return this.http.patch(`/agents/admin/${id}/approve`, {});
   }

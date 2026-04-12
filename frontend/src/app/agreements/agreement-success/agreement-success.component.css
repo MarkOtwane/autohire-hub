@@ -1,0 +1,56 @@
+:host {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 1rem;
+  background: linear-gradient(160deg, #ecfeff 0%, #f8fafc 55%, #dcfce7 100%);
+}
+
+.card {
+  width: min(480px, 100%);
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.4rem;
+  box-shadow: 0 10px 30px rgba(2, 8, 23, 0.1);
+  text-align: center;
+}
+
+h1 {
+  margin: 0 0 0.6rem;
+  color: #14532d;
+}
+
+p {
+  margin: 0;
+  color: #334155;
+}
+
+.agreement-id {
+  margin-top: 1rem;
+  color: #0f172a;
+}
+
+.actions {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.download,
+.home {
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 0.65rem 0.95rem;
+  font-weight: 600;
+}
+
+.download {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.home {
+  background: #e2e8f0;
+  color: #0f172a;
+}

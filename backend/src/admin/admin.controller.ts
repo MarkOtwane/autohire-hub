@@ -11,6 +11,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { BookingStatus } from '@prisma/client';
 import { RolesGuard } from 'src/commons/guards/roles.guard';
 import { Roles } from '../commons/decorators/roles.decorator';
 import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
@@ -25,56 +26,139 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post('login')
-  login(@Body() dto: LoginAdminDto) {
+  login(@Body() dto: LoginAdminDto): Promise<any> {
     return this.adminService.login(dto);
   }
 
   @Post('agents')
   @Roles('MAIN_ADMIN')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  createAgent(@Body() dto: CreateAgentDto, @Req() req) {
+  createAgent(@Body() dto: CreateAgentDto, @Req() req): Promise<any> {
     return this.adminService.createAgent(dto, req.user.sub);
   }
 
   @Get('agents')
   @UseGuards(JwtAuthGuard)
-  getAgents() {
+  getAgents(): Promise<any> {
     return this.adminService.getAgents();
   }
 
   @Patch('agent/:id/status')
   @UseGuards(JwtAuthGuard)
-  toggleAgent(@Param('id') id: string, @Body() body: { active: boolean }) {
+  toggleAgent(
+    @Param('id') id: string,
+    @Body() body: { active: boolean },
+  ): Promise<any> {
     return this.adminService.toggleAgentStatus(id, body.active);
+  }
+
+  @Delete('agent/:id')
+  @Roles('MAIN_ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  deleteAgent(@Param('id') id: string): Promise<any> {
+    return this.adminService.deleteAgent(id);
+  }
+
+  @Get('vehicles')
+  @UseGuards(JwtAuthGuard)
+  getVehicles(): Promise<any> {
+    return this.adminService.getVehicles();
+  }
+
+  @Post('vehicles')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  createVehicle(@Body() dto: any): Promise<any> {
+    return this.adminService.createVehicle(dto);
+  }
+
+  @Patch('vehicles/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  updateVehicle(@Param('id') id: string, @Body() dto: any): Promise<any> {
+    return this.adminService.updateVehicle(id, dto);
+  }
+
+  @Delete('vehicles/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  deleteVehicle(@Param('id') id: string): Promise<any> {
+    return this.adminService.deleteVehicle(id);
+  }
+
+  @Get('bookings')
+  @UseGuards(JwtAuthGuard)
+  getBookings(): Promise<any> {
+    return this.adminService.getBookings();
+  }
+
+  @Patch('bookings/:id/status')
+  @UseGuards(JwtAuthGuard)
+  updateBookingStatus(
+    @Param('id') id: string,
+    @Body() dto: { status: string },
+  ): Promise<any> {
+    return this.adminService.updateBookingStatus(
+      id,
+      dto.status as BookingStatus,
+    );
+  }
+
+  @Post('notifications')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  sendNotification(
+    @Body() dto: { userId?: string; message: string; type: string },
+  ): Promise<any> {
+    return this.adminService.sendNotification(dto);
+  }
+
+  @Get('notifications')
+  @UseGuards(JwtAuthGuard)
+  getNotifications(): Promise<any> {
+    return this.adminService.getNotifications();
+  }
+
+  @Patch('notifications/:id/read')
+  @UseGuards(JwtAuthGuard)
+  markNotificationAsRead(@Param('id') id: string): Promise<any> {
+    return this.adminService.markNotificationAsRead(id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('create')
-  create(@Body() dto: CreateAdminDto, @Req() req) {
-    return this.adminService.createAdmin(dto, req.user.sub); // Changed req.user.id to req.user.sub
+  create(@Body() dto: CreateAdminDto, @Req() req): Promise<any> {
+    return this.adminService.createAdmin(dto, req.user.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('change-password')
-  changePassword(@Req() req, @Body() dto: UpdatePasswordDto) {
-    return this.adminService.updatePassword(req.user.sub, dto); // Changed req.user.id to req.user.sub
+  changePassword(@Req() req, @Body() dto: UpdatePasswordDto): Promise<any> {
+    return this.adminService.updatePassword(req.user.sub, dto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  delete(@Req() req, @Param('id') id: string) {
-    return this.adminService.deleteAdmin(id, req.user.sub); // Changed req.user.id to req.user.sub
+  delete(@Req() req, @Param('id') id: string): Promise<any> {
+    return this.adminService.deleteAdmin(id, req.user.sub);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  getAll(@Req() req) {
-    return this.adminService.getAllAdmins(req.user.sub); // Changed req.user.id to req.user.sub
+  getAll(@Req() req): Promise<any> {
+    return this.adminService.getAllAdmins(req.user.sub);
   }
+
   @Get('me')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN', 'MAIN_ADMIN')
-  getProfile(@Req() req) {
-    return this.adminService.getProfile(req.user.id); // ✅ Pass user.id from decoded JWT
+  getProfile(@Req() req): Promise<any> {
+    return this.adminService.getProfile(req.user.sub);
+  }
+
+  @Get('dashboard/stats')
+  @UseGuards(JwtAuthGuard)
+  getDashboardStats(): Promise<any> {
+    return this.adminService.getDashboardStats();
   }
 }

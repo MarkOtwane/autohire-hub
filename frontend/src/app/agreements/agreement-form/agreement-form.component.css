@@ -1,0 +1,128 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 1rem;
+}
+
+.agreement-shell {
+  max-width: 860px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin: 0.35rem 0 1.1rem;
+  color: #475569;
+}
+
+.agreement-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  gap: 0.8rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  color: #1e293b;
+  font-size: 0.92rem;
+}
+
+input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.65rem 0.7rem;
+  font-size: 0.95rem;
+}
+
+.signature-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.85rem;
+}
+
+.signature-card p {
+  margin: 0 0 0.45rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+.signature-canvas {
+  width: 100%;
+  border: 1px dashed #94a3b8;
+  border-radius: 8px;
+  background: #f8fafc;
+  touch-action: none;
+}
+
+.clear-btn,
+.submit-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clear-btn {
+  margin-top: 0.65rem;
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.terms-row {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.terms-row input {
+  width: auto;
+  margin-top: 0.2rem;
+}
+
+.error {
+  color: #b91c1c;
+  margin: 0;
+}
+
+.submit-btn {
+  background: #0f766e;
+  color: #ffffff;
+}
+
+.submit-btn[disabled] {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  :host {
+    padding: 2rem 1rem;
+  }
+
+  .agreement-shell {
+    padding: 1.4rem;
+  }
+
+  .two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,20 +1,157 @@
 <div class="vehicle-create">
-    <h2>Add New Vehicle</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <label>Make</label>
-      <input formControlName="make" type="text" required />
-  
-      <label>Model</label>
-      <input formControlName="model" type="text" required />
-  
-      <label>Status</label>
-      <select formControlName="status">
-        <option value="AVAILABLE">Available</option>
-        <option value="RENTED">Rented</option>
-        <option value="MAINTENANCE">Maintenance</option>
+  <h2>Add New Vehicle</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="name">Vehicle Name</label>
+      <input
+        id="name"
+        formControlName="name"
+        type="text"
+        required
+        placeholder="Enter vehicle name"
+      />
+      <div
+        *ngIf="form.get('name')?.invalid && form.get('name')?.touched"
+        class="error"
+      >
+        Vehicle name is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        required
+        placeholder="Enter vehicle description"
+        rows="3"
+      ></textarea>
+      <div
+        *ngIf="
+          form.get('description')?.invalid && form.get('description')?.touched
+        "
+        class="error"
+      >
+        Description is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category">
+        <option value="SUV">SUV</option>
+        <option value="SEDAN">Sedan</option>
+        <option value="ECONOMY">Economy</option>
+        <option value="LUXURY">Luxury</option>
+        <option value="PICKUP">Pickup</option>
+        <option value="VAN">Van</option>
       </select>
-  
-      <button type="submit">Create Vehicle</button>
-    </form>
-  </div>
-  
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="pricePerDay">Price Per Day ($)</label>
+        <input
+          id="pricePerDay"
+          formControlName="pricePerDay"
+          type="number"
+          min="0"
+          step="0.01"
+          required
+          placeholder="0.00"
+        />
+        <div
+          *ngIf="
+            form.get('pricePerDay')?.invalid && form.get('pricePerDay')?.touched
+          "
+          class="error"
+        >
+          Price per day is required and must be positive
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pricePerHour">Price Per Hour ($)</label>
+        <input
+          id="pricePerHour"
+          formControlName="pricePerHour"
+          type="number"
+          min="0"
+          step="0.01"
+          required
+          placeholder="0.00"
+        />
+        <div
+          *ngIf="
+            form.get('pricePerHour')?.invalid &&
+            form.get('pricePerHour')?.touched
+          "
+          class="error"
+        >
+          Price per hour is required and must be positive
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="location">Location</label>
+      <input
+        id="location"
+        formControlName="location"
+        type="text"
+        required
+        placeholder="Enter vehicle location"
+      />
+      <div
+        *ngIf="form.get('location')?.invalid && form.get('location')?.touched"
+        class="error"
+      >
+        Location is required
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="transmission">Transmission</label>
+        <select id="transmission" formControlName="transmission">
+          <option value="AUTOMATIC">Automatic</option>
+          <option value="MANUAL">Manual</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fuelType">Fuel Type</label>
+        <select id="fuelType" formControlName="fuelType">
+          <option value="PETROL">Petrol</option>
+          <option value="DIESEL">Diesel</option>
+          <option value="ELECTRIC">Electric</option>
+          <option value="HYBRID">Hybrid</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="imageUrl">Image URL (Optional)</label>
+      <input
+        id="imageUrl"
+        formControlName="imageUrl"
+        type="url"
+        placeholder="Enter image URL"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="cancel()" class="btn-secondary">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="btn-primary"
+      >
+        {{ loading ? "Creating..." : "Create Vehicle" }}
+      </button>
+    </div>
+  </form>
+</div>

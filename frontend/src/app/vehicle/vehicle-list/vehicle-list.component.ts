@@ -2,6 +2,7 @@
 
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Vehicle } from '../vehicle.model';
 import { VehicleService } from './vehicle.service';
 
@@ -17,7 +18,10 @@ export class VehicleListComponent implements OnInit {
   loading: boolean = true;
   error: string | null = null;
 
-  constructor(private vehicleService: VehicleService) {}
+  constructor(
+    private vehicleService: VehicleService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.loadVehicles();
@@ -59,9 +63,23 @@ export class VehicleListComponent implements OnInit {
    * @param vehicle The vehicle object to book.
    */
   bookVehicle(vehicle: Vehicle): void {
-    alert(`Initiating booking for: ${vehicle.name}`);
-    // Implement Angular Router navigation to a booking form:
-    // this.router.navigate(['/book-vehicle', vehicle.id]);
+    this.router.navigate(['/bookings/create', vehicle.id], {
+      queryParams: {
+        vehicleName: vehicle.name,
+        pickupLocation: vehicle.location,
+        returnLocation: vehicle.location,
+      },
+    });
+  }
+
+  startDigitalAgreement(vehicle: Vehicle): void {
+    this.router.navigate(['/agreements/new'], {
+      queryParams: {
+        vehicleName: vehicle.name,
+        pickupLocation: vehicle.location,
+        returnLocation: vehicle.location,
+      },
+    });
   }
 
   // Removed editVehicle and deleteVehicle methods as they are not for user view

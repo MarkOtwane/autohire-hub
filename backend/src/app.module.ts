@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
 import { AgentModule } from './agent/agent.module';
+import { AgreementsModule } from './agreements/agreements.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuditModule } from './audit/audit.module';
@@ -14,7 +16,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { SupportModule } from './support/support.module';
 import { UserModule } from './user/user.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ConfigModule } from '@nestjs/config';
     AuditModule,
     PrismaModule,
     PasswordResetModule,
+    AgreementsModule,
     ConfigModule.forRoot({
       isGlobal: true, // ✅ this ensures .env variables are loaded everywhere
     }),
