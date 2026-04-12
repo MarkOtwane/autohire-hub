@@ -11,63 +11,63 @@ import {
 export class CreateAgreementDto {
   @IsString()
   @IsNotEmpty()
-  clientSubmissionId: string;
+  clientSubmissionId!: string;
 
   @IsString()
   @IsNotEmpty()
-  driverName: string;
+  driverName!: string;
 
   @IsEmail()
-  driverEmail: string;
+  driverEmail!: string;
 
   @IsString()
   @IsNotEmpty()
-  driverPhone: string;
+  driverPhone!: string;
 
   @IsString()
   @IsNotEmpty()
-  driverIdNumber: string;
+  driverIdNumber!: string;
 
   @IsString()
   @IsNotEmpty()
-  driverLicenseNumber: string;
+  driverLicenseNumber!: string;
 
   @IsString()
   @IsNotEmpty()
-  emergencyContactName: string;
+  emergencyContactName!: string;
 
   @IsString()
   @IsNotEmpty()
-  emergencyContactPhone: string;
+  emergencyContactPhone!: string;
 
   @IsString()
   @IsNotEmpty()
-  vehicleName: string;
+  vehicleName!: string;
 
   @IsOptional()
   @IsString()
   vehiclePlateNumber?: string;
 
   @IsDateString()
-  pickupDate: string;
+  pickupDate!: string;
 
   @IsDateString()
-  returnDate: string;
+  returnDate!: string;
 
   @IsString()
   @IsNotEmpty()
-  pickupLocation: string;
+  pickupLocation!: string;
 
   @IsString()
   @IsNotEmpty()
-  returnLocation: string;
+  returnLocation!: string;
 
   @IsBoolean()
-  rentalTermsAccepted: boolean;
+  rentalTermsAccepted!: boolean;
 
   @IsString()
   @Matches(/^data:image\/(png|jpeg);base64,/, {
     message: 'Signature must be a base64 PNG or JPEG data URL.',
   })
-  signatureData: string;
+  signatureData!: string;
 }
