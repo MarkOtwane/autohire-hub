@@ -5,15 +5,20 @@
   "author": "Mark Otwane",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "22.x",
+    "npm": ">=10"
+  },
   "scripts": {
-    "build": "nest build",
+    "prebuild": "npm run prisma:generate",
+    "build": "npx nest build",
     "prisma:validate": "prisma validate --config ./prisma.config.ts",
     "prisma:generate": "prisma generate --config ./prisma.config.ts",
     "prisma:migrate:dev": "prisma migrate dev --config ./prisma.config.ts",
     "prisma:migrate:status": "prisma migrate status --config ./prisma.config.ts",
     "prisma:studio": "prisma studio --config ./prisma.config.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "node dist/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",

@@ -1,0 +1,15 @@
+services:
+     - type: web
+       name: car-rental-backend
+       runtime: node
+       rootDir: backend
+       plan: starter
+       buildCommand: npm ci --include=dev && npm run build
+       startCommand: npm run start:prod
+       envVars:
+            - key: NODE_VERSION
+              value: 22
+            - key: NODE_ENV
+              value: production
+            - key: NPM_CONFIG_PRODUCTION
+              value: "false"
