@@ -3,23 +3,24 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../enviroment/enviroment';
 import { TokenService } from './token.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000/admin';
+  private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   constructor(
     private http: HttpClient,
     private tokenService: TokenService,
-    private router: Router
+    private router: Router,
   ) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, credentials).pipe(
       tap((res: any) => {
         this.tokenService.setToken(res.access_token);
-      })
+      }),
     );
   }
 
@@ -40,7 +41,7 @@ export class AuthService {
     return this.tokenService.decodeToken()?.sub || '';
   }
   forgotPassword(data: { email: string }): Observable<any> {
-    return this.http.post('auth/forgot-password', data);
+    return this.http.post(`${this.baseUrl}/forgot-password`, data);
   }
 
   getUserEmail(): string {
@@ -52,9 +53,9 @@ export class AuthService {
     password: string;
     role: string;
   }): Observable<any> {
-    return this.http.post('auth/register', data);
+    return this.http.post(`${this.baseUrl}/register`, data);
   }
   resetPassword(data: { token: string; newPassword: string }): Observable<any> {
-    return this.http.post('auth/reset-password', data);
+    return this.http.post(`${this.baseUrl}/reset-password`, data);
   }
 }

@@ -1,4 +1,10 @@
-import { IsDateString, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateBookingDto {
   @IsString()
@@ -10,9 +16,11 @@ export class CreateBookingDto {
   @IsDateString()
   dropoffDate: string;
 
+  @IsOptional()
   @IsNumber()
   totalAmount: number;
 
   @IsOptional()
-  options?: any; // insurance, extra driver, etc.
+  @IsObject()
+  options?: Record<string, unknown>; // insurance, extra driver, etc.
 }

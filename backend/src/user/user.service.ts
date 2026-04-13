@@ -37,12 +37,9 @@ export class UserService {
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto) {
-    console.log('🟡 changePassword called for:', userId); // Debug log
-
     if (!userId) throw new BadRequestException('Missing user ID');
 
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    console.log('🟣 user fetched:', user);
 
     if (!user) throw new NotFoundException('User not found');
 

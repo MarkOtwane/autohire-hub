@@ -12,11 +12,12 @@ import {
 } from '@nestjs/common';
 import { Roles } from '../commons/decorators/roles.decorator';
 import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
+import { RolesGuard } from '../commons/guards/roles.guard';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { FilterPaymentDto } from './dto/filter-payment.dto';
 import { PaymentsService } from './payment.service';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('payments')
 export class PaymentsController {
   constructor(private readonly service: PaymentsService) {}

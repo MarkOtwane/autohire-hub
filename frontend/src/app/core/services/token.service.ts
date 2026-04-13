@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class TokenService {
   getUser() {
-    throw new Error('Method not implemented.');
+    return this.decodeToken() as {
+      sub?: string;
+      role?: string;
+      email?: string;
+    } | null;
   }
   private readonly key = 'access_token';
 

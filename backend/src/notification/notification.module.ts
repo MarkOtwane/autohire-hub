@@ -12,21 +12,21 @@ import { NotificationsController } from './notification.controller';
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => ({
         transport: {
-          host: 'smtp.gmail.com',
-          port: 465, // Use 465 for SSL
-          secure: true, // Must be true for port 465
+          host: config.get('EMAIL_HOST') || 'localhost',
+          port: Number(config.get('EMAIL_PORT') || 587),
+          secure: Number(config.get('EMAIL_PORT') || 587) === 465,
           auth: {
-            user: config.get('MAIL_USER'),
-            pass: config.get('MAIL_PASS'),
+            user: config.get('EMAIL_USER'),
+            pass: config.get('EMAIL_PASS'),
           },
           tls: {
-            minVersion: 'TLSv1.2', // Explicitly set TLS version
+            minVersion: 'TLSv1.2',
             ciphers:
               'HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!SRP:!CAMELLIA',
           },
         },
         defaults: {
-          from: `"CarRental" <${config.get('MAIL_USER')}>`,
+          from: config.get('EMAIL_FROM') || 'noreply@carrental.local',
         },
       }),
       inject: [ConfigService],

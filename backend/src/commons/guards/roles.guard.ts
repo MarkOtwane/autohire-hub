@@ -24,11 +24,6 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    // If user is main admin, bypass role checks
-    if (user?.isMain) {
-      return true;
-    }
-
     // Check if user has one of the required roles
     return requiredRoles.includes(user?.role);
   }

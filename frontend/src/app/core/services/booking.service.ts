@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../enviroment/enviroment';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
-  private readonly baseUrl = '/bookings';
+  private readonly baseUrl = `${environment.apiUrl}/bookings`;
 
   constructor(private http: HttpClient) {}
 
@@ -21,10 +22,10 @@ export class BookingService {
   }
 
   getAllBookings(): Observable<any[]> {
-    return this.http.get<any[]>('/bookings/admin');
+    return this.http.get<any[]>(`${environment.apiUrl}/admin/bookings`);
   }
 
   cancelBooking(id: string): Observable<any> {
-    return this.http.patch(`/bookings/admin/${id}/cancel`, {});
+    return this.http.patch(`${this.baseUrl}/${id}/cancel`, {});
   }
 }

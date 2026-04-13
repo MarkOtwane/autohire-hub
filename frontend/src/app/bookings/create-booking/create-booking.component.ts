@@ -108,7 +108,11 @@ export class CreateBookingComponent implements OnInit {
 
     const bookingData = {
       vehicleId: this.vehicleId,
-      ...this.form.value,
+      pickupDate: this.form.value.startDate,
+      dropoffDate: this.form.value.endDate,
+      options: {
+        note: this.form.value.note,
+      },
     };
 
     this.bookingService.createBooking(bookingData).subscribe({

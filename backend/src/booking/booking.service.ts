@@ -1,4 +1,11 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { BookingStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
@@ -8,16 +15,84 @@ export class BookingsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateBookingDto) {
-    // Line 11: The error occurs here
-    return this.prisma.booking.create({
-      data: {
-        userId: userId, // Assuming userId is correctly passed from req.user.id
-        vehicleId: dto.vehicleId, // This is the ID that's causing the foreign key violation
-        pickupDate: dto.pickupDate,
-        dropoffDate: dto.dropoffDate,
-        totalAmount: dto.totalAmount,
+    const pickupDate = new Date(dto.pickupDate);
+    const dropoffDate = new Date(dto.dropoffDate);
+
+    if (
+      Number.isNaN(pickupDate.getTime()) ||
+      Number.isNaN(dropoffDate.getTime())
+    ) {
+      throw new BadRequestException('Invalid booking dates');
+    }
+
+    if (dropoffDate <= pickupDate) {
+      throw new BadRequestException('Dropoff date must be after pickup date');
+    }
+
+    const vehicle = await this.prisma.vehicle.findUnique({
+      where: { id: dto.vehicleId },
+      select: {
+        id: true,
+        availability: true,
+        pricePerDay: true,
+        pricePerHour: true,
       },
     });
+
+    if (!vehicle) {
+      throw new NotFoundException('Vehicle not found');
+    }
+
+    if (!vehicle.availability) {
+      throw new ConflictException('Vehicle is currently unavailable');
+    }
+
+    const overlappingBooking = await this.prisma.booking.findFirst({
+      where: {
+        vehicleId: dto.vehicleId,
+        status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+        pickupDate: { lt: dropoffDate },
+        dropoffDate: { gt: pickupDate },
+      },
+      select: { id: true },
+    });
+
+    if (overlappingBooking) {
+      throw new ConflictException(
+        'Vehicle already booked for the selected dates',
+      );
+    }
+
+    const totalAmount = this.calculateTotalAmount(
+      pickupDate,
+      dropoffDate,
+      vehicle.pricePerDay,
+      vehicle.pricePerHour,
+    );
+
+    return this.prisma.booking.create({
+      data: {
+        userId,
+        vehicleId: dto.vehicleId,
+        pickupDate,
+        dropoffDate,
+        totalAmount,
+        options: dto.options,
+      },
+    });
+  }
+
+  private calculateTotalAmount(
+    pickupDate: Date,
+    dropoffDate: Date,
+    pricePerDay: number,
+    pricePerHour: number,
+  ): number {
+    const durationMs = dropoffDate.getTime() - pickupDate.getTime();
+    const durationHours = Math.max(1, Math.ceil(durationMs / (1000 * 60 * 60)));
+    const days = Math.floor(durationHours / 24);
+    const remainingHours = durationHours % 24;
+    return days * pricePerDay + remainingHours * pricePerHour;
   }
 
   async findMine(userId: string) {
@@ -31,18 +106,49 @@ export class BookingsService {
     });
   }
 
-  async findById(id: string) {
-    return this.prisma.booking.findUnique({
-      where: { id },
+  async findByIdForActor(
+    actor: { id: string; role: string },
+    bookingId: string,
+  ) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
       include: { vehicle: true, agent: true, payment: true },
     });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (actor.role === 'USER' && booking.userId !== actor.id) {
+      throw new ForbiddenException('You can only view your own bookings');
+    }
+
+    if (actor.role === 'AGENT' && booking.agentId !== actor.id) {
+      throw new ForbiddenException('You can only view assigned bookings');
+    }
+
+    return booking;
   }
 
-  async cancel(userId: string, bookingId: string) {
+  async cancel(actor: { id: string; role: string }, bookingId: string) {
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
     });
-    if (booking?.userId !== userId) throw new ForbiddenException();
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (actor.role === 'USER' && booking.userId !== actor.id) {
+      throw new ForbiddenException('You can only cancel your own bookings');
+    }
+
+    if (actor.role === 'AGENT' && booking.agentId !== actor.id) {
+      throw new ForbiddenException(
+        'You can only cancel bookings assigned to you',
+      );
+    }
+
     return this.prisma.booking.update({
       where: { id: bookingId },
       data: { status: 'CANCELLED' },

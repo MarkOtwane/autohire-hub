@@ -23,13 +23,20 @@ export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
   @Post()
+  @Roles('USER')
   create(@Req() req, @Body() dto: CreateBookingDto) {
-    return this.bookingsService.create(req.user.sub, dto);
+    return this.bookingsService.create(req.user.id, dto);
   }
 
   @Get('mine')
   @Roles('USER')
   findMine(@Req() req) {
+    return this.bookingsService.findMine(req.user.sub);
+  }
+
+  @Get('my')
+  @Roles('USER')
+  findMy(@Req() req) {
     return this.bookingsService.findMine(req.user.sub);
   }
 
@@ -55,12 +62,14 @@ export class BookingsController {
   }
 
   @Patch(':id/cancel')
+  @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
   cancel(@Param('id') id: string, @Req() req) {
-    return this.bookingsService.cancel(req.user.sub, id);
+    return this.bookingsService.cancel(req.user, id);
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string) {
-    return this.bookingsService.findById(id);
+  @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
+  getOne(@Param('id') id: string, @Req() req) {
+    return this.bookingsService.findByIdForActor(req.user, id);
   }
 }

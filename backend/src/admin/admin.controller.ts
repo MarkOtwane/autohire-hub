@@ -38,13 +38,15 @@ export class AdminController {
   }
 
   @Get('agents')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   getAgents(): Promise<any> {
     return this.adminService.getAgents();
   }
 
   @Patch('agent/:id/status')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   toggleAgent(
     @Param('id') id: string,
     @Body() body: { active: boolean },
@@ -60,7 +62,8 @@ export class AdminController {
   }
 
   @Get('vehicles')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   getVehicles(): Promise<any> {
     return this.adminService.getVehicles();
   }
@@ -87,13 +90,15 @@ export class AdminController {
   }
 
   @Get('bookings')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   getBookings(): Promise<any> {
     return this.adminService.getBookings();
   }
 
   @Patch('bookings/:id/status')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   updateBookingStatus(
     @Param('id') id: string,
     @Body() dto: { status: string },
@@ -114,37 +119,43 @@ export class AdminController {
   }
 
   @Get('notifications')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   getNotifications(): Promise<any> {
     return this.adminService.getNotifications();
   }
 
   @Patch('notifications/:id/read')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   markNotificationAsRead(@Param('id') id: string): Promise<any> {
     return this.adminService.markNotificationAsRead(id);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('create')
+  @Roles('MAIN_ADMIN')
   create(@Body() dto: CreateAdminDto, @Req() req): Promise<any> {
     return this.adminService.createAdmin(dto, req.user.sub);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('change-password')
+  @Roles('ADMIN', 'MAIN_ADMIN')
   changePassword(@Req() req, @Body() dto: UpdatePasswordDto): Promise<any> {
     return this.adminService.updatePassword(req.user.sub, dto);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
+  @Roles('MAIN_ADMIN')
   delete(@Req() req, @Param('id') id: string): Promise<any> {
     return this.adminService.deleteAdmin(id, req.user.sub);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
+  @Roles('MAIN_ADMIN')
   getAll(@Req() req): Promise<any> {
     return this.adminService.getAllAdmins(req.user.sub);
   }
@@ -157,7 +168,8 @@ export class AdminController {
   }
 
   @Get('dashboard/stats')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
   getDashboardStats(): Promise<any> {
     return this.adminService.getDashboardStats();
   }

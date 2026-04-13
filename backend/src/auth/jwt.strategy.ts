@@ -20,9 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     return {
       id: payload.sub,
+      sub: payload.sub,
       email: payload.email,
       role: payload.role,
-      isMain: payload.isMain ?? false, // Added isMain if needed for admin checks
+      isMain: payload.role === 'MAIN_ADMIN' || payload.isMainAdmin === true,
     };
   }
 }
