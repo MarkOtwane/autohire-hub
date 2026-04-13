@@ -1,260 +1,356 @@
-<!-- Include Font Awesome for icons -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-/>
-<!-- Google Fonts: Inter -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-  rel="stylesheet"
-/>
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" [class.scrolled]="isNavScrolled()">
+  <div class="navbar-inner">
+    <a class="logo" (click)="scrollToSection('hero')" role="button" tabindex="0">Trator</a>
 
-<div class="home-container">
-  <!-- Top Bar & Navbar -->
-  <header class="top-header">
-    <div class="top-bar">
-      <div class="logo">Trator</div>
-      <div class="location"><i class="fas fa-map-marker-alt"></i> Location</div>
+    <ul class="nav-links" role="list">
+      <li><a (click)="scrollToSection('hero')" role="button" tabindex="0">Home</a></li>
+      <li><a (click)="scrollToSection('cars')" role="button" tabindex="0">Vehicles</a></li>
+      <li><a (click)="scrollToSection('how')" role="button" tabindex="0">How It Works</a></li>
+      <li><a (click)="scrollToSection('testimonials')" role="button" tabindex="0">Reviews</a></li>
+      <li><a (click)="scrollToSection('footer')" role="button" tabindex="0">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="btn-ghost" (click)="onBookNow()">Login</button>
+      <button class="btn-accent" (click)="onBookNow()">Book Now</button>
     </div>
-    <nav class="navbar">
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#vehicles">Vehicles</a></li>
-        <li><a href="#client">Feedback</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <!-- Hero Section -->
-  <section class="hero-section" id="home">
+    <button
+      class="hamburger"
+      [class.open]="isMobileMenuOpen()"
+      (click)="toggleMobileMenu()"
+      aria-label="Toggle navigation menu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  @if (isMobileMenuOpen()) {
+    <div class="mobile-menu">
+      <a (click)="scrollToSection('hero')">Home</a>
+      <a (click)="scrollToSection('cars')">Vehicles</a>
+      <a (click)="scrollToSection('how')">How It Works</a>
+      <a (click)="scrollToSection('testimonials')">Reviews</a>
+      <a (click)="scrollToSection('footer')">Contact</a>
+      <button class="btn-accent mobile-book-btn" (click)="onBookNow()">Book Now</button>
+    </div>
+  }
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-main">
     <div class="hero-content">
-      <h1>Car Rent for You</h1>
-      <p>
-        There are many variations of passages of Lorem Ipsum available, but the
-        majority have suffered alteration in some form, by injected humour, or
-        randomised words which don't look even slightly believable.
+      <div class="hero-badge">
+        <i class="fas fa-star"></i>
+        Trusted by 500+ Happy Customers
+      </div>
+      <h1 class="hero-title">
+        Rent Your Perfect Car<br />
+        <span class="hero-accent">Anytime, Anywhere.</span>
+      </h1>
+      <p class="hero-subtitle">
+        From city sedans to off-road SUVs — explore our premium fleet and book your ideal ride in
+        minutes.
       </p>
-      <div class="hero-buttons">
-        <button class="btn btn-primary">Read More</button>
-        <button class="btn btn-secondary">Contact Us</button>
+      <div class="hero-ctas">
+        <button class="btn-accent btn-lg" (click)="onBookNow()">
+          <i class="fas fa-calendar-alt"></i>&nbsp;Book Now
+        </button>
+        <button class="btn-outline btn-lg" (click)="onBrowseCars()">
+          <i class="fas fa-car"></i>&nbsp;Browse Cars
+        </button>
       </div>
     </div>
-    <div class="hero-image">
-      <img src="https://pin.it/HiIqoLn41" alt="" />
-    </div>
-    <div class="hero-arrow left-arrow"><i class="fas fa-chevron-left"></i></div>
-    <div class="hero-arrow right-arrow">
-      <i class="fas fa-chevron-right"></i>
-    </div>
-  </section>
+  </div>
 
-  <!-- About Us Section -->
-  <section class="about-us-section" id="about">
-    <div class="about-image">
-      <img src="../../../public/images/about-img.png" alt="About Car" />
+  <!-- Quick Booking Form -->
+  <div class="booking-card-wrap">
+    <div class="booking-card">
+      <h3 class="booking-title"><i class="fas fa-search"></i> Quick Booking</h3>
+      <div class="booking-form">
+        <div class="booking-field">
+          <label class="booking-label">
+            <i class="fas fa-map-marker-alt"></i> Pickup Location
+          </label>
+          <input
+            class="booking-input"
+            type="text"
+            placeholder="e.g. Nairobi CBD"
+            [(ngModel)]="bookingForm.location"
+            name="location"
+          />
+        </div>
+        <div class="booking-field">
+          <label class="booking-label"> <i class="fas fa-calendar"></i> Pickup Date </label>
+          <input
+            class="booking-input"
+            type="date"
+            [(ngModel)]="bookingForm.pickupDate"
+            name="pickupDate"
+          />
+        </div>
+        <div class="booking-field">
+          <label class="booking-label">
+            <i class="fas fa-calendar-check"></i> Return Date
+          </label>
+          <input
+            class="booking-input"
+            type="date"
+            [(ngModel)]="bookingForm.returnDate"
+            name="returnDate"
+          />
+        </div>
+        <div class="booking-field">
+          <label class="booking-label"> <i class="fas fa-car-side"></i> Car Type </label>
+          <select class="booking-input" [(ngModel)]="bookingForm.carType" name="carType">
+            <option value="">Any Type</option>
+            <option value="SUV">SUV</option>
+            <option value="Sedan">Sedan</option>
+            <option value="Economy">Economy</option>
+            <option value="Luxury">Luxury</option>
+            <option value="Van">Van</option>
+          </select>
+        </div>
+        <button class="btn-accent booking-search-btn" (click)="onSearchCars()">
+          <i class="fas fa-search"></i>&nbsp;Search
+        </button>
+      </div>
     </div>
-    <div class="about-content">
-      <h2>ABOUT US</h2>
-      <p>
-        It is a long established fact that a reader will be distracted by the
-        readable content of a page. The point of using Lorem Ipsum is that it
-        has a more-or-less normal distribution of letters, as opposed to using
-        'Content here, content here', making it look like readable English. Many
-        desktop publishing packages and web page editors now use Lorem Ipsum as
-        their default model text, and a search for 'lorem ipsum' will uncover
-        many web sites still in their infancy. Various versions have evolved
-        over the years, sometimes by accident, sometimes on purpose (injected
-        humour and the like).
-      </p>
-      <button class="btn btn-primary">Read More</button>
-    </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Search Your Best Cars Section -->
-  <section class="search-cars-section">
-    <h2>Search Your Best Cars</h2>
-    <p>
-      It is a long established fact that a reader will be distracted by the
-      readable content of a page.
+<!-- ===== STATS BAR ===== -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <span class="stat-number">500+</span>
+      <span class="stat-label">Happy Customers</span>
+    </div>
+    <div class="stat-divider" aria-hidden="true"></div>
+    <div class="stat-item">
+      <span class="stat-number">4.9&nbsp;<i class="fas fa-star star-inline"></i></span>
+      <span class="stat-label">Average Rating</span>
+    </div>
+    <div class="stat-divider" aria-hidden="true"></div>
+    <div class="stat-item">
+      <span class="stat-number">50+</span>
+      <span class="stat-label">Vehicles Available</span>
+    </div>
+    <div class="stat-divider" aria-hidden="true"></div>
+    <div class="stat-item">
+      <span class="stat-number">24/7</span>
+      <span class="stat-label">Customer Support</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FEATURED CARS ===== -->
+<section class="cars-section" id="cars">
+  <div class="section-header center">
+    <span class="section-tag">Our Fleet</span>
+    <h2 class="section-title">Find Your Perfect Ride</h2>
+    <p class="section-subtitle">
+      Explore our handpicked selection of premium vehicles available for short and long-term
+      rentals.
     </p>
-    <div class="search-filters">
-      <input type="text" placeholder="Any Brand" />
-      <input type="text" placeholder="Any Type" />
-      <input type="text" placeholder="Price" />
-      <button class="btn btn-search">SEARCH NOW</button>
-    </div>
-  </section>
+  </div>
 
-  <!-- Our Best Offers Section -->
-  <section class="best-offers-section" id="vehicles">
-    <h2>OUR BEST OFFERS</h2>
-    <div class="car-grid">
-      <div class="car-card" *ngFor="let car of cars">
-        <img [src]="car.imageUrl" alt="Car Image" />
-        <h3>{{ car.name }}</h3>
-        <p>Start per day ${{ car.price | number: "1.2-2" }}</p>
-        <button class="btn btn-offer" (click)="onBookNowClick()">
-          BOOK NOW
-        </button>
-        <button class="btn btn-offer" (click)="onStartAgreement(car.name)">
-          DIGITAL AGREEMENT
-        </button>
+  <div class="cars-grid">
+    @for (car of cars; track car.name) {
+      <div class="car-card">
+        <div class="car-img-wrap">
+          <img [src]="car.imageUrl" [alt]="car.imageAlt" loading="lazy" />
+          <span class="car-badge">{{ car.category }}</span>
+        </div>
+        <div class="car-body">
+          <h3 class="car-name">{{ car.name }}</h3>
+          <div class="car-specs">
+            <span class="spec-chip"><i class="fas fa-cog"></i>{{ car.transmission }}</span>
+            <span class="spec-chip"><i class="fas fa-users"></i>{{ car.seats }} Seats</span>
+            <span class="spec-chip"><i class="fas fa-gas-pump"></i>{{ car.fuel }}</span>
+          </div>
+          <div class="car-footer">
+            <div class="car-price">
+              <span class="price-amount">${{ car.price }}</span>
+              <span class="price-unit">/ day</span>
+            </div>
+            <button class="btn-accent" (click)="onRentNow(car)">Rent Now</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    }
+  </div>
+</section>
 
-  <!-- Why Choose Us Section -->
-  <section class="why-choose-us-section">
-    <h2>WHY CHOOSE US</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="icon-circle"><i class="fas fa-shield-alt"></i></div>
-        <h3>SAFETY & SECURITY</h3>
-        <p>
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page.
-        </p>
-      </div>
-      <div class="feature-card">
-        <div class="icon-circle"><i class="fas fa-book"></i></div>
-        <h3>Online Booking</h3>
-        <p>
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page.
-        </p>
-      </div>
-      <div class="feature-card">
-        <div class="icon-circle"><i class="fas fa-user-tie"></i></div>
-        <h3>Best Drivers</h3>
-        <p>
-          It is a long established fact that a reader will be distracted by the
-          readable content of a page.
-        </p>
-      </div>
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-tag">Process</span>
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Get on the road in 4 simple steps</p>
     </div>
-  </section>
 
-  <!-- What Says Customers Section -->
-  <section class="testimonials-section" id="client">
-    <h2>WHAT SAYS CUSTOMERS</h2>
-    <div class="testimonials-carousel">
+    <div class="steps-grid">
+      @for (step of steps; track step.title; let i = $index) {
+        <div class="step-card">
+          <div class="step-number">0{{ i + 1 }}</div>
+          <div class="step-icon-circle">
+            <i [class]="step.icon"></i>
+          </div>
+          <h3 class="step-title">{{ step.title }}</h3>
+          <p class="step-desc">{{ step.description }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== WHY CHOOSE US ===== -->
+<section class="why-section" id="why">
+  <div class="why-inner">
+    <div class="section-header">
+      <span class="section-tag">Why Trator</span>
+      <h2 class="section-title">Premium Service<br />You Can Count On</h2>
+      <p class="section-subtitle">
+        We go beyond car rentals — we deliver experiences that keep you coming back.
+      </p>
+    </div>
+
+    <div class="usp-grid">
+      @for (usp of usps; track usp.title) {
+        <div class="usp-card">
+          <div class="usp-icon-circle">
+            <i [class]="usp.icon"></i>
+          </div>
+          <div class="usp-content">
+            <h3 class="usp-title">{{ usp.title }}</h3>
+            <p class="usp-desc">{{ usp.description }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="testimonials-section" id="testimonials">
+  <div class="container">
+    <div class="section-header center">
+      <span class="section-tag">Reviews</span>
+      <h2 class="section-title">What Our Customers Say</h2>
+      <p class="section-subtitle">Thousands of happy drivers — here's what they have to say.</p>
+    </div>
+
+    <div class="testimonials-wrapper">
       <button
-        class="carousel-arrow left-arrow"
+        class="carousel-btn"
         (click)="scrollTestimonials('left')"
+        aria-label="Previous review"
       >
         <i class="fas fa-chevron-left"></i>
       </button>
-      <div class="testimonials-cards-container">
-        <div class="testimonial-card" *ngFor="let testimonial of testimonials">
-          <img [src]="testimonial.imageUrl" alt="Customer Photo" />
-          <h3>{{ testimonial.name }}</h3>
-          <p class="quote-icon">"</p>
-          <p>{{ testimonial.quote }}</p>
-        </div>
-        <!-- Duplicate for visual effect if needed, or implement a proper carousel library -->
-        <div class="testimonial-card" *ngFor="let testimonial of testimonials">
-          <img [src]="testimonial.imageUrl" alt="Customer Photo" />
-          <h3>{{ testimonial.name }}</h3>
-          <p class="quote-icon">"</p>
-          <p>{{ testimonial.quote }}</p>
-        </div>
+
+      <div class="testimonials-track">
+        @for (t of testimonials; track t.name) {
+          <div class="testimonial-card">
+            <div class="t-quote-mark">"</div>
+            <p class="t-text">{{ t.quote }}</p>
+            <div class="t-stars">
+              @for (s of getStars(t.rating); track $index) {
+                <i class="fas fa-star"></i>
+              }
+            </div>
+            <div class="t-author">
+              <img [src]="t.avatarUrl" [alt]="t.name" loading="lazy" />
+              <div class="t-author-info">
+                <span class="t-name">{{ t.name }}</span>
+                <span class="t-role">{{ t.role }}</span>
+              </div>
+            </div>
+          </div>
+        }
       </div>
+
       <button
-        class="carousel-arrow right-arrow"
+        class="carousel-btn"
         (click)="scrollTestimonials('right')"
+        aria-label="Next review"
       >
         <i class="fas fa-chevron-right"></i>
       </button>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Get In Touch Section -->
-  <section class="contact-section" id="contact">
-    <h2>GET IN TOUCH</h2>
-    <form (ngSubmit)="onSubmitContactForm()">
-      <input
-        type="text"
-        placeholder="Name"
-        [(ngModel)]="contactForm.name"
-        name="name"
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        [(ngModel)]="contactForm.email"
-        name="email"
-        required
-      />
-      <input
-        type="tel"
-        placeholder="Phone Number"
-        [(ngModel)]="contactForm.phone"
-        name="phone"
-      />
-      <textarea
-        placeholder="Message"
-        [(ngModel)]="contactForm.message"
-        name="message"
-        required
-      ></textarea>
-      <button type="submit" class="btn btn-send">SEND</button>
-    </form>
-  </section>
+<!-- ===== CTA SECTION ===== -->
+<section class="cta-section">
+  <div class="cta-overlay"></div>
+  <div class="cta-content">
+    <h2 class="cta-title">Ready to Hit the Road?</h2>
+    <p class="cta-subtitle">
+      Book your car today and experience the freedom of the open road.
+    </p>
+    <button class="btn-accent btn-lg" (click)="onBookNow()">
+      Get Started &nbsp;<i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-column subscribe">
-        <h3>Trator</h3>
-        <h4>Subscribe Now</h4>
-        <input type="email" placeholder="Enter your email" />
-        <button class="btn btn-subscribe">SUBSCRIBE</button>
-      </div>
-      <div class="footer-column">
-        <h4>Information</h4>
-        <ul>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Services</a></li>
-          <li><a href="#">Our Team</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h4>Helpful Links</h4>
-        <ul>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
-          <li><a href="#">Support</a></li>
-          <li><a href="#">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h4>Investments</h4>
-        <ul>
-          <li><a href="#">Investment Plans</a></li>
-          <li><a href="#">Financial Reports</a></li>
-          <li><a href="#">Partnerships</a></li>
-        </ul>
-      </div>
-      <div class="footer-column contact-info">
-        <h4>Contact Us</h4>
-        <p><i class="fas fa-map-marker-alt"></i> Location</p>
-        <p><i class="fas fa-phone"></i> +01 1234567890</p>
-        <p><i class="fas fa-envelope"></i> demo&#64;gmail.com</p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-        </div>
+<!-- ===== FOOTER ===== -->
+<footer class="footer" id="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Trator</div>
+      <p class="footer-tagline">
+        Premium car rentals for every journey. Trusted by hundreds of drivers across Kenya.
+      </p>
+      <div class="social-icons">
+        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 All Rights Reserved. Design by MSL</p>
+
+    <div class="footer-col">
+      <h4 class="footer-col-title">Information</h4>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="#">Our Fleet</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
     </div>
-  </footer>
-</div>
+
+    <div class="footer-col">
+      <h4 class="footer-col-title">Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms &amp; Conditions</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a (click)="onBookNow()" role="button" tabindex="0">Sign In</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-col-title">Get In Touch</h4>
+      <ul class="footer-contact-list">
+        <li><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</li>
+        <li><i class="fas fa-phone"></i> +254 700 000 000</li>
+        <li><i class="fas fa-envelope"></i> info&#64;trator.co.ke</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2026 Trator. All rights reserved.</p>
+  </div>
+</footer>
