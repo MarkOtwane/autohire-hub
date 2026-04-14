@@ -1,14 +1,34 @@
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar" [class.scrolled]="isNavScrolled()">
   <div class="navbar-inner">
-    <a class="logo" (click)="scrollToSection('hero')" role="button" tabindex="0">Trator</a>
+    <a class="logo" (click)="scrollToSection('hero')" role="button" tabindex="0"
+      >Trator</a
+    >
 
     <ul class="nav-links" role="list">
-      <li><a (click)="scrollToSection('hero')" role="button" tabindex="0">Home</a></li>
-      <li><a (click)="scrollToSection('cars')" role="button" tabindex="0">Vehicles</a></li>
-      <li><a (click)="scrollToSection('how')" role="button" tabindex="0">How It Works</a></li>
-      <li><a (click)="scrollToSection('testimonials')" role="button" tabindex="0">Reviews</a></li>
-      <li><a (click)="scrollToSection('footer')" role="button" tabindex="0">Contact</a></li>
+      <li>
+        <a (click)="scrollToSection('hero')" role="button" tabindex="0">Home</a>
+      </li>
+      <li>
+        <a (click)="scrollToSection('cars')" role="button" tabindex="0"
+          >Vehicles</a
+        >
+      </li>
+      <li>
+        <a (click)="scrollToSection('how')" role="button" tabindex="0"
+          >How It Works</a
+        >
+      </li>
+      <li>
+        <a (click)="scrollToSection('testimonials')" role="button" tabindex="0"
+          >Reviews</a
+        >
+      </li>
+      <li>
+        <a (click)="scrollToSection('footer')" role="button" tabindex="0"
+          >Contact</a
+        >
+      </li>
     </ul>
 
     <div class="nav-actions">
@@ -35,7 +55,9 @@
       <a (click)="scrollToSection('how')">How It Works</a>
       <a (click)="scrollToSection('testimonials')">Reviews</a>
       <a (click)="scrollToSection('footer')">Contact</a>
-      <button class="btn-accent mobile-book-btn" (click)="onBookNow()">Book Now</button>
+      <button class="btn-accent mobile-book-btn" (click)="onBookNow()">
+        Book Now
+      </button>
     </div>
   }
 </nav>
@@ -55,8 +77,8 @@
         <span class="hero-accent">Anytime, Anywhere.</span>
       </h1>
       <p class="hero-subtitle">
-        From city sedans to off-road SUVs — explore our premium fleet and book your ideal ride in
-        minutes.
+        From city sedans to off-road SUVs — explore our premium fleet and book
+        your ideal ride in minutes.
       </p>
       <div class="hero-ctas">
         <button class="btn-accent btn-lg" (click)="onBookNow()">
@@ -87,7 +109,9 @@
           />
         </div>
         <div class="booking-field">
-          <label class="booking-label"> <i class="fas fa-calendar"></i> Pickup Date </label>
+          <label class="booking-label">
+            <i class="fas fa-calendar"></i> Pickup Date
+          </label>
           <input
             class="booking-input"
             type="date"
@@ -107,8 +131,14 @@
           />
         </div>
         <div class="booking-field">
-          <label class="booking-label"> <i class="fas fa-car-side"></i> Car Type </label>
-          <select class="booking-input" [(ngModel)]="bookingForm.carType" name="carType">
+          <label class="booking-label">
+            <i class="fas fa-car-side"></i> Car Type
+          </label>
+          <select
+            class="booking-input"
+            [(ngModel)]="bookingForm.carType"
+            name="carType"
+          >
             <option value="">Any Type</option>
             <option value="SUV">SUV</option>
             <option value="Sedan">Sedan</option>
@@ -134,7 +164,9 @@
     </div>
     <div class="stat-divider" aria-hidden="true"></div>
     <div class="stat-item">
-      <span class="stat-number">4.9&nbsp;<i class="fas fa-star star-inline"></i></span>
+      <span class="stat-number"
+        >4.9&nbsp;<i class="fas fa-star star-inline"></i
+      ></span>
       <span class="stat-label">Average Rating</span>
     </div>
     <div class="stat-divider" aria-hidden="true"></div>
@@ -152,45 +184,55 @@
 
 <!-- ===== FEATURED CARS ===== -->
 <section class="cars-section" id="cars">
-  <div class="section-header center">
-    <span class="section-tag">Our Fleet</span>
-    <h2 class="section-title">Find Your Perfect Ride</h2>
-    <p class="section-subtitle">
-      Explore our handpicked selection of premium vehicles available for short and long-term
-      rentals.
-    </p>
-  </div>
+  <div class="section-shell">
+    <div class="section-header center">
+      <span class="section-tag">Our Fleet</span>
+      <h2 class="section-title">Find Your Perfect Ride</h2>
+      <p class="section-subtitle">
+        Explore our handpicked selection of premium vehicles available for short
+        and long-term rentals.
+      </p>
+    </div>
 
-  <div class="cars-grid">
-    @for (car of cars; track car.name) {
-      <div class="car-card">
-        <div class="car-img-wrap">
-          <img [src]="car.imageUrl" [alt]="car.imageAlt" loading="lazy" />
-          <span class="car-badge">{{ car.category }}</span>
-        </div>
-        <div class="car-body">
-          <h3 class="car-name">{{ car.name }}</h3>
-          <div class="car-specs">
-            <span class="spec-chip"><i class="fas fa-cog"></i>{{ car.transmission }}</span>
-            <span class="spec-chip"><i class="fas fa-users"></i>{{ car.seats }} Seats</span>
-            <span class="spec-chip"><i class="fas fa-gas-pump"></i>{{ car.fuel }}</span>
+    <div class="cars-grid">
+      @for (car of cars; track car.name) {
+        <div class="car-card">
+          <div class="car-img-wrap">
+            <img [src]="car.imageUrl" [alt]="car.imageAlt" loading="lazy" />
+            <span class="car-badge">{{ car.category }}</span>
           </div>
-          <div class="car-footer">
-            <div class="car-price">
-              <span class="price-amount">${{ car.price }}</span>
-              <span class="price-unit">/ day</span>
+          <div class="car-body">
+            <h3 class="car-name">{{ car.name }}</h3>
+            <div class="car-specs">
+              <span class="spec-chip"
+                ><i class="fas fa-cog"></i>{{ car.transmission }}</span
+              >
+              <span class="spec-chip"
+                ><i class="fas fa-users"></i>{{ car.seats }} Seats</span
+              >
+              <span class="spec-chip"
+                ><i class="fas fa-gas-pump"></i>{{ car.fuel }}</span
+              >
             </div>
-            <button class="btn-accent" (click)="onRentNow(car)">Rent Now</button>
+            <div class="car-footer">
+              <div class="car-price">
+                <span class="price-amount">${{ car.price }}</span>
+                <span class="price-unit">/ day</span>
+              </div>
+              <button class="btn-accent" (click)="onRentNow(car)">
+                Rent Now
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    }
+      }
+    </div>
   </div>
 </section>
 
 <!-- ===== HOW IT WORKS ===== -->
 <section class="how-section" id="how">
-  <div class="container">
+  <div class="section-shell">
     <div class="section-header center">
       <span class="section-tag">Process</span>
       <h2 class="section-title">How It Works</h2>
@@ -219,7 +261,8 @@
       <span class="section-tag">Why Trator</span>
       <h2 class="section-title">Premium Service<br />You Can Count On</h2>
       <p class="section-subtitle">
-        We go beyond car rentals — we deliver experiences that keep you coming back.
+        We go beyond car rentals — we deliver experiences that keep you coming
+        back.
       </p>
     </div>
 
@@ -241,11 +284,13 @@
 
 <!-- ===== TESTIMONIALS ===== -->
 <section class="testimonials-section" id="testimonials">
-  <div class="container">
+  <div class="section-shell">
     <div class="section-header center">
       <span class="section-tag">Reviews</span>
       <h2 class="section-title">What Our Customers Say</h2>
-      <p class="section-subtitle">Thousands of happy drivers — here's what they have to say.</p>
+      <p class="section-subtitle">
+        Thousands of happy drivers — here's what they have to say.
+      </p>
     </div>
 
     <div class="testimonials-wrapper">
@@ -309,7 +354,8 @@
     <div class="footer-brand">
       <div class="footer-logo">Trator</div>
       <p class="footer-tagline">
-        Premium car rentals for every journey. Trusted by hundreds of drivers across Kenya.
+        Premium car rentals for every journey. Trusted by hundreds of drivers
+        across Kenya.
       </p>
       <div class="social-icons">
         <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
