@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { BookingStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import { CheckBookingConflictDto } from './dto/check-booking-conflict.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 
@@ -15,19 +16,10 @@ export class BookingsService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateBookingDto) {
-    const pickupDate = new Date(dto.pickupDate);
-    const dropoffDate = new Date(dto.dropoffDate);
-
-    if (
-      Number.isNaN(pickupDate.getTime()) ||
-      Number.isNaN(dropoffDate.getTime())
-    ) {
-      throw new BadRequestException('Invalid booking dates');
-    }
-
-    if (dropoffDate <= pickupDate) {
-      throw new BadRequestException('Dropoff date must be after pickup date');
-    }
+    const { pickupDate, dropoffDate } = this.parseAndValidateDateRange(
+      dto.pickupDate,
+      dto.dropoffDate,
+    );
 
     const vehicle = await this.prisma.vehicle.findUnique({
       where: { id: dto.vehicleId },
@@ -47,15 +39,11 @@ export class BookingsService {
       throw new ConflictException('Vehicle is currently unavailable');
     }
 
-    const overlappingBooking = await this.prisma.booking.findFirst({
-      where: {
-        vehicleId: dto.vehicleId,
-        status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
-        pickupDate: { lt: dropoffDate },
-        dropoffDate: { gt: pickupDate },
-      },
-      select: { id: true },
-    });
+    const overlappingBooking = await this.findOverlappingBooking(
+      dto.vehicleId,
+      pickupDate,
+      dropoffDate,
+    );
 
     if (overlappingBooking) {
       throw new ConflictException(
@@ -79,6 +67,67 @@ export class BookingsService {
         totalAmount,
         options: dto.options,
       },
+    });
+  }
+
+  async validateConflict(dto: CheckBookingConflictDto) {
+    const { pickupDate, dropoffDate } = this.parseAndValidateDateRange(
+      dto.pickupDate,
+      dto.dropoffDate,
+    );
+
+    const overlappingBooking = await this.findOverlappingBooking(
+      dto.vehicleId,
+      pickupDate,
+      dropoffDate,
+      dto.excludeBookingId,
+    );
+
+    return {
+      hasConflict: Boolean(overlappingBooking),
+      conflictingBookingId: overlappingBooking?.id ?? null,
+    };
+  }
+
+  private parseAndValidateDateRange(pickupRaw: string, dropoffRaw: string) {
+    const pickupDate = new Date(pickupRaw);
+    const dropoffDate = new Date(dropoffRaw);
+
+    if (
+      Number.isNaN(pickupDate.getTime()) ||
+      Number.isNaN(dropoffDate.getTime())
+    ) {
+      throw new BadRequestException('Invalid booking dates');
+    }
+
+    if (dropoffDate <= pickupDate) {
+      throw new BadRequestException('Dropoff date must be after pickup date');
+    }
+
+    return { pickupDate, dropoffDate };
+  }
+
+  private findOverlappingBooking(
+    vehicleId: string,
+    pickupDate: Date,
+    dropoffDate: Date,
+    excludeBookingId?: string,
+  ) {
+    return this.prisma.booking.findFirst({
+      where: {
+        vehicleId,
+        status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+        pickupDate: { lt: dropoffDate },
+        dropoffDate: { gt: pickupDate },
+        ...(excludeBookingId
+          ? {
+              NOT: {
+                id: excludeBookingId,
+              },
+            }
+          : {}),
+      },
+      select: { id: true },
     });
   }
 

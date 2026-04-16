@@ -4,7 +4,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../enviroment/enviroment';
-import { Vehicle } from '../vehicle.model';
+import {
+  SearchVehicleParams,
+  Vehicle,
+  VehicleCalendar,
+} from '../vehicle.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +33,30 @@ export class VehicleService {
    */
   getVehicleById(id: string): Observable<Vehicle> {
     return this.http.get<Vehicle>(`${this.apiUrl}/${id}`);
+  }
+
+  searchVehicles(filters: SearchVehicleParams): Observable<Vehicle[]> {
+    const cleanedFilters = Object.fromEntries(
+      Object.entries(filters).filter(
+        ([, value]) => value !== '' && value !== null && value !== undefined,
+      ),
+    );
+    return this.http.get<Vehicle[]>(`${this.apiUrl}/search`, {
+      params: cleanedFilters as Record<string, string | number | boolean>,
+    });
+  }
+
+  getVehicleCalendar(
+    id: string,
+    from?: string,
+    to?: string,
+  ): Observable<VehicleCalendar> {
+    const params: Record<string, string> = {};
+    if (from) params['from'] = from;
+    if (to) params['to'] = to;
+
+    return this.http.get<VehicleCalendar>(`${this.apiUrl}/${id}/calendar`, {
+      params,
+    });
   }
 }

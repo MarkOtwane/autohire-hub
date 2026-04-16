@@ -14,6 +14,52 @@
 <div class="vehicle-list-container">
   <h2>Our Available Vehicles</h2>
 
+  <div class="filters-panel">
+    <input
+      type="text"
+      placeholder="Search by name or description"
+      [(ngModel)]="filters.keyword"
+    />
+    <input type="text" placeholder="Location" [(ngModel)]="filters.location" />
+    <select [(ngModel)]="filters.category">
+      <option *ngFor="let category of categories" [value]="category">
+        {{ category || "All categories" }}
+      </option>
+    </select>
+    <select [(ngModel)]="filters.fuelType">
+      <option *ngFor="let fuelType of fuelTypes" [value]="fuelType">
+        {{ fuelType || "All fuel types" }}
+      </option>
+    </select>
+    <input
+      type="text"
+      placeholder="Transmission"
+      [(ngModel)]="filters.transmission"
+    />
+    <input
+      type="number"
+      min="0"
+      placeholder="Min day price"
+      [(ngModel)]="filters.minPricePerDay"
+    />
+    <input
+      type="number"
+      min="0"
+      placeholder="Max day price"
+      [(ngModel)]="filters.maxPricePerDay"
+    />
+    <label class="available-only-toggle">
+      <input type="checkbox" [(ngModel)]="filters.availableOnly" />
+      Available only
+    </label>
+    <div class="filter-actions">
+      <button class="btn btn-primary" (click)="applyFilters()">
+        Apply Filters
+      </button>
+      <button class="btn btn-secondary" (click)="resetFilters()">Reset</button>
+    </div>
+  </div>
+
   <div *ngIf="loading" class="loading-message">
     <i class="fas fa-spinner fa-spin"></i> Loading vehicles...
   </div>
@@ -68,7 +114,19 @@
           <button class="btn btn-book" (click)="startDigitalAgreement(vehicle)">
             Digital Agreement
           </button>
+          <button
+            class="btn btn-secondary"
+            (click)="checkAvailability(vehicle)"
+          >
+            Check 30-Day Availability
+          </button>
         </div>
+        <p *ngIf="calendarLoading[vehicle.id]" class="calendar-status">
+          Checking availability...
+        </p>
+        <p *ngIf="calendarSummary[vehicle.id]" class="calendar-status">
+          {{ calendarSummary[vehicle.id] }}
+        </p>
       </div>
     </div>
   </div>

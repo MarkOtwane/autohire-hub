@@ -9,13 +9,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { RolesGuard } from '../commons/guards/roles.guard';
 import { Roles } from '../commons/decorators/roles.decorator';
+import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
+import { RolesGuard } from '../commons/guards/roles.guard';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { SearchVehicleDto } from './dto/search-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { VehicleCalendarQueryDto } from './dto/vehicle-calendar-query.dto';
 import { VehiclesService } from './vehicles.service';
-import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 
 @Controller('vehicles')
 export class VehiclesController {
@@ -36,6 +37,14 @@ export class VehiclesController {
   @Get('search')
   search(@Query() dto: SearchVehicleDto) {
     return this.vehiclesService.search(dto);
+  }
+
+  @Get(':id/calendar')
+  getCalendar(
+    @Param('id') id: string,
+    @Query() query: VehicleCalendarQueryDto,
+  ) {
+    return this.vehiclesService.getAvailabilityCalendar(id, query);
   }
 
   @Get(':id')

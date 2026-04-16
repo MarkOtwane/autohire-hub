@@ -1,11 +1,11 @@
 /* src/app/components/vehicle-list/vehicle-list.component.css */
 
 /* Import Google Fonts - Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 
 :host {
   display: block;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: #333;
   line-height: 1.6;
   background-color: #f8f8f8;
@@ -28,7 +28,7 @@ h2 {
 }
 
 h2::after {
-  content: '';
+  content: "";
   display: block;
   width: 80px;
   height: 4px;
@@ -37,7 +37,41 @@ h2::after {
   border-radius: 2px;
 }
 
-.loading-message, .error-message, .no-vehicles-message {
+.filters-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.filters-panel input,
+.filters-panel select {
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+.available-only-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.filter-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+}
+
+.loading-message,
+.error-message,
+.no-vehicles-message {
   text-align: center;
   font-size: 1.2rem;
   padding: 30px;
@@ -62,7 +96,8 @@ h2::after {
   color: #827717;
 }
 
-.loading-message i, .error-message i {
+.loading-message i,
+.error-message i {
   margin-right: 10px;
 }
 
@@ -80,7 +115,9 @@ h2::after {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .vehicle-card:hover {
@@ -216,6 +253,21 @@ h2::after {
   background-color: #218838;
 }
 
+.btn-secondary {
+  background-color: #455a64;
+  color: #ffffff;
+}
+
+.btn-secondary:hover {
+  background-color: #37474f;
+}
+
+.calendar-status {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #455a64;
+}
+
 /* Removed styles for btn-secondary and btn-delete as they are no longer used */
 
 /* Responsive adjustments */
@@ -234,5 +286,9 @@ h2::after {
 
   .card-actions {
     flex-direction: column; /* Stack buttons vertically */
+  }
+
+  .filter-actions {
+    flex-direction: column;
   }
 }

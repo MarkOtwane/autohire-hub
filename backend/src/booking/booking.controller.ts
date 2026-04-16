@@ -14,6 +14,7 @@ import { Roles } from '../commons/decorators/roles.decorator';
 import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 import { RolesGuard } from '../commons/guards/roles.guard';
 import { BookingsService } from './booking.service';
+import { CheckBookingConflictDto } from './dto/check-booking-conflict.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 
@@ -26,6 +27,12 @@ export class BookingsController {
   @Roles('USER')
   create(@Req() req, @Body() dto: CreateBookingDto) {
     return this.bookingsService.create(req.user.id, dto);
+  }
+
+  @Post('validate-conflict')
+  @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
+  validateConflict(@Body() dto: CheckBookingConflictDto) {
+    return this.bookingsService.validateConflict(dto);
   }
 
   @Get('mine')
