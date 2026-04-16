@@ -13,12 +13,31 @@ export class BookingService {
     return this.http.post(this.baseUrl, data);
   }
 
+  validateConflict(data: {
+    vehicleId: string;
+    pickupDate: string;
+    dropoffDate: string;
+    excludeBookingId?: string;
+  }): Observable<{
+    hasConflict: boolean;
+    conflictingBookingId: string | null;
+  }> {
+    return this.http.post<{
+      hasConflict: boolean;
+      conflictingBookingId: string | null;
+    }>(`${this.baseUrl}/validate-conflict`, data);
+  }
+
   getMyBookings(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/my`);
   }
 
   getBookingById(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
+  }
+
+  getBookingTimeline(id: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${id}/timeline`);
   }
 
   getAllBookings(): Observable<any[]> {

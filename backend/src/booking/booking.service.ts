@@ -15,6 +15,30 @@ import { UpdateStatusDto } from './dto/update-status.dto';
 export class BookingsService {
   constructor(private prisma: PrismaService) {}
 
+  private async getAuthorizedBooking(
+    actor: { id: string; role: string },
+    bookingId: string,
+  ) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { vehicle: true, agent: true, payment: true },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (actor.role === 'USER' && booking.userId !== actor.id) {
+      throw new ForbiddenException('You can only view your own bookings');
+    }
+
+    if (actor.role === 'AGENT' && booking.agentId !== actor.id) {
+      throw new ForbiddenException('You can only view assigned bookings');
+    }
+
+    return booking;
+  }
+
   async create(userId: string, dto: CreateBookingDto) {
     const { pickupDate, dropoffDate } = this.parseAndValidateDateRange(
       dto.pickupDate,
@@ -159,24 +183,95 @@ export class BookingsService {
     actor: { id: string; role: string },
     bookingId: string,
   ) {
-    const booking = await this.prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: { vehicle: true, agent: true, payment: true },
+    return this.getAuthorizedBooking(actor, bookingId);
+  }
+
+  async getTimeline(actor: { id: string; role: string }, bookingId: string) {
+    const booking = await this.getAuthorizedBooking(actor, bookingId);
+
+    const timeline: Array<{
+      code: string;
+      title: string;
+      description: string;
+      timestamp: Date;
+      isEstimated: boolean;
+    }> = [
+      {
+        code: 'BOOKING_CREATED',
+        title: 'Booking Created',
+        description: 'Your booking request was submitted.',
+        timestamp: booking.createdAt,
+        isEstimated: false,
+      },
+      {
+        code: 'PICKUP_SCHEDULED',
+        title: 'Pickup Scheduled',
+        description: 'Vehicle pickup is scheduled for this time.',
+        timestamp: booking.pickupDate,
+        isEstimated: false,
+      },
+      {
+        code: 'RETURN_SCHEDULED',
+        title: 'Return Scheduled',
+        description: 'Vehicle return is scheduled for this time.',
+        timestamp: booking.dropoffDate,
+        isEstimated: false,
+      },
+    ];
+
+    if (booking.payment) {
+      timeline.push({
+        code: 'PAYMENT_RECORDED',
+        title: 'Payment Recorded',
+        description: `Payment ${booking.payment.status.toLowerCase()} via ${booking.payment.provider}.`,
+        timestamp: booking.payment.createdAt,
+        isEstimated: false,
+      });
+    }
+
+    const statusMap: Record<
+      BookingStatus,
+      { title: string; description: string }
+    > = {
+      PENDING: {
+        title: 'Awaiting Approval',
+        description: 'Your booking is awaiting review by the operations team.',
+      },
+      CONFIRMED: {
+        title: 'Booking Confirmed',
+        description: 'Your booking has been approved and confirmed.',
+      },
+      CANCELLED: {
+        title: 'Booking Cancelled',
+        description: 'This booking was cancelled.',
+      },
+      COMPLETED: {
+        title: 'Trip Completed',
+        description: 'The rental trip has been marked as completed.',
+      },
+      REJECTED: {
+        title: 'Booking Rejected',
+        description: 'This booking was rejected by operations.',
+      },
+    };
+
+    timeline.push({
+      code: `STATUS_${booking.status}`,
+      title: statusMap[booking.status].title,
+      description: statusMap[booking.status].description,
+      timestamp: booking.payment?.createdAt ?? booking.createdAt,
+      isEstimated: booking.payment ? false : true,
     });
 
-    if (!booking) {
-      throw new NotFoundException('Booking not found');
-    }
+    timeline.sort(
+      (left, right) => left.timestamp.getTime() - right.timestamp.getTime(),
+    );
 
-    if (actor.role === 'USER' && booking.userId !== actor.id) {
-      throw new ForbiddenException('You can only view your own bookings');
-    }
-
-    if (actor.role === 'AGENT' && booking.agentId !== actor.id) {
-      throw new ForbiddenException('You can only view assigned bookings');
-    }
-
-    return booking;
+    return {
+      bookingId: booking.id,
+      currentStatus: booking.status,
+      timeline,
+    };
   }
 
   async cancel(actor: { id: string; role: string }, bookingId: string) {

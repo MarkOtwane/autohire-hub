@@ -74,6 +74,12 @@ export class BookingsController {
     return this.bookingsService.cancel(req.user, id);
   }
 
+  @Get(':id/timeline')
+  @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
+  getTimeline(@Param('id') id: string, @Req() req) {
+    return this.bookingsService.getTimeline(req.user, id);
+  }
+
   @Get(':id')
   @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
   getOne(@Param('id') id: string, @Req() req) {

@@ -10,6 +10,7 @@
     "npm": ">=10"
   },
   "scripts": {
+    "postinstall": "prisma generate --config ./prisma.config.ts",
     "build": "npx nest build",
     "prisma:validate": "prisma validate --config ./prisma.config.ts",
     "prisma:generate": "prisma generate --config ./prisma.config.ts",

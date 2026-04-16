@@ -11,6 +11,10 @@
   <label>Note (Optional)</label>
   <textarea formControlName="note"></textarea>
 
+  <p *ngIf="conflictError" style="color: #c62828; font-weight: 600">
+    {{ conflictError }}
+  </p>
+
   <button type="button" (click)="startDigitalAgreement()">
     Complete Digital Agreement
   </button>

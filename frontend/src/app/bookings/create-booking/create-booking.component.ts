@@ -21,6 +21,7 @@ export class CreateBookingComponent implements OnInit {
   pickupLocation = '';
   returnLocation = '';
   loading = false;
+  conflictError = '';
 
   constructor(
     private fb: FormBuilder,
@@ -105,6 +106,7 @@ export class CreateBookingComponent implements OnInit {
   submit() {
     if (this.form.invalid) return;
     this.loading = true;
+    this.conflictError = '';
 
     const bookingData = {
       vehicleId: this.vehicleId,
@@ -115,9 +117,29 @@ export class CreateBookingComponent implements OnInit {
       },
     };
 
-    this.bookingService.createBooking(bookingData).subscribe({
-      next: () => this.router.navigate(['/bookings/my-bookings']),
-      error: () => (this.loading = false),
-    });
+    this.bookingService
+      .validateConflict({
+        vehicleId: bookingData.vehicleId,
+        pickupDate: bookingData.pickupDate,
+        dropoffDate: bookingData.dropoffDate,
+      })
+      .subscribe({
+        next: (result) => {
+          if (result.hasConflict) {
+            this.conflictError =
+              'Selected dates are not available. Please choose a different range.';
+            this.loading = false;
+            return;
+          }
+
+          this.bookingService.createBooking(bookingData).subscribe({
+            next: () => this.router.navigate(['/bookings/my-bookings']),
+            error: () => (this.loading = false),
+          });
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
   }
 }

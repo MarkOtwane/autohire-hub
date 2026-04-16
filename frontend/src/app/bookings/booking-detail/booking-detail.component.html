@@ -1,8 +1,19 @@
 <h2>Booking Detail</h2>
 <div *ngIf="booking">
   <p><strong>Vehicle:</strong> {{ booking.vehicle.name }}</p>
-  <p><strong>Start:</strong> {{ booking.startDate | date }}</p>
-  <p><strong>End:</strong> {{ booking.endDate | date }}</p>
+  <p><strong>Start:</strong> {{ booking.pickupDate | date }}</p>
+  <p><strong>End:</strong> {{ booking.dropoffDate | date }}</p>
   <p><strong>Status:</strong> {{ booking.status }}</p>
-  <p><strong>Note:</strong> {{ booking.note || 'N/A' }}</p>
+  <p><strong>Note:</strong> {{ booking.options?.note || "N/A" }}</p>
+
+  <h3>Booking Timeline</h3>
+  <p *ngIf="timelineError">{{ timelineError }}</p>
+  <ul *ngIf="timeline.length > 0">
+    <li *ngFor="let event of timeline">
+      <strong>{{ event.title }}</strong>
+      <span> - {{ event.timestamp | date: "medium" }}</span>
+      <span *ngIf="event.isEstimated"> (estimated)</span>
+      <p>{{ event.description }}</p>
+    </li>
+  </ul>
 </div>
