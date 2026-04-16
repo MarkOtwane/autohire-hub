@@ -16,6 +16,7 @@ import { RolesGuard } from '../commons/guards/roles.guard';
 import { BookingsService } from './booking.service';
 import { CheckBookingConflictDto } from './dto/check-booking-conflict.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { RebookBookingDto } from './dto/rebook-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -72,6 +73,12 @@ export class BookingsController {
   @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
   cancel(@Param('id') id: string, @Req() req) {
     return this.bookingsService.cancel(req.user, id);
+  }
+
+  @Post(':id/rebook')
+  @Roles('USER')
+  rebook(@Param('id') id: string, @Req() req, @Body() dto: RebookBookingDto) {
+    return this.bookingsService.rebook(req.user, id, dto);
   }
 
   @Get(':id/timeline')

@@ -47,4 +47,15 @@ export class BookingService {
   cancelBooking(id: string): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${id}/cancel`, {});
   }
+
+  rebookBooking(
+    id: string,
+    data?: {
+      pickupDate?: string;
+      dropoffDate?: string;
+      options?: Record<string, unknown>;
+    },
+  ): Observable<any> {
+    return this.http.post(`${this.baseUrl}/${id}/rebook`, data ?? {});
+  }
 }

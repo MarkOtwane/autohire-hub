@@ -9,6 +9,7 @@ import { BookingStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckBookingConflictDto } from './dto/check-booking-conflict.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { RebookBookingDto } from './dto/rebook-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 
 @Injectable()
@@ -296,6 +297,91 @@ export class BookingsService {
     return this.prisma.booking.update({
       where: { id: bookingId },
       data: { status: 'CANCELLED' },
+    });
+  }
+
+  async rebook(
+    actor: { id?: string; sub?: string; role: string },
+    sourceBookingId: string,
+    dto: RebookBookingDto,
+  ) {
+    const userId = actor.id ?? actor.sub;
+    if (!userId) {
+      throw new ForbiddenException('Invalid authenticated user');
+    }
+
+    const sourceBooking = await this.prisma.booking.findUnique({
+      where: { id: sourceBookingId },
+      include: {
+        vehicle: {
+          select: {
+            id: true,
+            availability: true,
+            pricePerDay: true,
+            pricePerHour: true,
+          },
+        },
+      },
+    });
+
+    if (!sourceBooking) {
+      throw new NotFoundException('Booking not found');
+    }
+
+    if (sourceBooking.userId !== userId) {
+      throw new ForbiddenException('You can only rebook your own bookings');
+    }
+
+    if (!sourceBooking.vehicle.availability) {
+      throw new ConflictException('Vehicle is currently unavailable');
+    }
+
+    const sourceDurationMs =
+      sourceBooking.dropoffDate.getTime() - sourceBooking.pickupDate.getTime();
+
+    const requestedPickupDate = dto.pickupDate
+      ? new Date(dto.pickupDate)
+      : new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const requestedDropoffDate = dto.dropoffDate
+      ? new Date(dto.dropoffDate)
+      : new Date(requestedPickupDate.getTime() + sourceDurationMs);
+
+    const { pickupDate, dropoffDate } = this.parseAndValidateDateRange(
+      requestedPickupDate.toISOString(),
+      requestedDropoffDate.toISOString(),
+    );
+
+    const overlappingBooking = await this.findOverlappingBooking(
+      sourceBooking.vehicleId,
+      pickupDate,
+      dropoffDate,
+    );
+
+    if (overlappingBooking) {
+      throw new ConflictException(
+        'Vehicle already booked for the selected dates',
+      );
+    }
+
+    const totalAmount = this.calculateTotalAmount(
+      pickupDate,
+      dropoffDate,
+      sourceBooking.vehicle.pricePerDay,
+      sourceBooking.vehicle.pricePerHour,
+    );
+
+    return this.prisma.booking.create({
+      data: {
+        userId,
+        vehicleId: sourceBooking.vehicleId,
+        pickupDate,
+        dropoffDate,
+        totalAmount,
+        options: dto.options ?? sourceBooking.options,
+      },
+      include: {
+        vehicle: true,
+      },
     });
   }
 
