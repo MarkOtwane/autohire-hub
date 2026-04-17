@@ -1,24 +1,202 @@
-<div class="profile-container">
-    <h2>Your Profile</h2>
-    <form [formGroup]="form" (ngSubmit)="save()">
-      <div class="form-group">
-        <label>Name</label>
-        <input formControlName="name" type="text" />
-        <app-form-error [control]="form.get('name')!" />
+<div class="dashboard-shell" *ngIf="!dashboardLoading; else loadingState">
+  <section class="hero-card">
+    <div>
+      <p class="eyebrow">Customer dashboard</p>
+      <h1>Welcome back{{ profile?.name ? ", " + profile.name : "" }}</h1>
+      <p class="hero-copy">
+        Manage your profile, review booking activity, and stay on top of your
+        rental history from one place.
+      </p>
+      <div class="hero-actions">
+        <button
+          type="button"
+          class="primary-action"
+          (click)="runAction(quickActions[0].action)"
+        >
+          Browse vehicles
+        </button>
+        <button
+          type="button"
+          class="secondary-action"
+          (click)="runAction(quickActions[1].action)"
+        >
+          View bookings
+        </button>
       </div>
-  
-      <div class="form-group">
-        <label>Email</label>
-        <input formControlName="email" type="email" />
-        <app-form-error [control]="form.get('email')!" />
+    </div>
+    <div class="hero-badge">
+      <span>Account status</span>
+      <strong>{{
+        profile?.isEmailVerified ? "Verified" : "Pending verification"
+      }}</strong>
+      <small>{{ profile?.email }}</small>
+      <div class="completion-meter">
+        <div class="completion-meter__label">
+          <span>Profile completion</span>
+          <strong>{{ profileCompletion }}%</strong>
+        </div>
+        <div class="completion-meter__bar">
+          <span [style.width.%]="profileCompletion"></span>
+        </div>
       </div>
-  
-      <div class="form-group">
-        <label>Phone</label>
-        <input formControlName="phone" type="text" />
+    </div>
+  </section>
+
+  <section class="stats-grid">
+    <article class="stat-card accent">
+      <span>Total bookings</span>
+      <strong>{{ totalBookings }}</strong>
+    </article>
+    <article class="stat-card">
+      <span>Active bookings</span>
+      <strong>{{ activeBookings }}</strong>
+    </article>
+    <article class="stat-card">
+      <span>Total spent</span>
+      <strong>{{ totalSpent | currency }}</strong>
+    </article>
+    <article class="stat-card">
+      <span>Reviews</span>
+      <strong>{{ reviews.length }}</strong>
+      <small>Average {{ averageRating }}/5</small>
+    </article>
+  </section>
+
+  <section class="actions-strip">
+    <article class="action-card" *ngFor="let action of quickActions">
+      <div>
+        <p>{{ action.label }}</p>
+        <small>{{ action.description }}</small>
       </div>
-  
-      <button type="submit" [disabled]="loading">Save Changes</button>
-    </form>
-  </div>
-  
+      <button type="button" (click)="runAction(action.action)">Open</button>
+    </article>
+  </section>
+
+  <section class="content-grid">
+    <div class="panel profile-panel">
+      <div class="panel-header">
+        <div>
+          <p class="panel-label">Profile</p>
+          <h2>Account details</h2>
+        </div>
+      </div>
+
+      <p *ngIf="saveMessage" class="status-message">{{ saveMessage }}</p>
+      <p *ngIf="profileError" class="status-message error">
+        {{ profileError }}
+      </p>
+
+      <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
+        <label>
+          <span>Name</span>
+          <input formControlName="name" type="text" />
+          <app-form-error [control]="form.get('name')!" />
+        </label>
+
+        <label>
+          <span>Email</span>
+          <input formControlName="email" type="email" />
+          <app-form-error [control]="form.get('email')!" />
+        </label>
+
+        <label>
+          <span>Phone</span>
+          <input
+            formControlName="phone"
+            type="text"
+            placeholder="Add a phone number"
+          />
+        </label>
+
+        <button type="submit" [disabled]="loading">
+          {{ loading ? "Saving..." : "Save profile" }}
+        </button>
+      </form>
+    </div>
+
+    <div class="panel activity-panel">
+      <div class="panel-header">
+        <div>
+          <p class="panel-label">Activity</p>
+          <h2>Recent bookings</h2>
+        </div>
+      </div>
+
+      <div class="booking-breakdown" *ngIf="bookings.length > 0">
+        <article
+          *ngFor="let item of bookingBreakdown"
+          [attr.data-tone]="item.tone"
+        >
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+      </div>
+
+      <div *ngIf="nextBooking" class="next-booking">
+        <p class="panel-label">Next trip</p>
+        <h3>{{ nextBooking.vehicle?.name || "Upcoming booking" }}</h3>
+        <small>
+          {{ nextBooking.pickupDate | date: "mediumDate" }} to
+          {{ nextBooking.dropoffDate | date: "mediumDate" }}
+        </small>
+        <span class="status" [attr.data-status]="nextBooking.status">{{
+          nextBooking.status
+        }}</span>
+      </div>
+
+      <div *ngIf="bookings.length === 0" class="empty-state">
+        You have no bookings yet. Browse vehicles to start your first rental.
+      </div>
+
+      <div class="booking-list" *ngIf="bookings.length > 0">
+        <article
+          class="booking-item"
+          *ngFor="let booking of bookings | slice: 0 : 4"
+        >
+          <div>
+            <strong>{{ booking.vehicle?.name || "Vehicle" }}</strong>
+            <p>{{ booking.vehicle?.location || "Location not set" }}</p>
+          </div>
+          <div class="booking-meta">
+            <span class="status" [attr.data-status]="booking.status">{{
+              booking.status
+            }}</span>
+            <small>{{ booking.pickupDate | date: "mediumDate" }}</small>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel reviews-panel">
+    <div class="panel-header">
+      <div>
+        <p class="panel-label">Trust</p>
+        <h2>Recent reviews</h2>
+      </div>
+      <div class="latest-booking" *ngIf="latestBooking">
+        <span>Last booking</span>
+        <strong>{{ latestBooking.vehicle?.name || "Vehicle" }}</strong>
+      </div>
+    </div>
+
+    <div *ngIf="reviews.length === 0" class="empty-state">
+      You have not submitted any reviews yet.
+    </div>
+
+    <div class="review-grid" *ngIf="reviews.length > 0">
+      <article
+        class="review-card"
+        *ngFor="let review of reviews | slice: 0 : 3"
+      >
+        <div class="review-rating">{{ review.rating }}/5</div>
+        <p>{{ review.comment || "No comment provided." }}</p>
+        <small>{{ review.createdAt | date: "mediumDate" }}</small>
+      </article>
+    </div>
+  </section>
+</div>
+
+<ng-template #loadingState>
+  <div class="dashboard-loading">Loading your dashboard...</div>
+</ng-template>

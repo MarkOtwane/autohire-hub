@@ -6,13 +6,14 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
-import PDFDocument from 'pdfkit';
 import { NotificationsService } from '../notification/notification.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateAgreementDto } from './dto/create-agreement.dto';
+import PDFDocument = require('pdfkit');
 
 interface AgreementPdfContext {
   agreementId: string;
@@ -35,6 +36,8 @@ interface AgreementPdfContext {
 
 @Injectable()
 export class AgreementsService {
+  private readonly logger = new Logger(AgreementsService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
@@ -44,47 +47,43 @@ export class AgreementsService {
     this.validateBusinessRules(dto);
 
     try {
-      const result = await this.prisma.$transaction(async (tx) => {
-        const year = new Date().getFullYear();
+      const year = new Date().getFullYear();
 
-        await tx.agreementCounter.upsert({
-          where: { year },
-          update: {},
-          create: { year, currentValue: 0 },
-        });
+      await this.prisma.agreementCounter.upsert({
+        where: { year },
+        update: {},
+        create: { year, currentValue: 0 },
+      });
 
-        const counter = await tx.agreementCounter.update({
-          where: { year },
-          data: { currentValue: { increment: 1 } },
-        });
+      const counter = await this.prisma.agreementCounter.update({
+        where: { year },
+        data: { currentValue: { increment: 1 } },
+      });
 
-        const agreementId = `RENT-${year}-${String(counter.currentValue).padStart(4, '0')}`;
-        const downloadToken = randomUUID();
+      const agreementId = `RENT-${year}-${String(counter.currentValue).padStart(4, '0')}`;
+      const downloadToken = randomUUID();
 
-        const agreement = await tx.rentalAgreement.create({
-          data: {
-            agreementId,
-            clientSubmissionId: dto.clientSubmissionId,
-            downloadToken,
-            driverName: dto.driverName,
-            driverEmail: dto.driverEmail,
-            driverPhone: dto.driverPhone,
-            driverIdNumber: dto.driverIdNumber,
-            driverLicenseNumber: dto.driverLicenseNumber,
-            emergencyContactName: dto.emergencyContactName,
-            emergencyContactPhone: dto.emergencyContactPhone,
-            vehicleName: dto.vehicleName,
-            vehiclePlateNumber: dto.vehiclePlateNumber,
-            pickupDate: new Date(dto.pickupDate),
-            returnDate: new Date(dto.returnDate),
-            pickupLocation: dto.pickupLocation,
-            returnLocation: dto.returnLocation,
-            rentalTermsAccepted: dto.rentalTermsAccepted,
-            signatureData: dto.signatureData,
-          },
-        });
-
-        return agreement;
+      const result = await this.prisma.rentalAgreement.create({
+        data: {
+          agreementId,
+          clientSubmissionId: dto.clientSubmissionId,
+          downloadToken,
+          driverName: dto.driverName,
+          driverEmail: dto.driverEmail,
+          driverPhone: dto.driverPhone,
+          driverIdNumber: dto.driverIdNumber,
+          driverLicenseNumber: dto.driverLicenseNumber,
+          emergencyContactName: dto.emergencyContactName,
+          emergencyContactPhone: dto.emergencyContactPhone,
+          vehicleName: dto.vehicleName,
+          vehiclePlateNumber: dto.vehiclePlateNumber,
+          pickupDate: new Date(dto.pickupDate),
+          returnDate: new Date(dto.returnDate),
+          pickupLocation: dto.pickupLocation,
+          returnLocation: dto.returnLocation,
+          rentalTermsAccepted: dto.rentalTermsAccepted,
+          signatureData: dto.signatureData,
+        },
       });
 
       const pdfBuffer = await this.generateAgreementPdf({
@@ -140,6 +139,11 @@ export class AgreementsService {
           };
         }
       }
+
+      this.logger.error(
+        `Agreement creation failed for submission ${dto.clientSubmissionId}`,
+        error instanceof Error ? error.stack : undefined,
+      );
 
       throw new InternalServerErrorException('Failed to submit agreement.');
     }
@@ -241,9 +245,23 @@ export class AgreementsService {
 
       const base64 = data.signatureData.split(',')[1] || '';
       if (base64) {
-        const signatureBuffer = Buffer.from(base64, 'base64');
-        doc.moveDown(0.3);
-        doc.image(signatureBuffer, { fit: [240, 90] });
+        try {
+          const signatureBuffer = Buffer.from(base64, 'base64');
+          doc.moveDown(0.3);
+          doc.image(signatureBuffer, { fit: [240, 90] });
+        } catch (error) {
+          this.logger.warn(
+            `Skipping signature image in PDF for agreement ${data.agreementId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          );
+          doc.moveDown(0.3);
+          doc
+            .fontSize(10)
+            .fillColor('#7f1d1d')
+            .text(
+              'Signature image could not be rendered. Raw signature data is still stored securely.',
+            )
+            .fillColor('#000000');
+        }
       }
 
       doc.moveDown(1.5);

@@ -1,10 +1,10 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthUser } from './auth.interface';
 import { RegisterDto } from './dto/register.dto';
-import { Role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +23,7 @@ export class AuthService {
 
     return this.prisma.user.create({
       data: {
+        name: dto.name,
         email: dto.email,
         password: hashed,
         role: Role.USER,

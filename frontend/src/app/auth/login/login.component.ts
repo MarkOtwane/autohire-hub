@@ -23,7 +23,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -38,37 +38,30 @@ export class LoginComponent {
 
     this.authService.login(this.form.value).subscribe({
       next: (res) => {
-        // --- FIX IS HERE ---
-        // Change res.user.role to res.admin.role
-        console.log('response', res.admin.role); // Corrected: res.admin.role
+        const userRole = res.user?.role || this.authService.getUserRole();
 
-        // Also ensure you use the correct variable for the switch
-        const userRole = res.admin.role; // Extract the role here
+        this.loading = false;
 
-        this.loading = false; // Set loading to false on success, not true again
-
-        switch (
-          userRole // Use userRole here
-        ) {
+        switch (userRole) {
           case 'USER':
-            this.router.navigate(['/user/dashboard']);
+            this.router.navigate(['/user']);
             break;
           case 'AGENT':
             this.router.navigate(['/agent/dashboard']);
             break;
           case 'ADMIN':
           case 'MAIN_ADMIN': // MAIN_ADMIN is also an ADMIN role for dashboard
-            this.router.navigate(['/admin/dashboard']);
+            this.router.navigate(['/admin']);
             break;
           default:
-            this.router.navigate(['/home']); // Or a default landing page
+            this.router.navigate(['/']);
             break;
         }
       },
       error: (err) => {
         alert(
           'Login failed: ' +
-            (err.error?.message || err.message || 'An unknown error occurred.')
+            (err.error?.message || err.message || 'An unknown error occurred.'),
         ); // Improved error message
         this.loading = false;
       },

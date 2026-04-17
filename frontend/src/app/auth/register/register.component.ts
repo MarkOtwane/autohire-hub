@@ -23,13 +23,12 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.form = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
-      role: ['USER', Validators.required],
     });
   }
   onBookNowClick() {
@@ -55,7 +54,7 @@ export class RegisterComponent {
         this.loading = false;
         alert(
           'Registration failed: ' +
-            (err.error?.message || 'An unknown error occurred.')
+            (err.error?.message || 'An unknown error occurred.'),
         );
       },
     });

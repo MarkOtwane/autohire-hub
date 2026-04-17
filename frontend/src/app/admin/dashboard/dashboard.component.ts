@@ -1,9 +1,10 @@
 // src/app/admin/dashboard/dashboard.component.ts
 
-import { Component, OnInit } from '@angular/core';
-import { MetricsService } from '../../core/services/metrics.service';
 import { CommonModule } from '@angular/common'; // Already here
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'; // <-- Import Router
+import { AuthService } from '../../core/services/auth.service';
+import { MetricsService } from '../../core/services/metrics.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,10 +16,29 @@ export class DashboardComponent implements OnInit {
   stats: any = {};
   loading = true;
 
+  readonly sidebarLinks = [
+    { label: 'Overview', route: '/admin', icon: 'fa-chart-pie' },
+    { label: 'Vehicles', route: '/admin/vehicles', icon: 'fa-car-side' },
+    { label: 'Bookings', route: '/admin/bookings', icon: 'fa-calendar-check' },
+    { label: 'Agents', route: '/admin/agents', icon: 'fa-user-shield' },
+    { label: 'Users', route: '/admin/users', icon: 'fa-users' },
+    {
+      label: 'Issues',
+      route: '/admin/issues',
+      icon: 'fa-triangle-exclamation',
+    },
+    {
+      label: 'Notifications',
+      route: '/admin/notifications',
+      icon: 'fa-bell',
+    },
+  ];
+
   // Inject the Router service
   constructor(
     private metricsService: MetricsService,
-    private router: Router // <-- Inject Router
+    private router: Router, // <-- Inject Router
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -58,8 +78,8 @@ export class DashboardComponent implements OnInit {
   }
 
   onAddNewVehicle(): void {
-  alert('Navigating to add new vehicle form...');
-    this.router.navigate(['../vehicles/vehicle-list']);
+    alert('Navigating to add new vehicle form...');
+    this.router.navigate(['/admin/vehicles/create']);
   }
 
   onManageAgents(): void {
@@ -69,12 +89,23 @@ export class DashboardComponent implements OnInit {
 
   onSendNotification(): void {
     alert('Opening send notification modal/page...');
-    alert('Send Notification functionality would go here!');
-    this.router.navigate(['../../notifications']);
+    this.router.navigate(['/admin/notifications']);
   }
 
   onViewDetailedReports(): void {
     alert('Navigating to detailed reports...');
-    this.router.navigate(['/admin/reports']);
+    this.router.navigate(['/metrics']);
+  }
+
+  navigate(route: string): void {
+    this.router.navigate([route]);
+  }
+
+  isActive(route: string): boolean {
+    return this.router.url === route || this.router.url.startsWith(`${route}/`);
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

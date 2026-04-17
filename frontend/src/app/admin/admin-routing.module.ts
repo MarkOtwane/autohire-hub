@@ -8,16 +8,16 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   {
-    path: 'admin',
+    path: '',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN', 'MAIN_ADMIN'] }, 
+    data: { roles: ['ADMIN', 'MAIN_ADMIN'] },
     children: [
       {
         path: '',
         component: DashboardComponent,
       },
       {
-        path: 'vehicles', 
+        path: 'vehicles',
         loadChildren: () =>
           import('./vehicles/vehicles.module').then((m) => m.VehiclesModule),
       },
@@ -27,11 +27,11 @@ const routes: Routes = [
           import('./agents/agent.module').then((m) => m.AgentsModule),
       },
       {
-        path: 'bookings', 
+        path: 'bookings',
         loadChildren: () =>
           import('./bookings/bookings.module').then((m) => m.BookingsModule),
       },
-      
+
       {
         path: 'users',
         loadChildren: () =>
@@ -46,7 +46,7 @@ const routes: Routes = [
         path: 'notifications', // This will be /admin/notifications (for 'Send Notification')
         loadChildren: () =>
           import('../notifications/notifications.module').then(
-            (m) => m.NotificationsModule
+            (m) => m.NotificationsModule,
           ),
       },
     ],

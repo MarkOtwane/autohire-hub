@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import type { Prisma } from '@prisma/client';
 import { BookingStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckBookingConflictDto } from './dto/check-booking-conflict.dto';
@@ -15,6 +16,16 @@ import { UpdateStatusDto } from './dto/update-status.dto';
 @Injectable()
 export class BookingsService {
   constructor(private prisma: PrismaService) {}
+
+  private normalizeBookingOptions(
+    options: unknown,
+  ): Prisma.InputJsonValue | undefined {
+    if (options === null || options === undefined) {
+      return undefined;
+    }
+
+    return options as Prisma.InputJsonValue;
+  }
 
   private async getAuthorizedBooking(
     actor: { id: string; role: string },
@@ -90,7 +101,7 @@ export class BookingsService {
         pickupDate,
         dropoffDate,
         totalAmount,
-        options: dto.options,
+        options: this.normalizeBookingOptions(dto.options),
       },
     });
   }
@@ -377,7 +388,9 @@ export class BookingsService {
         pickupDate,
         dropoffDate,
         totalAmount,
-        options: dto.options ?? sourceBooking.options,
+        options: this.normalizeBookingOptions(
+          dto.options ?? sourceBooking.options,
+        ),
       },
       include: {
         vehicle: true,
