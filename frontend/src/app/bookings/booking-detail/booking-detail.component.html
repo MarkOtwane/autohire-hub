@@ -1,19 +1,87 @@
-<h2>Booking Detail</h2>
-<div *ngIf="booking">
-  <p><strong>Vehicle:</strong> {{ booking.vehicle.name }}</p>
-  <p><strong>Start:</strong> {{ booking.pickupDate | date }}</p>
-  <p><strong>End:</strong> {{ booking.dropoffDate | date }}</p>
-  <p><strong>Status:</strong> {{ booking.status }}</p>
-  <p><strong>Note:</strong> {{ booking.options?.note || "N/A" }}</p>
+<section class="booking-detail-page">
+  <header class="detail-hero">
+    <a class="back-link" routerLink="/bookings/my-bookings"
+      >Back to My Bookings</a
+    >
+    <p class="eyebrow">Reservation Insights</p>
+    <h1>Booking Detail</h1>
+    <p class="subtitle">
+      Review your trip schedule, current status, and booking timeline in one
+      place.
+    </p>
+  </header>
 
-  <h3>Booking Timeline</h3>
-  <p *ngIf="timelineError">{{ timelineError }}</p>
-  <ul *ngIf="timeline.length > 0">
-    <li *ngFor="let event of timeline">
-      <strong>{{ event.title }}</strong>
-      <span> - {{ event.timestamp | date: "medium" }}</span>
-      <span *ngIf="event.isEstimated"> (estimated)</span>
-      <p>{{ event.description }}</p>
-    </li>
-  </ul>
-</div>
+  <section *ngIf="loading" class="state-panel">
+    Loading booking details...
+  </section>
+
+  <section *ngIf="!loading && bookingError" class="state-panel error">
+    {{ bookingError }}
+  </section>
+
+  <ng-container *ngIf="!loading && booking && !bookingError">
+    <section class="summary-grid">
+      <article class="summary-card vehicle-card">
+        <p class="label">Vehicle</p>
+        <h2>{{ booking?.vehicle?.name || "Vehicle Booking" }}</h2>
+        <p class="small">Booking ID: {{ booking?.id }}</p>
+      </article>
+
+      <article class="summary-card">
+        <p class="label">Pickup Date</p>
+        <p class="value">{{ booking?.pickupDate | date: "fullDate" }}</p>
+      </article>
+
+      <article class="summary-card">
+        <p class="label">Dropoff Date</p>
+        <p class="value">{{ booking?.dropoffDate | date: "fullDate" }}</p>
+      </article>
+
+      <article class="summary-card">
+        <p class="label">Status</p>
+        <p class="status-pill" [ngClass]="statusClass(booking?.status)">
+          {{ booking?.status || "UNKNOWN" }}
+        </p>
+      </article>
+    </section>
+
+    <section class="notes-panel">
+      <h3>Booking Note</h3>
+      <p>
+        {{ booking?.options?.note || "No note was added for this booking." }}
+      </p>
+    </section>
+
+    <section class="timeline-panel">
+      <div class="timeline-header">
+        <h3>Booking Timeline</h3>
+        <span class="timeline-count">{{ timeline.length }} event(s)</span>
+      </div>
+
+      <p *ngIf="timelineError" class="timeline-error">{{ timelineError }}</p>
+
+      <div
+        *ngIf="!timelineError && timeline.length === 0"
+        class="timeline-empty"
+      >
+        No timeline events available yet.
+      </div>
+
+      <ol *ngIf="!timelineError && timeline.length > 0" class="timeline-list">
+        <li *ngFor="let event of timeline" class="timeline-item">
+          <div class="dot"></div>
+          <div class="event-card">
+            <div class="event-top">
+              <h4>{{ event.title }}</h4>
+              <span>{{ event.timestamp | date: "medium" }}</span>
+            </div>
+            <p>{{ event.description }}</p>
+            <span *ngIf="event.isEstimated" class="estimated-tag"
+              >Estimated</span
+            >
+          </div>
+        </li>
+      </ol>
+    </section>
+  </ng-container>
+</section>

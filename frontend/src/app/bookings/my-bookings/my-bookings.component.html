@@ -1,11 +1,89 @@
-<h2>My Bookings</h2>
-<p *ngIf="success" style="color: #2e7d32">{{ success }}</p>
-<p *ngIf="error" style="color: #c62828">{{ error }}</p>
-<div *ngIf="bookings.length === 0">You have no bookings yet.</div>
-<ul *ngIf="bookings.length > 0">
-  <li *ngFor="let booking of bookings">
-    <strong>{{ booking.vehicle.name }}</strong> - {{ booking.status }}
-    <a [routerLink]="['/bookings/detail', booking.id]">View Details</a>
-    <button type="button" (click)="rebook(booking.id)">Rebook</button>
-  </li>
-</ul>
+<section class="my-bookings-page">
+  <header class="hero">
+    <div>
+      <p class="hero-kicker">Customer Dashboard</p>
+      <h1>My Bookings</h1>
+      <p class="hero-subtitle">
+        Track every reservation, rebook in one tap, and stay on top of your trip
+        timeline.
+      </p>
+    </div>
+    <a class="book-now-btn" routerLink="/vehicles">Book a Vehicle</a>
+  </header>
+
+  <section class="metrics-grid">
+    <article class="metric-card">
+      <p class="metric-label">Total</p>
+      <p class="metric-value">{{ totalBookings }}</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label">Active</p>
+      <p class="metric-value">{{ activeBookings }}</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label">Completed</p>
+      <p class="metric-value">{{ completedBookings }}</p>
+    </article>
+    <article class="metric-card">
+      <p class="metric-label">Cancelled</p>
+      <p class="metric-value">{{ cancelledBookings }}</p>
+    </article>
+  </section>
+
+  <p *ngIf="success" class="flash-message flash-success">{{ success }}</p>
+  <p *ngIf="error" class="flash-message flash-error">{{ error }}</p>
+
+  <section *ngIf="loading" class="loading-panel">
+    Loading your bookings...
+  </section>
+
+  <section *ngIf="!loading && bookings.length === 0" class="empty-state">
+    <h2>No bookings yet</h2>
+    <p>Start your first trip by choosing a vehicle from our live inventory.</p>
+    <a class="book-now-btn" routerLink="/vehicles">Explore Vehicles</a>
+  </section>
+
+  <section *ngIf="!loading && bookings.length > 0" class="bookings-grid">
+    <article class="booking-card" *ngFor="let booking of bookings">
+      <div class="card-top">
+        <h3>{{ booking?.vehicle?.name || "Vehicle Booking" }}</h3>
+        <span class="status-pill" [ngClass]="statusClass(booking?.status)">
+          {{ booking?.status || "UNKNOWN" }}
+        </span>
+      </div>
+
+      <div class="trip-meta">
+        <div>
+          <p class="meta-label">Pickup</p>
+          <p class="meta-value">
+            {{ booking?.pickupDate | date: "mediumDate" }}
+          </p>
+        </div>
+        <div>
+          <p class="meta-label">Dropoff</p>
+          <p class="meta-value">
+            {{ booking?.dropoffDate | date: "mediumDate" }}
+          </p>
+        </div>
+      </div>
+
+      <p class="booking-id">Booking ID: {{ booking?.id }}</p>
+
+      <div class="card-actions">
+        <a
+          class="btn btn-primary"
+          [routerLink]="['/bookings/detail', booking.id]"
+        >
+          View Details
+        </a>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="rebook(booking.id)"
+        >
+          Rebook
+        </button>
+      </div>
+    </article>
+  </section>
+</section>
