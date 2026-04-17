@@ -141,6 +141,22 @@
       />
     </div>
 
+    <div class="form-group">
+      <label for="featuresText">Vehicle Characteristics</label>
+      <input
+        id="featuresText"
+        formControlName="featuresText"
+        type="text"
+        placeholder="Air Conditioning, GPS, Bluetooth, Backup Camera"
+      />
+      <small>Separate characteristics with commas.</small>
+    </div>
+
+    <div class="image-preview">
+      <p>Image Preview</p>
+      <img [src]="imagePreview" alt="Vehicle preview" />
+    </div>
+
     <div class="form-actions">
       <button type="button" (click)="cancel()" class="btn-secondary">
         Cancel

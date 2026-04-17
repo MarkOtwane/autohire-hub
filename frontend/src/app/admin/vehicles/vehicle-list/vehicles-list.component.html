@@ -1,36 +1,75 @@
 <div class="vehicle-list">
-  <h2>Manage Vehicles</h2>
-  <button routerLink="/admin/vehicles/create" class="create-btn">
-    Add Vehicle
-  </button>
+  <div class="header-row">
+    <div>
+      <h2>Manage Vehicles</h2>
+      <p class="subtitle">
+        All available vehicles with full information and pricing.
+      </p>
+    </div>
+    <button routerLink="/admin/vehicles/create" class="create-btn">
+      Add Vehicle
+    </button>
+  </div>
 
   <div *ngIf="loading" class="loading">Loading vehicles...</div>
+  <div *ngIf="!loading && errorMessage" class="error-state">
+    {{ errorMessage }}
+  </div>
 
-  <table *ngIf="!loading && vehicles.length > 0">
+  <table *ngIf="!loading && !errorMessage && vehicles.length > 0">
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price/Day</th>
+        <th>Vehicle</th>
+        <th>Type</th>
+        <th>Characteristics</th>
+        <th>Rent / Day</th>
+        <th>Rent / Hour</th>
         <th>Location</th>
         <th>Availability</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let vehicle of vehicles">
-        <td>{{ vehicle.id }}</td>
-        <td>{{ vehicle.name }}</td>
+      <tr *ngFor="let vehicle of vehicles; trackBy: trackByVehicleId">
+        <td>
+          <div class="vehicle-cell">
+            <img
+              [src]="vehicle.imageUrl || placeholderImage"
+              [alt]="vehicle.name"
+              class="vehicle-image"
+              (error)="onImageError($event)"
+            />
+            <div>
+              <p class="vehicle-name">{{ vehicle.name }}</p>
+              <p class="vehicle-description">{{ vehicle.description }}</p>
+            </div>
+          </div>
+        </td>
         <td>{{ vehicle.category }}</td>
-        <td>${{ vehicle.pricePerDay }}</td>
+        <td>
+          <div
+            class="feature-list"
+            *ngIf="vehicle.features?.length; else noFeature"
+          >
+            <span
+              class="feature-chip"
+              *ngFor="let feature of vehicle.features"
+              >{{ feature }}</span
+            >
+          </div>
+          <ng-template #noFeature>
+            <span class="muted">No characteristics</span>
+          </ng-template>
+        </td>
+        <td>${{ vehicle.pricePerDay | number: "1.2-2" }}</td>
+        <td>${{ vehicle.pricePerHour | number: "1.2-2" }}</td>
         <td>{{ vehicle.location }}</td>
         <td>
           <span [class]="vehicle.availability ? 'available' : 'unavailable'">
             {{ vehicle.availability ? "Available" : "Unavailable" }}
           </span>
         </td>
-        <td>
+        <td class="actions-cell">
           <button (click)="editVehicle(vehicle.id)" class="edit-btn">
             Edit
           </button>
@@ -42,7 +81,10 @@
     </tbody>
   </table>
 
-  <div *ngIf="!loading && vehicles.length === 0" class="no-vehicles">
+  <div
+    *ngIf="!loading && !errorMessage && vehicles.length === 0"
+    class="no-vehicles"
+  >
     No vehicles found.
     <a routerLink="/admin/vehicles/create">Add your first vehicle</a>
   </div>

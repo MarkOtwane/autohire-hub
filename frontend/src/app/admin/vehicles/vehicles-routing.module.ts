@@ -10,19 +10,19 @@ const routes: Routes = [
     path: '',
     component: VehicleListComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN'] },
+    data: { roles: ['ADMIN', 'MAIN_ADMIN'] },
   },
   {
     path: 'create',
     component: VehicleCreateComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN'] },
+    data: { roles: ['ADMIN', 'MAIN_ADMIN'] },
   },
   {
     path: 'edit/:id',
     component: VehicleEditComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN'] },
+    data: { roles: ['ADMIN', 'MAIN_ADMIN'] },
   },
 ];
 

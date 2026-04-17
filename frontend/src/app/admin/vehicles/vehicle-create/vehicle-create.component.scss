@@ -54,6 +54,11 @@
         font-size: 0.875rem;
         margin-top: 0.25rem;
       }
+
+      small {
+        margin-top: 0.35rem;
+        color: #6b7280;
+      }
     }
 
     .form-row {
@@ -103,6 +108,23 @@
             background-color: #7f8c8d;
           }
         }
+      }
+    }
+
+    .image-preview {
+      p {
+        margin: 0 0 0.5rem;
+        color: #374151;
+        font-weight: 600;
+      }
+
+      img {
+        width: 100%;
+        max-height: 220px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        background: #f3f4f6;
       }
     }
   }
