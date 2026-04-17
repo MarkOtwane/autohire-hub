@@ -1,6 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from '../../core/services/notification.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-notification-center',
@@ -10,6 +10,8 @@ import { CommonModule } from '@angular/common';
 })
 export class NotificationCenterComponent implements OnInit {
   notifications: any[] = [];
+  loading = true;
+  error = '';
 
   constructor(private notificationService: NotificationService) {}
 
@@ -18,8 +20,18 @@ export class NotificationCenterComponent implements OnInit {
   }
 
   loadNotifications() {
-    this.notificationService.getUserNotifications().subscribe((data) => {
-      this.notifications = data;
+    this.loading = true;
+    this.error = '';
+
+    this.notificationService.getUserNotifications().subscribe({
+      next: (data) => {
+        this.notifications = data;
+        this.loading = false;
+      },
+      error: () => {
+        this.error = 'Could not load notifications. Please try again.';
+        this.loading = false;
+      },
     });
   }
 
@@ -27,5 +39,17 @@ export class NotificationCenterComponent implements OnInit {
     this.notificationService.markAsRead(id).subscribe(() => {
       this.loadNotifications();
     });
+  }
+
+  get totalCount(): number {
+    return this.notifications.length;
+  }
+
+  get unreadCount(): number {
+    return this.notifications.filter((item) => !item.read).length;
+  }
+
+  get readCount(): number {
+    return this.notifications.filter((item) => item.read).length;
   }
 }

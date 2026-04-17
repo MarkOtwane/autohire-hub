@@ -1,14 +1,72 @@
-<h2>Notification Center</h2>
+<section class="notifications-page">
+  <header class="hero">
+    <div>
+      <p class="kicker">Inbox</p>
+      <h1>Notification Center</h1>
+      <p class="subtitle">
+        Keep up with booking updates, payment alerts, and account activity.
+      </p>
+    </div>
+    <button type="button" class="refresh-btn" (click)="loadNotifications()">
+      Refresh
+    </button>
+  </header>
 
-<div *ngIf="notifications.length === 0">
-  <p>You have no notifications.</p>
-</div>
+  <section class="metrics" *ngIf="!loading">
+    <article class="metric-card">
+      <p class="label">Total</p>
+      <p class="value">{{ totalCount }}</p>
+    </article>
+    <article class="metric-card unread">
+      <p class="label">Unread</p>
+      <p class="value">{{ unreadCount }}</p>
+    </article>
+    <article class="metric-card read">
+      <p class="label">Read</p>
+      <p class="value">{{ readCount }}</p>
+    </article>
+  </section>
 
-<ul *ngIf="notifications.length > 0">
-  <li *ngFor="let n of notifications" [class.unread]="!n.read">
-    <strong>{{ n.title }}</strong>
-    <p>{{ n.message }}</p>
-    <small>{{ n.createdAt | date:'short' }}</small>
-    <button *ngIf="!n.read" (click)="markAsRead(n.id)">Mark as read</button>
-  </li>
-</ul>
+  <section class="state-box" *ngIf="loading">Loading notifications...</section>
+  <section class="state-box error" *ngIf="!loading && error">
+    {{ error }}
+  </section>
+
+  <section
+    class="empty-state"
+    *ngIf="!loading && !error && notifications.length === 0"
+  >
+    <h2>All clear</h2>
+    <p>You have no notifications at the moment.</p>
+  </section>
+
+  <section class="list" *ngIf="!loading && !error && notifications.length > 0">
+    <article
+      class="notification-card"
+      *ngFor="let n of notifications"
+      [class.unread]="!n.read"
+    >
+      <div class="card-top">
+        <div>
+          <p class="title">{{ n.title }}</p>
+          <p class="message">{{ n.message }}</p>
+        </div>
+        <span class="status-chip" [class.unread]="!n.read">
+          {{ n.read ? "Read" : "Unread" }}
+        </span>
+      </div>
+
+      <div class="card-bottom">
+        <small>{{ n.createdAt | date: "medium" }}</small>
+        <button
+          type="button"
+          *ngIf="!n.read"
+          class="mark-btn"
+          (click)="markAsRead(n.id)"
+        >
+          Mark as read
+        </button>
+      </div>
+    </article>
+  </section>
+</section>
