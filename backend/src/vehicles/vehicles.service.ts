@@ -2,9 +2,11 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { BookingStatus, FuelType } from '@prisma/client';
+import { v2 as cloudinary } from 'cloudinary';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { SearchVehicleDto } from './dto/search-vehicle.dto';
@@ -14,6 +16,48 @@ import { VehicleCalendarQueryDto } from './dto/vehicle-calendar-query.dto';
 @Injectable()
 export class VehiclesService {
   constructor(private prisma: PrismaService) {}
+
+  async uploadImage(file: Express.Multer.File) {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      throw new InternalServerErrorException(
+        'Cloudinary is not configured on the server',
+      );
+    }
+
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
+      secure: true,
+    });
+
+    const result = await new Promise<{ secure_url: string }>(
+      (resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'car-rental-app/vehicles',
+            resource_type: 'image',
+          },
+          (error, uploadResult) => {
+            if (error || !uploadResult) {
+              reject(error ?? new Error('Image upload failed'));
+              return;
+            }
+
+            resolve({ secure_url: uploadResult.secure_url });
+          },
+        );
+
+        uploadStream.end(file.buffer);
+      },
+    );
+
+    return { url: result.secure_url };
+  }
 
   async create(dto: CreateVehicleDto) {
     return this.prisma.vehicle.create({

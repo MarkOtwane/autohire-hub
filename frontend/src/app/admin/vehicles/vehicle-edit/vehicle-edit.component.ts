@@ -22,6 +22,9 @@ export class VehicleEditComponent implements OnInit {
   form: FormGroup;
   loading = false;
   initialLoading = true;
+  uploadingImage = false;
+  uploadError = '';
+  selectedImageName = '';
 
   constructor(
     private fb: FormBuilder,
@@ -84,6 +87,40 @@ export class VehicleEditComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/admin/vehicles']);
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    this.uploadError = '';
+    this.selectedImageName = file.name;
+
+    if (!file.type.startsWith('image/')) {
+      this.uploadError = 'Please select a valid image file.';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      this.uploadError = 'Image must be 5MB or smaller.';
+      return;
+    }
+
+    this.uploadingImage = true;
+    this.vehicleService.uploadVehicleImage(file).subscribe({
+      next: (result) => {
+        this.form.patchValue({ imageUrl: result.url });
+        this.uploadingImage = false;
+      },
+      error: () => {
+        this.uploadError = 'Image upload failed. Please try again.';
+        this.uploadingImage = false;
+      },
+    });
   }
 
   get imagePreview(): string {

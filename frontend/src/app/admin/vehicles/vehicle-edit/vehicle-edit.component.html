@@ -135,13 +135,17 @@
     </div>
 
     <div class="form-group">
-      <label for="imageUrl">Image URL (Optional)</label>
+      <label for="vehicleImage">Vehicle Image</label>
       <input
-        id="imageUrl"
-        formControlName="imageUrl"
-        type="url"
-        placeholder="Enter image URL"
+        id="vehicleImage"
+        type="file"
+        accept="image/*"
+        (change)="onImageSelected($event)"
       />
+      <small *ngIf="selectedImageName">Selected: {{ selectedImageName }}</small>
+      <small *ngIf="uploadingImage">Uploading image to Cloudinary...</small>
+      <div *ngIf="uploadError" class="error">{{ uploadError }}</div>
+      <input type="hidden" formControlName="imageUrl" />
     </div>
 
     <div class="form-group">
@@ -166,10 +170,16 @@
       </button>
       <button
         type="submit"
-        [disabled]="form.invalid || loading"
+        [disabled]="form.invalid || loading || uploadingImage"
         class="btn-primary"
       >
-        {{ loading ? "Updating..." : "Update Vehicle" }}
+        {{
+          loading
+            ? "Updating..."
+            : uploadingImage
+              ? "Uploading Image..."
+              : "Update Vehicle"
+        }}
       </button>
     </div>
   </form>

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,8 +8,11 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../commons/decorators/roles.decorator';
 import { JwtAuthGuard } from '../commons/guards/jwt-auth.guard';
 import { RolesGuard } from '../commons/guards/roles.guard';
@@ -21,6 +25,26 @@ import { VehiclesService } from './vehicles.service';
 @Controller('vehicles')
 export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
+
+  @Post('upload-image')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'MAIN_ADMIN')
+  @UseInterceptors(FileInterceptor('image'))
+  uploadImage(@UploadedFile() image: Express.Multer.File) {
+    if (!image) {
+      throw new BadRequestException('Image file is required');
+    }
+
+    if (!image.mimetype?.startsWith('image/')) {
+      throw new BadRequestException('Only image files are allowed');
+    }
+
+    if (image.size > 5 * 1024 * 1024) {
+      throw new BadRequestException('Image size must be 5MB or less');
+    }
+
+    return this.vehiclesService.uploadImage(image);
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
