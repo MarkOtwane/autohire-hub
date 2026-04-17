@@ -1,18 +1,5 @@
-<!-- src/app/admin/dashboard/dashboard.component.html -->
-
-<!-- Include Font Awesome for icons -->
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-/>
-<!-- Google Fonts: Inter -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-  rel="stylesheet"
-/>
-
-<div class="admin-shell">
-  <aside class="admin-sidebar">
+<div class="admin-shell" [class.sidebar-collapsed]="sidebarCollapsed">
+  <aside class="admin-sidebar" [class.collapsed]="sidebarCollapsed">
     <div class="brand-block">
       <p class="brand-kicker">AutoHire Hub</p>
       <h1>Admin Panel</h1>
@@ -25,6 +12,7 @@
         class="nav-item"
         [class.active]="isActive(item.route)"
         (click)="navigate(item.route)"
+        [title]="item.label"
       >
         <i class="fas" [ngClass]="item.icon"></i>
         <span>{{ item.label }}</span>
@@ -37,13 +25,57 @@
     </button>
   </aside>
 
-  <main class="admin-main">
+  <main class="admin-main" (click)="closeProfileMenu()">
     <header class="main-header">
-      <div>
+      <div class="header-left">
+        <button
+          type="button"
+          class="menu-toggle"
+          (click)="toggleSidebar(); $event.stopPropagation()"
+          aria-label="Toggle sidebar"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+
         <p class="header-kicker">Dashboard</p>
         <h2>Operations Overview</h2>
       </div>
-      <div class="header-badge">Live Snapshot</div>
+
+      <div class="header-right">
+        <div class="header-badge">Live Snapshot</div>
+
+        <div class="profile-menu-wrapper">
+          <button
+            type="button"
+            class="profile-toggle"
+            (click)="toggleProfileMenu(); $event.stopPropagation()"
+          >
+            <span class="avatar">{{
+              (userName || "A").charAt(0) | uppercase
+            }}</span>
+            <span class="profile-text">
+              <strong>{{ userName }}</strong>
+              <small>{{ userRole }}</small>
+            </span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+
+          <div class="profile-menu" *ngIf="profileMenuOpen">
+            <button type="button" (click)="navigate('/user/profile')">
+              <i class="fas fa-user"></i>
+              <span>My Profile</span>
+            </button>
+            <button type="button" (click)="navigate('/notifications')">
+              <i class="fas fa-bell"></i>
+              <span>Notifications</span>
+            </button>
+            <button type="button" class="danger" (click)="logout()">
+              <i class="fas fa-right-from-bracket"></i>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <div *ngIf="loading" class="loading-message">

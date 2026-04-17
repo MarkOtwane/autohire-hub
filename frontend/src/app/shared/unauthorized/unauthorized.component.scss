@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.unauthorized-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(245, 158, 11, 0.2),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(14, 165, 233, 0.16),
+      transparent 30%
+    ),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.panel {
+  width: min(680px, 100%);
+  border-radius: 18px;
+  padding: 34px;
+  background: #ffffff;
+  border: 1px solid #dbe4f0;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #b45309;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  line-height: 1.2;
+  color: #111827;
+}
+
+p {
+  margin: 12px 0 0;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #0284c7;
+}
+
+.btn-ghost {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.btn-ghost:hover {
+  background: #e2e8f0;
+}

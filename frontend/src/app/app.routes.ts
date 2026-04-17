@@ -6,6 +6,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 import { HomeComponent } from './home/home.component';
+import { UnauthorizedComponent } from './shared/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
   // Redirect empty path to login or home
@@ -122,6 +123,8 @@ export const routes: Routes = [
     component: DashboardComponent, // Or MainAdminDashboardComponent
     canActivate: [AuthGuard],
   },
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: '**', redirectTo: '' },
 ];
 
 export class AppRoutingModule {}

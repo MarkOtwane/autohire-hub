@@ -15,6 +15,10 @@ import { MetricsService } from '../../core/services/metrics.service';
 export class DashboardComponent implements OnInit {
   stats: any = {};
   loading = true;
+  sidebarCollapsed = false;
+  profileMenuOpen = false;
+  userRole = 'ADMIN';
+  userName = 'Administrator';
 
   readonly sidebarLinks = [
     { label: 'Overview', route: '/admin', icon: 'fa-chart-pie' },
@@ -42,6 +46,9 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.userRole = this.authService.getUserRole() || 'ADMIN';
+    this.userName = this.authService.getUserEmail() || 'Administrator';
+
     this.metricsService.getAdminMetrics().subscribe({
       next: (data) => {
         this.stats = data;
@@ -58,46 +65,49 @@ export class DashboardComponent implements OnInit {
   // --- Button Click Handlers ---
 
   onViewAllPendingBookings(): void {
-    alert('Navigating to pending bookings...');
-    // Example: Navigate to a bookings management page, possibly with a filter
     this.router.navigate(['/admin/bookings'], {
       queryParams: { status: 'pending' },
     });
   }
 
   onViewAllOpenIssues(): void {
-    alert('Navigating to open issues...');
-    // Example: Navigate to a vehicle issues page
     this.router.navigate(['/admin/issues']);
   }
 
   onViewAllUsers(): void {
-    alert('Navigating to user management...');
-    // Example: Navigate to a user management page
     this.router.navigate(['/admin/users']);
   }
 
   onAddNewVehicle(): void {
-    alert('Navigating to add new vehicle form...');
     this.router.navigate(['/admin/vehicles/create']);
   }
 
   onManageAgents(): void {
-    alert('Navigating to agent management...');
     this.router.navigate(['../agents']);
   }
 
   onSendNotification(): void {
-    alert('Opening send notification modal/page...');
     this.router.navigate(['/admin/notifications']);
   }
 
   onViewDetailedReports(): void {
-    alert('Navigating to detailed reports...');
     this.router.navigate(['/metrics']);
   }
 
+  toggleSidebar(): void {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
+
+  toggleProfileMenu(): void {
+    this.profileMenuOpen = !this.profileMenuOpen;
+  }
+
+  closeProfileMenu(): void {
+    this.profileMenuOpen = false;
+  }
+
   navigate(route: string): void {
+    this.closeProfileMenu();
     this.router.navigate([route]);
   }
 
@@ -106,6 +116,7 @@ export class DashboardComponent implements OnInit {
   }
 
   logout(): void {
+    this.closeProfileMenu();
     this.authService.logout();
   }
 }
