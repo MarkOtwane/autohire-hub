@@ -1,25 +1,132 @@
-<h2>Create Booking</h2>
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <div *ngIf="vehicleName"><strong>Vehicle:</strong> {{ vehicleName }}</div>
+<div class="create-booking-page">
+  <div class="hero">
+    <div>
+      <h1>Create Booking</h1>
+      <p>
+        Select a pickup and dropoff date. Unavailable dates are disabled and the
+        backend re-checks the range before saving.
+      </p>
+    </div>
+    <div class="vehicle-meta">
+      <div class="meta-label">Vehicle</div>
+      <div class="vehicle-name">{{ vehicleName || "Selected vehicle" }}</div>
+      <p>{{ pickupLocation }} → {{ returnLocation }}</p>
+    </div>
+  </div>
 
-  <label>Start Date</label>
-  <input type="date" formControlName="startDate" />
+  <div class="availability-summary">
+    <span
+      class="availability-pill"
+      [class.loading]="availabilityLoading"
+      [class.available]="!availabilityLoading && !availabilityError"
+      [class.error]="availabilityError"
+    >
+      {{
+        availabilityLoading
+          ? "Refreshing availability..."
+          : availabilityError
+            ? "Availability unavailable"
+            : "Live availability active"
+      }}
+    </span>
+    <strong>{{ availabilitySummary }}</strong>
+    <span>{{ selectedRangeLabel }}</span>
+  </div>
 
-  <label>End Date</label>
-  <input type="date" formControlName="endDate" />
+  <div *ngIf="availabilityError" class="error-state">
+    {{ availabilityError }}
+  </div>
 
-  <label>Note (Optional)</label>
-  <textarea formControlName="note"></textarea>
+  <section class="calendar-section">
+    <div class="section-title">
+      <h2>Availability Calendar</h2>
+      <small
+        >Available dates are green, blocked dates are red and disabled.</small
+      >
+    </div>
 
-  <p *ngIf="conflictError" style="color: #c62828; font-weight: 600">
-    {{ conflictError }}
-  </p>
+    <div *ngIf="availabilityLoading" class="loading-state">
+      Loading live availability...
+    </div>
 
-  <button type="button" (click)="startDigitalAgreement()">
-    Complete Digital Agreement
-  </button>
+    <div
+      *ngIf="!availabilityLoading && calendarDays.length > 0"
+      class="calendar-grid"
+    >
+      <button
+        *ngFor="let day of calendarDays"
+        type="button"
+        class="day-button"
+        [class.available]="day.isSelectable && !day.isInSelectedRange"
+        [class.blocked]="day.isBlocked"
+        [class.selected-start]="day.isStartDate"
+        [class.selected-end]="day.isEndDate"
+        [class.in-range]="
+          day.isInSelectedRange && !day.isStartDate && !day.isEndDate
+        "
+        [disabled]="!isSelectable(day.date)"
+        (click)="selectDate(day.date)"
+      >
+        <span class="weekday">{{ day.weekday }}</span>
+        <span class="date-label">{{ day.label }}</span>
+        <span class="state">
+          <ng-container *ngIf="day.isStartDate">Pickup</ng-container>
+          <ng-container *ngIf="day.isEndDate">Dropoff</ng-container>
+          <ng-container *ngIf="!day.isStartDate && !day.isEndDate">
+            {{ day.isBlocked ? "Unavailable" : "Available" }}
+          </ng-container>
+        </span>
+      </button>
+    </div>
 
-  <button type="submit" [disabled]="loading">
-    {{ loading ? "Booking..." : "Book Vehicle" }}
-  </button>
-</form>
+    <div class="calendar-actions">
+      <div class="helper-text">
+        Click once to choose a pickup date, then click again for dropoff.
+      </div>
+      <button type="button" class="btn-secondary" (click)="clearSelection()">
+        Clear Selection
+      </button>
+    </div>
+  </section>
+
+  <section class="booking-panel">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-row">
+        <div class="field">
+          <label>Pickup Date</label>
+          <input type="text" formControlName="startDate" readonly />
+        </div>
+
+        <div class="field">
+          <label>Dropoff Date</label>
+          <input type="text" formControlName="endDate" readonly />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Note (Optional)</label>
+        <textarea formControlName="note"></textarea>
+      </div>
+
+      <div *ngIf="conflictError" class="error-state">{{ conflictError }}</div>
+
+      <div class="booking-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="startDigitalAgreement()"
+        >
+          Complete Digital Agreement
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="loading || availabilityLoading"
+        >
+          {{ loading ? "Booking..." : "Book Vehicle" }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

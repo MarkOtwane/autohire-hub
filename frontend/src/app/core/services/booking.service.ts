@@ -2,14 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../enviroment/enviroment';
+import {
+  BookingAvailabilityCalendar,
+  BookingConflictCheckResult,
+  BookingUpdatePayload,
+} from '../models/booking.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private readonly baseUrl = `${environment.apiUrl}/bookings`;
+  private readonly vehiclesBaseUrl = `${environment.apiUrl}/vehicles`;
 
   constructor(private http: HttpClient) {}
 
-  createBooking(data: any): Observable<any> {
+  createBooking(data: BookingUpdatePayload): Observable<any> {
     return this.http.post(this.baseUrl, data);
   }
 
@@ -18,14 +24,27 @@ export class BookingService {
     pickupDate: string;
     dropoffDate: string;
     excludeBookingId?: string;
-  }): Observable<{
-    hasConflict: boolean;
-    conflictingBookingId: string | null;
-  }> {
-    return this.http.post<{
-      hasConflict: boolean;
-      conflictingBookingId: string | null;
-    }>(`${this.baseUrl}/validate-conflict`, data);
+  }): Observable<BookingConflictCheckResult> {
+    return this.http.post<BookingConflictCheckResult>(
+      `${this.baseUrl}/validate-conflict`,
+      data,
+    );
+  }
+
+  getVehicleCalendar(
+    vehicleId: string,
+    from?: string,
+    to?: string,
+  ): Observable<BookingAvailabilityCalendar> {
+    const params: Record<string, string> = {};
+
+    if (from) params['from'] = from;
+    if (to) params['to'] = to;
+
+    return this.http.get<BookingAvailabilityCalendar>(
+      `${this.vehiclesBaseUrl}/${vehicleId}/calendar`,
+      { params },
+    );
   }
 
   getMyBookings(): Observable<any[]> {
@@ -34,6 +53,10 @@ export class BookingService {
 
   getBookingById(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${id}`);
+  }
+
+  updateBooking(id: string, data: BookingUpdatePayload): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${id}`, data);
   }
 
   getBookingTimeline(id: string): Observable<any> {

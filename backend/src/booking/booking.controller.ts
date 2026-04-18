@@ -17,6 +17,7 @@ import { BookingsService } from './booking.service';
 import { CheckBookingConflictDto } from './dto/check-booking-conflict.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { RebookBookingDto } from './dto/rebook-booking.dto';
+import { UpdateBookingDto } from './dto/update-booking.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -58,6 +59,16 @@ export class BookingsController {
   @Roles('ADMIN', 'MAIN_ADMIN', 'AGENT')
   updateStatus(@Param('id') id: string, @Body() dto: UpdateStatusDto) {
     return this.bookingsService.updateStatus(id, dto);
+  }
+
+  @Patch(':id')
+  @Roles('USER', 'ADMIN', 'MAIN_ADMIN', 'AGENT')
+  updateBooking(
+    @Param('id') id: string,
+    @Req() req,
+    @Body() dto: UpdateBookingDto,
+  ) {
+    return this.bookingsService.update(req.user, id, dto);
   }
 
   @Patch(':id/assign/:agentId')

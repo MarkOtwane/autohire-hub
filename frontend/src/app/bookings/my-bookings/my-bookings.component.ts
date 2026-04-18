@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BookingService } from '../../core/services/booking.service';
 
 import { CommonModule } from '@angular/common';
@@ -10,16 +10,24 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./my-bookings.component.scss'],
   imports: [CommonModule, RouterModule],
 })
-export class MyBookingsComponent implements OnInit {
+export class MyBookingsComponent implements OnInit, OnDestroy {
   bookings: any[] = [];
   loading = true;
   error = '';
   success = '';
+  private refreshTimer?: ReturnType<typeof setInterval>;
 
   constructor(private bookingService: BookingService) {}
 
   ngOnInit(): void {
     this.loadBookings();
+    this.refreshTimer = setInterval(() => this.loadBookings(), 30000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+    }
   }
 
   loadBookings(): void {
