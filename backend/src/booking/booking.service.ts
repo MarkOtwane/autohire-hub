@@ -47,12 +47,18 @@ export class BookingsService {
   private getTodayUtcStart(): Date {
     const now = new Date();
 
-    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+    return new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    );
   }
 
   private toExclusiveEnd(date: Date): Date {
     return new Date(
-      Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1),
+      Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate() + 1,
+      ),
     );
   }
 
@@ -134,7 +140,7 @@ export class BookingsService {
     const { pickupDate, dropoffDate } = this.normalizeRequestedRange(
       dto.pickupDate,
       dto.dropoffDate,
-    });
+    );
 
     return this.prisma.$transaction(async (tx) => {
       const vehicle = await tx.vehicle.findUnique({
@@ -379,14 +385,20 @@ export class BookingsService {
       }
 
       const isAdmin = actor.role === 'ADMIN' || actor.role === 'MAIN_ADMIN';
-      const isAssignedAgent = actor.role === 'AGENT' && booking.agentId === actor.id;
+      const isAssignedAgent =
+        actor.role === 'AGENT' && booking.agentId === actor.id;
       const isOwner = actor.role === 'USER' && booking.userId === actorId;
 
       if (!isAdmin && !isAssignedAgent && !isOwner) {
-        throw new ForbiddenException('You are not allowed to update this booking');
+        throw new ForbiddenException(
+          'You are not allowed to update this booking',
+        );
       }
 
-      if ((dto.pickupDate && !dto.dropoffDate) || (!dto.pickupDate && dto.dropoffDate)) {
+      if (
+        (dto.pickupDate && !dto.dropoffDate) ||
+        (!dto.pickupDate && dto.dropoffDate)
+      ) {
         throw new BadRequestException(
           'Both pickupDate and dropoffDate are required when updating dates',
         );
@@ -418,7 +430,9 @@ export class BookingsService {
           bookingId,
         );
 
-        const canOverrideConflict = Boolean(dto.allowConflictOverride && isAdmin);
+        const canOverrideConflict = Boolean(
+          dto.allowConflictOverride && isAdmin,
+        );
 
         if (conflict && !canOverrideConflict) {
           throw new ConflictException(

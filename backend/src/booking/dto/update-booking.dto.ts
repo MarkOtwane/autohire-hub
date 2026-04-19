@@ -12,4 +12,3 @@ export class UpdateBookingDto extends PartialType(CreateBookingDto) {
   @IsEnum(BookingStatus)
   status?: BookingStatus;
 }
-export class UpdateBookingDto extends PartialType(CreateBookingDto) {}
